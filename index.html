@@ -29,7 +29,7 @@ body {
 }
 
 #workspace {
-  background-color: #ffffff;
+  background-color: #1e1e1e;
   background-image: var(--workspace-bg);
   background-size: cover;
   background-position: center;
@@ -224,8 +224,8 @@ body {
   background: #1e1e1e;
   padding: 25px;
   border-radius: 20px;
-  border: 1px solid #333;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  border: none;
+  box-shadow: none;
   text-align: center;
   max-width: 95vw; 
 }
@@ -314,7 +314,7 @@ body {
   width: 100%;           
   border-radius: 10px;
   overflow: hidden;
-  border: 1px solid #444;
+  border: none;
   position: relative;
   isolation: isolate;
 }
@@ -1627,6 +1627,20 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
   justify-content: center;
   opacity: 1;
   transition: opacity 0.25s ease;
+  overflow: hidden;
+}
+
+/* ── Scrolling icon canvas sits behind card ─── */
+#onboarding-icon-canvas {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.tutorial-card {
+  position: relative;
+  z-index: 1;
 }
 .step-content {
     animation: stepEnter 0.15s ease forwards;
@@ -1652,7 +1666,7 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
 
 .tutorial-card {
   background: #1a1a1a;
-  border: 1px solid #3498db;
+  border: 3px solid #3498db;
   border-radius: 20px;
   width: 500px;
   height: 460px;
@@ -1750,7 +1764,7 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
   border-radius: 15px;
   max-width: 280px;
   text-align: center;
-  border: 1px solid #3498db; 
+  border: 3px solid #3498db; 
   box-shadow: 0 10px 30px rgba(0,0,0,0.8);
 }
 
@@ -2139,6 +2153,7 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
     <div class="preview-window" id="workspace">
     
 <div id="onboarding-overlay" class="tutorial-overlay" style="display:flex;">
+  <canvas id="onboarding-icon-canvas"></canvas>
   <div class="tutorial-card">
     <div class="step-dots">
       <span class="dot active" id="dot-1"></span>
@@ -2301,7 +2316,7 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
 <div id="profile-zoom-lightbox" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:99999;align-items:center;justify-content:center;">
   <div style="position:relative;max-width:90vw;max-height:90vh;">
     <img id="profile-zoom-img" src="" alt="" style="max-width:90vw;max-height:90vh;border-radius:12px;display:block;box-shadow:0 20px 60px rgba(0,0,0,0.7);">
-    <button onclick="closeProfileZoom()" style="position:absolute;top:-14px;right:-14px;width:30px;height:30px;background:#333;border:1px solid #555;border-radius:50%;color:white;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;">✕</button>
+    <button onclick="closeProfileZoom()" style="position:absolute;top:10px;right:10px;width:28px;height:28px;background:rgba(0,0,0,0.55);border:none;border-radius:50%;color:white;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;backdrop-filter:blur(2px);">✕</button>
   </div>
 </div>
 
@@ -3235,6 +3250,7 @@ function applyKeycapProfile(profile) {
 
 
 function finishOnboarding() {
+    window._stopOnboardingAnim && window._stopOnboardingAnim();
     // Apply legend type (white vs shinethrough)
     applyLegendType();
     // Apply the keycap profile now that profile+row are confirmed
@@ -5728,6 +5744,7 @@ function confirmReset() {
         if (pdv) pdv.style.display = 'none';
         currentStep = 5;
         _updateOnboardingFooter();
+        window._startOnboardingAnim && window._startOnboardingAnim();
     }
 }
 
@@ -7029,6 +7046,132 @@ function initMaskTracking() {
         }
     });
 }
+
+// ── Onboarding background icon animation ─────────────────────────────────────
+(function() {
+    const COLOR = '#202020';
+
+    let animFrame;
+
+    // ── Shape drawers ────────────────────────────────────────────────────────
+    function drawSquiggle(ctx, s, t) {
+        const w1 = Math.sin(t * 0.04) * s * 0.5;
+        const w2 = Math.sin(t * 0.04 + Math.PI) * s * 0.5;
+        ctx.lineWidth = s * 0.25;
+        ctx.lineCap   = 'round';
+        ctx.beginPath();
+        ctx.moveTo(-s * 1.1,  s * 0.55);
+        ctx.bezierCurveTo(-s * 0.4 + w1, -s * 0.9, s * 0.4 + w2, s * 0.9, s * 1.1, -s * 0.55);
+        ctx.stroke();
+    }
+
+    function drawCircle(ctx, s, t) {
+        const r = s * 0.7 + Math.sin(t * 0.025) * s * 0.08; // subtle breathing
+        ctx.lineWidth = s * 0.22;
+        ctx.lineCap   = 'round';
+        ctx.beginPath();
+        ctx.arc(0, 0, r, 0, Math.PI * 2);
+        ctx.stroke();
+    }
+
+    function drawTriangle(ctx, s, t) {
+        const rot = t * 0.008; // slow spin
+        ctx.lineWidth = s * 0.22;
+        ctx.lineCap   = 'round';
+        ctx.beginPath();
+        for (let i = 0; i < 3; i++) {
+            const a = rot + (i / 3) * Math.PI * 2;
+            i === 0 ? ctx.moveTo(Math.cos(a)*s*0.9, Math.sin(a)*s*0.9)
+                    : ctx.lineTo(Math.cos(a)*s*0.9, Math.sin(a)*s*0.9);
+        }
+        ctx.closePath();
+        ctx.stroke();
+    }
+
+    const SHAPE_DRAWERS = [drawSquiggle, drawCircle, drawTriangle];
+    const SHAPE_DURATION = 8000; // ms per shape
+    const FADE_DURATION  = 1500; // ms crossfade
+
+    function startIconAnim() {
+        const canvas = document.getElementById('onboarding-icon-canvas');
+        if (!canvas) return;
+        const overlay = document.getElementById('onboarding-overlay');
+        const w = overlay.offsetWidth  || 600;
+        const h = overlay.offsetHeight || 460;
+        canvas.width  = w;
+        canvas.height = h;
+        const ctx = canvas.getContext('2d');
+
+        const SIZE  = 10;
+        const GAP   = 52;
+        const SPEED = 0.06;
+
+        let ox = 0, oy = 0, t = 0;
+        let shapeIdx  = 0;
+        let shapeStart = performance.now();
+
+        function drawGrid(drawer, alpha) {
+            ctx.save();
+            ctx.globalAlpha = alpha;
+            ctx.strokeStyle = COLOR;
+            for (let x = ox - GAP; x < w + GAP; x += GAP) {
+                for (let y = oy - GAP; y < h + GAP; y += GAP) {
+                    ctx.save();
+                    ctx.translate(x, y);
+                    ctx.rotate(50 * Math.PI / 180);
+                    drawer(ctx, SIZE, t);
+                    ctx.restore();
+                }
+            }
+            ctx.restore();
+        }
+
+        function draw(now) {
+            ctx.clearRect(0, 0, w, h);
+
+            ox = (ox + SPEED)       % GAP;
+            oy = (oy + SPEED * 0.6) % GAP;
+            t++;
+
+            const elapsed  = now - shapeStart;
+            const nextIdx  = (shapeIdx + 1) % SHAPE_DRAWERS.length;
+            const current  = SHAPE_DRAWERS[shapeIdx];
+            const next     = SHAPE_DRAWERS[nextIdx];
+
+            // Advance shape after SHAPE_DURATION
+            if (elapsed > SHAPE_DURATION + FADE_DURATION) {
+                shapeIdx  = nextIdx;
+                shapeStart = now;
+            }
+
+            // Crossfade during the last FADE_DURATION of each period
+            const fadeStart = SHAPE_DURATION;
+            if (elapsed > fadeStart && elapsed <= SHAPE_DURATION + FADE_DURATION) {
+                const progress = (elapsed - fadeStart) / FADE_DURATION;
+                drawGrid(current, 1 - progress);
+                drawGrid(next,    progress);
+            } else {
+                drawGrid(current, 1);
+            }
+
+            animFrame = requestAnimationFrame(draw);
+        }
+        requestAnimationFrame(draw);
+    }
+
+    function stopIconAnim() {
+        if (animFrame) { cancelAnimationFrame(animFrame); animFrame = null; }
+    }
+
+    window._startOnboardingAnim = startIconAnim;
+    window._stopOnboardingAnim  = stopIconAnim;
+})();
+
+window.addEventListener('DOMContentLoaded', () => {
+    if (document.getElementById('onboarding-overlay').style.display !== 'none') {
+        window._startOnboardingAnim && window._startOnboardingAnim();
+    }
+});
 
 window.addEventListener('load', () => {
     initMaskTracking();
