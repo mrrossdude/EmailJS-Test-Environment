@@ -1656,7 +1656,8 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
   border-radius: 20px;
   width: 500px;
   min-height: 450px;
-  height: 450px;
+  height: auto;
+  max-height: 90vh;
   display: flex;
   flex-direction: column;
   align-items: stretch;
@@ -1672,6 +1673,7 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
   align-items: center;
   justify-content: center;
   padding: 60px 40px 20px;
+  overflow-y: auto;
 }
 
 .onboarding-footer {
@@ -2053,12 +2055,40 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
       <span class="dot" id="dot-3"></span>
       <span class="dot" id="dot-4"></span>
       <span class="dot" id="dot-5"></span>
+      <span class="dot" id="dot-6"></span>
     </div>
 
     <div class="onboarding-body">
 
-      <!-- Step 1: Profile selector -->
+      <!-- Step 1: Welcome -->
       <div class="step-content" id="step-1">
+        <h3>Welcome to the PicoSmiths Custom Keycap Editor</h3>
+        <p>Use this tool to convert any image to a custom keycap. Make sure to read these tips to get the best quality possible.</p>
+      </div>
+
+      <!-- Step 2: Magic Eraser -->
+      <div class="step-content" id="step-2" style="display:none;">
+        <h3>Magic Eraser Tool</h3>
+        <img src="https://i.ibb.co/1t8pBjtX/Magic-Eraser-Tutorial.jpg" alt="Magic Eraser Tutorial" style="width:100%;border-radius:10px;margin:12px 0;display:block;">
+        <p>If you're using images with a solid colour background like JPG or BMP, use the Magic Eraser to strip away backgrounds. Simply click the area you want to remove and hit apply.</p>
+      </div>
+
+      <!-- Step 3: Image Adjustment -->
+      <div class="step-content" id="step-3" style="display:none;">
+        <h3>Image Adjustment Tool</h3>
+        <img src="https://i.ibb.co/bjNtCTPw/Adjustment-Image-Tutorial.jpg" alt="Image Adjustment Tutorial" style="width:100%;border-radius:10px;margin:12px 0;display:block;">
+        <p>If your image is more complex or the Magic Eraser isn't working for you, try enabling the Adjustment Tool and use the sliders to fine tune your image. This tool automatically strips out white backgrounds, so you might want to click the INVERT button if your image is on a dark background.</p>
+      </div>
+
+      <!-- Step 4: Cropping Images -->
+      <div class="step-content" id="step-4" style="display:none;">
+        <h3>Cropping Images</h3>
+        <img src="https://i.ibb.co/BVF5tbzf/Crop-Image-Tutorial.jpg" alt="Crop Image Tutorial" style="width:100%;border-radius:10px;margin:12px 0;display:block;">
+        <p>If your image has a lot of empty space or needs elements removing, use the Crop tool to cut away any excess.</p>
+      </div>
+
+      <!-- Step 5: Profile selector -->
+      <div class="step-content" id="step-5" style="display:none;">
         <h3>Choose Your Keycap Profile</h3>
         <p style="font-size:12px;color:#aaa;margin-bottom:14px;">Select the profile that matches your keycap.</p>
         <div style="display:flex;gap:10px;justify-content:center;margin-bottom:16px;">
@@ -2077,8 +2107,8 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
         </div>
       </div>
 
-      <!-- Step 2: Row selector -->
-      <div class="step-content" id="step-2" style="display:none;">
+      <!-- Step 6: Row selector -->
+      <div class="step-content" id="step-6" style="display:none;">
         <h3>Choose Your Keycap Row</h3>
         <div id="row-selector-standard" style="display:flex;gap:10px;justify-content:center;margin:16px 0;">
           <button class="row-btn" id="row-R4" onclick="selectRow('R4')">R4</button>
@@ -2092,29 +2122,14 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
         </div>
       </div>
 
-      <!-- Step 3: Welcome tips -->
-      <div class="step-content" id="step-3" style="display:none;">
-        <h3>Welcome to the PicoSmiths Custom Keycap Editor</h3>
-        <p>Use this tool to convert any image to a custom keycap. Make sure to read these tips to get the best quality possible.</p>
-      </div>
-
-      <!-- Step 4: Magic Wand -->
-      <div class="step-content" id="step-4" style="display:none;">
-        <h3>Magic Wand Tool</h3>
-        <p>If you're using images with a solid colour background like JPG or BMP, use the Magic Wand to strip away backgrounds. Simply click the area you want to remove and hit apply.</p>
-      </div>
-
-      <!-- Step 5: Image Adjustment -->
-      <div class="step-content" id="step-5" style="display:none;">
-        <h3>Image Adjustment Tool</h3>
-        <p>If your image is more complex or the Magic Wand isn't working for you, try enabling the Adjustment Tool and use the sliders to fine tune your image. This tool automatically strips out white backgrounds, so you might want to click the INVERT button if your image is on a dark background.</p>
-      </div>
-
     </div>
 
     <div class="onboarding-footer">
       <button class="onboarding-prev-btn" id="onboarding-prev" onclick="prevStep()">Previous</button>
-      <button class="onboarding-next-btn" id="onboarding-next" onclick="onboardingNext()">Next</button>
+      <div style="display:flex;align-items:center;gap:14px;">
+        <span id="skip-tutorial-link" onclick="skipToProfile()" style="font-size:12px;color:#666;cursor:pointer;text-decoration:underline;transition:color 0.15s;">Skip Tutorial</span>
+        <button class="onboarding-next-btn" id="onboarding-next" onclick="onboardingNext()">Next</button>
+      </div>
     </div>
   </div>
 </div>
@@ -2818,24 +2833,32 @@ function selectRow(row) {
 function _updateOnboardingFooter() {
     const prevBtn  = document.getElementById('onboarding-prev');
     const nextBtn  = document.getElementById('onboarding-next');
+    const skipLink = document.getElementById('skip-tutorial-link');
     if (!prevBtn || !nextBtn) return;
 
     // Prev hidden on step 1
     prevBtn.classList.toggle('hidden', currentStep === 1);
 
-    // Next label changes on last step
-    nextBtn.textContent = currentStep === 5 ? 'Got it' : 'Next';
+    // Next label changes on last step (now step 6)
+    nextBtn.textContent = currentStep === 6 ? 'Got it' : 'Next';
 
-    // Next disabled on step 1 until profile chosen, step 2 until row chosen
+    // Skip tutorial hidden once on profile/row steps (5 & 6)
+    if (skipLink) skipLink.style.display = currentStep >= 5 ? 'none' : 'inline';
+
+    // Next disabled on step 5 until profile chosen, step 6 until row chosen
     let disabled = false;
-    if (currentStep === 1 && !selectedProfile) disabled = true;
-    if (currentStep === 2 && !selectedRow)    disabled = true;
+    if (currentStep === 5 && !selectedProfile) disabled = true;
+    if (currentStep === 6 && !selectedRow)    disabled = true;
     nextBtn.disabled = disabled;
 }
 
 function onboardingNext() {
-    if (currentStep === 5) { finishOnboarding(); return; }
+    if (currentStep === 6) { finishOnboarding(); return; }
     nextStep(currentStep + 1);
+}
+
+function skipToProfile() {
+    _nextStepCore(5);
 }
 
 function prevStep() {
@@ -2844,16 +2867,13 @@ function prevStep() {
 }
 
 function nextStep(nextStepNum) {
-    if (currentStep === 1 && nextStepNum === 2 && selectedProfile) {
+    if (currentStep === 5 && nextStepNum === 6 && selectedProfile) {
         const isXDA = selectedProfile === 'XDA';
         document.getElementById('row-selector-standard').style.display = isXDA ? 'none' : 'flex';
         document.getElementById('row-selector-xda').style.display      = isXDA ? 'block' : 'none';
         // Always require the user to click, so clear selectedRow and remove highlights
         selectedRow = null;
         document.querySelectorAll('.row-btn').forEach(b => b.classList.remove('selected'));
-    }
-    if (currentStep === 2 && nextStepNum === 3 && selectedProfile) {
-        applyKeycapProfile(selectedProfile);
     }
     _nextStepCore(nextStepNum);
 }
@@ -2895,6 +2915,8 @@ function applyKeycapProfile(profile) {
 
 
 function finishOnboarding() {
+    // Apply the keycap profile now that profile+row are confirmed
+    if (selectedProfile) applyKeycapProfile(selectedProfile);
     const overlay = document.getElementById('onboarding-overlay');
     overlay.classList.add('fade-out');
     setTimeout(() => {
@@ -5360,7 +5382,7 @@ function confirmReset() {
         overlay.classList.remove('fade-out');
         overlay.style.opacity = '1';
         overlay.style.display = 'flex';
-        for (let i = 1; i <= 5; i++) {
+        for (let i = 1; i <= 6; i++) {
             const step = document.getElementById('step-' + i);
             const dot  = document.getElementById('dot-' + i);
             if (step) step.style.display = i === 1 ? 'block' : 'none';
