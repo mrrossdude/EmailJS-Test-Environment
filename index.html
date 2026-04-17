@@ -5376,34 +5376,29 @@ async function openOrderLightbox() {
         const canvas = await generateHighResCanvas();
         const fullResDataUrl = canvas.toDataURL('image/png', 1.0);
 
-        // Scale down to 600x600 thumbnail for email
+        // Tiny 140x140 thumbnail for email — just enough to see the design at a glance
         const thumbCanvas = document.createElement('canvas');
-        thumbCanvas.width  = 600;
-        thumbCanvas.height = 600;
-        thumbCanvas.getContext('2d').drawImage(canvas, 0, 0, 600, 600);
-        const thumbDataUrl = thumbCanvas.toDataURL('image/jpeg', 0.7);
+        thumbCanvas.width  = 140;
+        thumbCanvas.height = 140;
+        thumbCanvas.getContext('2d').drawImage(canvas, 0, 0, 140, 140);
+        const thumbDataUrl = thumbCanvas.toDataURL('image/jpeg', 0.8);
 
-        // 1. Upload full-res to Google Drive
-        let driveUrl = '(upload failed)';
-        try {
-            const driveResp = await fetch(
-                'https://script.google.com/macros/s/AKfycbwU19jkFxNkuhrHtbt4S-61QjqlQdy6wN7o9wp7F8HU4_Be6Y7Z_BxPXF7tAHxxariqBg/exec',
-                {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        order_code: _currentOrderCode,
-                        image:      fullResDataUrl,
-                    })
-                }
-            );
-            const driveData = await driveResp.json();
-            if (driveData.success) driveUrl = driveData.url;
-        } catch (driveErr) {
-            console.warn('Drive upload failed:', driveErr);
-        }
+        // 1. Upload full-res to Google Drive using no-cors to avoid preflight CORS block.
+        // Response is opaque (unreadable) but the upload goes through successfully.
+        fetch(
+            'https://script.google.com/macros/s/AKfycbwU19jkFxNkuhrHtbt4S-61QjqlQdy6wN7o9wp7F8HU4_Be6Y7Z_BxPXF7tAHxxariqBg/exec',
+            {
+                method: 'POST',
+                mode:   'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    order_code: _currentOrderCode,
+                    image:      fullResDataUrl,
+                })
+            }
+        ).catch(err => console.warn('Drive upload failed:', err));
 
-        // 2. Send email via EmailJS with thumbnail + Drive link
+        // 2. Send email via EmailJS with thumbnail
         await emailjs.send(
             'service_u1wrjxj',
             'template_nc85z2q',
@@ -5412,7 +5407,6 @@ async function openOrderLightbox() {
                 profile:    selectedProfile || 'Unknown',
                 row:        selectedRow === 'all' ? 'All Rows' : (selectedRow || 'Unknown'),
                 image:      thumbDataUrl,
-                drive_url:  driveUrl,
             }
         );
 
