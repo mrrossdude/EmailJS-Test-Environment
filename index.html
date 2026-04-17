@@ -3392,12 +3392,17 @@ function applyKeycapProfile(profile) {
 }
 
 
+let _onboardingSessionId = 0; // incremented on each finish/reset to cancel stale callbacks
+
 function finishOnboarding() {
     window._stopOnboardingAnim && window._stopOnboardingAnim();
     applyLegendType();
 
     const data = KEYCAP_DATA[selectedProfile];
     if (!data) { _doCloseOnboarding(); return; }
+
+    // Capture session id — if reset fires before images load, this becomes stale
+    const sessionId = ++_onboardingSessionId;
 
     // Overlay spinner on top of card without destroying its HTML
     const card = document.querySelector('.tutorial-card');
@@ -3408,7 +3413,7 @@ function finishOnboarding() {
         spinner.style.cssText = 'position:absolute;inset:0;background:#1a1a1a;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;border-radius:20px;';
         spinner.innerHTML = `
             <div style="width:36px;height:36px;border:3px solid #333;border-top-color:#3498db;border-radius:50%;animation:spin 0.8s linear infinite;"></div>
-            <p style="color:#888;font-size:13px;margin:0;">Loading your keycap…</p>`;
+            <p style="color:#888;font-size:13px;margin:0;">Loading your keycap\u2026</p>`;
         card.appendChild(spinner);
     } else if (spinner) {
         spinner.style.display = 'flex';
@@ -3423,6 +3428,7 @@ function finishOnboarding() {
     const onLoad = () => {
         loaded++;
         if (loaded === 2) {
+            if (_onboardingSessionId !== sessionId) return; // stale — reset was called
             applyKeycapProfile(selectedProfile);
             _doCloseOnboarding();
         }
@@ -3434,6 +3440,7 @@ function finishOnboarding() {
     maskImg.onerror = onLoad;
 
     setTimeout(() => {
+        if (_onboardingSessionId !== sessionId) return; // stale
         if (loaded < 2) { applyKeycapProfile(selectedProfile); _doCloseOnboarding(); }
     }, 5000);
 
@@ -5903,6 +5910,8 @@ function closeResetConfirm() {
 function confirmReset() {
     // Cancel any in-flight close animation that could hide the overlay after we show it
     if (_closeOnboardingTimer) { clearTimeout(_closeOnboardingTimer); _closeOnboardingTimer = null; }
+    // Invalidate any pending image preload callbacks from finishOnboarding
+    _onboardingSessionId++;
     closeResetConfirm();
     // Clear all layers directly (skip the confirm dialog)
     clearWorkspace();
@@ -5915,6 +5924,9 @@ function confirmReset() {
     // Reset workspace bg
     document.documentElement.style.setProperty('--workspace-bg', 'none');
     // Show onboarding again at step 1
+    // Remove spinner FIRST before touching overlay visibility
+    document.querySelectorAll('#card-loading-spinner').forEach(s => s.remove());
+
     const overlay = document.getElementById('onboarding-overlay');
     if (overlay) {
         overlay.classList.remove('fade-out');
@@ -5938,9 +5950,6 @@ function confirmReset() {
         if (pdv) pdv.style.display = 'none';
         currentStep = 5;
         _updateOnboardingFooter();
-        // Remove spinner overlay entirely so it can't interfere
-        const spinner = document.getElementById('card-loading-spinner');
-        if (spinner) spinner.remove();
         window._startOnboardingAnim && window._startOnboardingAnim();
     }
 }
