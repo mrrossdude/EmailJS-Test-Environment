@@ -5884,6 +5884,18 @@ async function generateHighResCanvas() {
 
 async function showPreview() {
     closeAdjTip(true);
+
+    // Check if any layers are active before allowing preview
+    const layerIds = ['wrapper', 'symbol-wrapper', 'text-wrapper', 'text-wrapper-2', 'text-wrapper-3', 'text-wrapper-4', 'text-wrapper-5'];
+    const hasLayers = layerIds.some(id => {
+        const el = document.getElementById(id);
+        return el && el.style.display !== 'none';
+    });
+    if (!hasLayers) {
+        showNotification('Add at least one image or text layer before previewing.', 'error');
+        return;
+    }
+
     const btn = document.querySelector('button[onclick="showPreview()"]');
     const originalHTML = btn.innerHTML;
     
