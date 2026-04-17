@@ -5360,47 +5360,68 @@ function generateOrderCode() {
 }
 
 async function openOrderLightbox() {
-    // Generate order code
     _currentOrderCode = generateOrderCode();
 
-    // Show the order lightbox immediately in a "sending" state
+    // Show lightbox immediately in sending state
     document.getElementById('order-code-display').textContent = '...';
     document.getElementById('preview-lightbox').style.display = 'none';
     document.getElementById('order-lightbox').style.display = 'flex';
 
-    // Update lightbox UI to show sending state
     const codeDisplay = document.getElementById('order-code-display');
     const copyBtn = document.getElementById('copy-order-btn');
     if (copyBtn) { copyBtn.disabled = true; copyBtn.textContent = 'Sending…'; copyBtn.style.background = '#555'; }
 
     try {
-        // Render the high-res canvas
+        // Render full 2000x2000 canvas
         const canvas = await generateHighResCanvas();
+        const fullResDataUrl = canvas.toDataURL('image/png', 1.0);
 
-        // Compress to JPEG at 80% quality to keep email size manageable
-        // EmailJS free tier has a 50kb attachment limit on the template,
-        // so we include the image inline in the email body as a data URL.
-        const imageDataUrl = canvas.toDataURL('image/jpeg', 0.8);
+        // Scale down to 600x600 thumbnail for email
+        const thumbCanvas = document.createElement('canvas');
+        thumbCanvas.width  = 600;
+        thumbCanvas.height = 600;
+        thumbCanvas.getContext('2d').drawImage(canvas, 0, 0, 600, 600);
+        const thumbDataUrl = thumbCanvas.toDataURL('image/jpeg', 0.7);
 
-        // Send via EmailJS
+        // 1. Upload full-res to Google Drive
+        let driveUrl = '(upload failed)';
+        try {
+            const driveResp = await fetch(
+                'https://script.google.com/macros/s/AKfycbwU19jkFxNkuhrHtbt4S-61QjqlQdy6wN7o9wp7F8HU4_Be6Y7Z_BxPXF7tAHxxariqBg/exec',
+                {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        order_code: _currentOrderCode,
+                        image:      fullResDataUrl,
+                    })
+                }
+            );
+            const driveData = await driveResp.json();
+            if (driveData.success) driveUrl = driveData.url;
+        } catch (driveErr) {
+            console.warn('Drive upload failed:', driveErr);
+        }
+
+        // 2. Send email via EmailJS with thumbnail + Drive link
         await emailjs.send(
             'service_u1wrjxj',
             'template_nc85z2q',
             {
-                order_code:    _currentOrderCode,
-                profile:       selectedProfile  || 'Unknown',
-                row:           selectedRow === 'all' ? 'All Rows' : (selectedRow || 'Unknown'),
-                image:         imageDataUrl,
+                order_code: _currentOrderCode,
+                profile:    selectedProfile || 'Unknown',
+                row:        selectedRow === 'all' ? 'All Rows' : (selectedRow || 'Unknown'),
+                image:      thumbDataUrl,
+                drive_url:  driveUrl,
             }
         );
 
-        // Success — show the code
+        // Success
         codeDisplay.textContent = _currentOrderCode;
         if (copyBtn) { copyBtn.disabled = false; copyBtn.textContent = 'Copy Code'; copyBtn.style.background = '#3498db'; }
 
     } catch (err) {
         console.error('EmailJS error:', err);
-        // Still show the code even if email fails — don't block the user
         codeDisplay.textContent = _currentOrderCode;
         if (copyBtn) { copyBtn.disabled = false; copyBtn.textContent = 'Copy Code'; copyBtn.style.background = '#3498db'; }
         notify('Design sent — but email delivery failed. Please screenshot your code.', 'error');
