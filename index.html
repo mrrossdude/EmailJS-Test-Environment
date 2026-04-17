@@ -5385,10 +5385,10 @@ function confirmReset() {
         for (let i = 1; i <= 6; i++) {
             const step = document.getElementById('step-' + i);
             const dot  = document.getElementById('dot-' + i);
-            if (step) step.style.display = i === 1 ? 'block' : 'none';
-            if (dot)  { dot.classList.remove('active'); if (i === 1) dot.classList.add('active'); }
+            if (step) step.style.display = i === 5 ? 'block' : 'none';
+            if (dot)  { dot.classList.remove('active'); if (i === 5) dot.classList.add('active'); }
         }
-        currentStep = 1;
+        currentStep = 5;
         _updateOnboardingFooter();
     }
 }
