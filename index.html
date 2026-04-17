@@ -2071,10 +2071,15 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
 }
 .legend-type-thumb {
     width: 120px;
-    height: 80px;
     border-radius: 8px;
     overflow: hidden;
     border: 1px solid #333;
+}
+.legend-type-thumb img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 8px;
 }
 .legend-type-label {
     font-size: 12px;
@@ -2173,14 +2178,14 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
         <div style="display:flex;gap:14px;justify-content:center;">
           <div class="legend-type-card" id="legend-shinethrough" onclick="selectLegendType('shinethrough')">
             <div class="legend-type-thumb">
-              <img src="https://i.ibb.co/fz2vGr5y/Backlit-Legend.jpg" alt="Backlit" style="width:100%;height:100%;object-fit:contain;border-radius:8px;display:block;background:#111;">
+              <img src="https://i.ibb.co/fz2vGr5y/Backlit-Legend.jpg" alt="Backlit" style="width:100%;height:auto;display:block;">
             </div>
             <span class="legend-type-label">Shinethrough / Backlit</span>
             <span class="legend-type-sub">RGB legends that glow</span>
           </div>
           <div class="legend-type-card" id="legend-white" onclick="selectLegendType('white')">
             <div class="legend-type-thumb">
-              <img src="https://i.ibb.co/R4HjndvW/White-Legend.jpg" alt="White Legend" style="width:100%;height:100%;object-fit:contain;border-radius:8px;display:block;background:#111;">
+              <img src="https://i.ibb.co/R4HjndvW/White-Legend.jpg" alt="White Legend" style="width:100%;height:auto;display:block;">
             </div>
             <span class="legend-type-label">Solid White</span>
             <span class="legend-type-sub">Classic white legends</span>
