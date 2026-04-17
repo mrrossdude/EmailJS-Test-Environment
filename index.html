@@ -2152,9 +2152,9 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
     line-height: 0;
 }
 .kb-key, .kb-sp {
-    height: 16px;
+    height: 18px;
     border-radius: 2px;
-    font-size: 6px;
+    font-size: 7px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -2164,19 +2164,17 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
     box-sizing: border-box;
     user-select: none;
 }
-/* Every key and spacer uses a fixed pixel width with NO margins.
-   Spacing between keys is achieved by explicit 2px .kb-sp spacers. */
 .kb-sp    { width: 2px;   background: transparent; border: none; }
-.kb-nav   { width: 8px;   background: transparent; border: none; } /* cluster gap */
-.kb-1u    { width: 16px; }
-.kb-125u  { width: 20px; }
-.kb-15u   { width: 25px; }
-.kb-175u  { width: 29px; }
-.kb-2u    { width: 34px; }
-.kb-225u  { width: 38px; }
-.kb-275u  { width: 47px; }
-.kb-625u  { width: 111px; }
-.kb-gap   { flex-shrink: 0; background: transparent; border: none; height: 16px; }
+.kb-nav   { width: 10px;  background: transparent; border: none; }
+.kb-1u    { width: 18px; }
+.kb-125u  { width: 23px; }
+.kb-15u   { width: 28px; }
+.kb-175u  { width: 33px; }
+.kb-2u    { width: 38px; }
+.kb-225u  { width: 43px; }
+.kb-275u  { width: 53px; }
+.kb-625u  { width: 123px; }
+.kb-gap   { flex-shrink: 0; background: transparent; border: none; height: 18px; }
 /* ISO Enter — inline SVG, no wrapper needed */
 .kb-sel {
     background: #2a2a2a;
@@ -2185,9 +2183,7 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
     transition: background 0.1s, border-color 0.1s;
 }
 .kb-sel:hover {
-    background: rgba(52,152,219,0.35);
-    border-color: #3498db;
-    color: #fff;
+    /* individual key hover removed — row highlights via JS */
 }
 .kb-sel.kb-row-active {
     background: rgba(52,152,219,0.25);
@@ -2355,29 +2351,29 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
           <div id="kb-diagram" style="display:inline-block;background:#111;border-radius:8px;padding:7px;border:1px solid #2a2a2a;">
 
             <div class="kb-row">
-              <div class="kb-key kb-1u kb-sel" data-row="R4">Esc</div><div class="kb-sp"></div><div class="kb-gap" style="width:16px;"></div><div class="kb-key kb-1u kb-sel" data-row="R4">F1</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R4">F2</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R4">F3</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R4">F4</div><div class="kb-sp"></div><div class="kb-gap" style="width:9px;"></div><div class="kb-key kb-1u kb-sel" data-row="R4">F5</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R4">F6</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R4">F7</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R4">F8</div><div class="kb-sp"></div><div class="kb-gap" style="width:9px;"></div><div class="kb-key kb-1u kb-sel" data-row="R4">F9</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R4">F10</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R4">F11</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R4">F12</div><div class="kb-sp"></div><div class="kb-nav"></div><div class="kb-key kb-1u kb-sel" data-row="R4">Prt</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R4">Scr</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R4">Pse</div><div class="kb-sp"></div><div class="kb-nav"></div><div style="width:52px;flex-shrink:0;"></div>
+              <div class="kb-key kb-1u kb-sel" data-row="R4">Esc</div><div class="kb-sp"></div><div class="kb-sp"></div><div class="kb-gap" style="width:18px;"></div><div class="kb-key kb-1u kb-sel" data-row="R4">F1</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R4">F2</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R4">F3</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R4">F4</div><div class="kb-sp"></div><div class="kb-gap" style="width:10px;"></div><div class="kb-key kb-1u kb-sel" data-row="R4">F5</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R4">F6</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R4">F7</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R4">F8</div><div class="kb-sp"></div><div class="kb-gap" style="width:10px;"></div><div class="kb-key kb-1u kb-sel" data-row="R4">F9</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R4">F10</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R4">F11</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R4">F12</div><div class="kb-sp"></div><div class="kb-nav"></div><div class="kb-key kb-1u kb-sel" data-row="R4">Prt</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R4">Scr</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R4">Pse</div>
             </div>
 
-            <div style="height:3px;"></div>
+            <div style="height:6px;"></div>
 
             <div class="kb-row">
-              <div class="kb-key kb-1u kb-sel" data-row="R4">`</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R4">1</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R4">2</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R4">3</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R4">4</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R4">5</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R4">6</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R4">7</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R4">8</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R4">9</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R4">0</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R4">-</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R4">=</div><div class="kb-sp"></div><div class="kb-key kb-2u kb-red">Bksp</div><div class="kb-sp"></div><div class="kb-nav"></div><div class="kb-key kb-1u kb-sel" data-row="R4">Ins</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R4">Hm</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R4">PU</div><div class="kb-sp"></div><div class="kb-nav"></div><div class="kb-key kb-1u kb-sel" data-row="R4">NL</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R4">/</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R4">*</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R4">-</div>
-            </div>
-
-            <div class="kb-row">
-              <div class="kb-key kb-15u kb-red">Tab</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R3">Q</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R3">W</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R3">E</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R3">R</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R3">T</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R3">Y</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R3">U</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R3">I</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R3">O</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R3">P</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R3">[</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R3">]</div><div class="kb-sp"></div><div class="kb-key kb-15u kb-red">\\</div><div class="kb-sp"></div><div class="kb-nav"></div><div class="kb-key kb-1u kb-sel" data-row="R3">Del</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R3">End</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R3">PD</div><div class="kb-sp"></div><div class="kb-nav"></div><div class="kb-key kb-1u kb-sel" data-row="R3">7</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R3">8</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R3">9</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-red">+</div>
+              <div class="kb-key kb-1u kb-sel" data-row="R4">`</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R4">1</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R4">2</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R4">3</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R4">4</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R4">5</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R4">6</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R4">7</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R4">8</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R4">9</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R4">0</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R4">-</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R4">=</div><div class="kb-sp"></div><div class="kb-key kb-2u kb-red">Bksp</div><div class="kb-sp"></div><div class="kb-nav"></div><div class="kb-key kb-1u kb-sel" data-row="R4">Ins</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R4">Hm</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R4">PU</div>
             </div>
 
             <div class="kb-row">
-              <div class="kb-key kb-175u kb-red">Caps</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R2">A</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R2">S</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R2">D</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R2">F</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R2">G</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R2">H</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R2">J</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R2">K</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R2">L</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R2">;</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R2">'</div><div class="kb-sp"></div><div class="kb-key kb-225u kb-red">Enter</div><div class="kb-sp"></div><div class="kb-gap" style="width:54px;"></div><div class="kb-key kb-1u kb-sel" data-row="R2">4</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R2">5</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R2">6</div>
+              <div class="kb-key kb-15u kb-red">Tab</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R3">Q</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R3">W</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R3">E</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R3">R</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R3">T</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R3">Y</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R3">U</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R3">I</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R3">O</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R3">P</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R3">[</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R3">]</div><div class="kb-sp"></div><div class="kb-key kb-15u kb-red">\</div><div class="kb-sp"></div><div class="kb-nav"></div><div class="kb-key kb-1u kb-sel" data-row="R3">Del</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R3">End</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R3">PD</div>
             </div>
 
             <div class="kb-row">
-              <div class="kb-key kb-225u kb-red">Shift</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R1">Z</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R1">X</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R1">C</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R1">V</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R1">B</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R1">N</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R1">M</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R1">,</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R1">.</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R1">/</div><div class="kb-sp"></div><div class="kb-key kb-275u kb-red">Shift</div><div class="kb-sp"></div><div class="kb-nav"></div><div class="kb-key kb-1u" style="background:transparent;border:none;"></div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R1">↑</div><div class="kb-sp"></div><div class="kb-key kb-1u" style="background:transparent;border:none;"></div><div class="kb-sp"></div><div class="kb-nav"></div><div class="kb-key kb-1u kb-sel" data-row="R1">1</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R1">2</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R1">3</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-red">Ent</div>
+              <div class="kb-key kb-175u kb-red">Caps</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R2">A</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R2">S</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R2">D</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R2">F</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R2">G</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R2">H</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R2">J</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R2">K</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R2">L</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R2">;</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R2">'</div><div class="kb-sp"></div><div class="kb-key kb-225u kb-red">Enter</div><div class="kb-sp"></div><div class="kb-nav"></div><div class="kb-gap" style="width:20px;"></div>
             </div>
 
             <div class="kb-row">
-              <div class="kb-key kb-125u kb-red">Ctrl</div><div class="kb-sp"></div><div class="kb-key kb-125u kb-red">Win</div><div class="kb-sp"></div><div class="kb-key kb-125u kb-red">Alt</div><div class="kb-sp"></div><div class="kb-key kb-625u kb-red">Space</div><div class="kb-sp"></div><div class="kb-key kb-125u kb-red">AltGr</div><div class="kb-sp"></div><div class="kb-key kb-125u kb-red">Win</div><div class="kb-sp"></div><div class="kb-key kb-125u kb-red">Fn</div><div class="kb-sp"></div><div class="kb-key kb-125u kb-red">Ctrl</div><div class="kb-sp"></div><div class="kb-nav"></div><div class="kb-key kb-1u kb-sel" data-row="R1">←</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R1">↓</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R1">→</div><div class="kb-sp"></div><div class="kb-nav"></div><div class="kb-key kb-2u kb-red">0</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R1">.</div>
+              <div class="kb-key kb-225u kb-red">Shift</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R1">Z</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R1">X</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R1">C</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R1">V</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R1">B</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R1">N</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R1">M</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R1">,</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R1">.</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R1">/</div><div class="kb-sp"></div><div class="kb-key kb-275u kb-red">Shift</div><div class="kb-sp"></div><div class="kb-nav"></div><div class="kb-key kb-1u" style="background:transparent;border:none;"></div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R1">↑</div><div class="kb-sp"></div><div class="kb-key kb-1u" style="background:transparent;border:none;"></div>
+            </div>
+
+            <div class="kb-row">
+              <div class="kb-key kb-125u kb-red">Ctrl</div><div class="kb-sp"></div><div class="kb-key kb-125u kb-red">Win</div><div class="kb-sp"></div><div class="kb-key kb-125u kb-red">Alt</div><div class="kb-sp"></div><div class="kb-key kb-625u kb-red">Space</div><div class="kb-sp"></div><div class="kb-key kb-125u kb-red">AltGr</div><div class="kb-sp"></div><div class="kb-key kb-125u kb-red">Win</div><div class="kb-sp"></div><div class="kb-key kb-125u kb-red">Fn</div><div class="kb-sp"></div><div class="kb-key kb-125u kb-red">Ctrl</div><div class="kb-sp"></div><div class="kb-nav"></div><div class="kb-key kb-1u kb-sel" data-row="R1">←</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R1">↓</div><div class="kb-sp"></div><div class="kb-key kb-1u kb-sel" data-row="R1">→</div>
             </div>
 
           </div><!-- end kb-diagram -->
@@ -3229,7 +3225,7 @@ function selectRow(row) {
 function _kbHover(row) {
     // Only updates label when a row is selected (row=null means refresh from selectedRow)
     const label = document.getElementById('kb-row-label');
-    const names = { R4: 'R4 — Top Rows', R3: 'R3 — QWERTY Row', R2: 'R2 — Home Row', R1: 'R1 — Bottom Rows' };
+    const names = { R4: 'R4 - Top Rows', R3: 'R3 - QWERTY Row', R2: 'R2 - ASDF Row', R1: 'R1 - Bottom Rows' };
     if (!label) return;
     const active = row || (selectedRow !== 'all' ? selectedRow : null);
     if (active && names[active]) {
@@ -3313,10 +3309,20 @@ function nextStep(nextStepNum) {
             const diag = document.getElementById('kb-diagram');
             if (diag && !diag._hoverWired) {
                 diag._hoverWired = true;
-                diag.addEventListener('mouseover', e => {
+                function _rowFromEvent(e) {
+                    // Check key directly first, then fall back to nearest kb-sel in the same kb-row
                     const key = e.target.closest('.kb-sel');
-                    const hrow = key ? key.dataset.row : null;
-                    // Highlight whole hovered row (temporarily, without changing selection)
+                    if (key) return key.dataset.row;
+                    // If hovering a gap/spacer, find the row element and get first kb-sel's data-row
+                    const kbRow = e.target.closest('.kb-row');
+                    if (kbRow) {
+                        const firstSel = kbRow.querySelector('.kb-sel[data-row]');
+                        return firstSel ? firstSel.dataset.row : null;
+                    }
+                    return null;
+                }
+                diag.addEventListener('mouseover', e => {
+                    const hrow = _rowFromEvent(e);
                     document.querySelectorAll('.kb-sel').forEach(k => {
                         k.classList.toggle('kb-row-hover', k.dataset.row === hrow);
                     });
@@ -3324,10 +3330,9 @@ function nextStep(nextStepNum) {
                 diag.addEventListener('mouseleave', () => {
                     document.querySelectorAll('.kb-sel').forEach(k => k.classList.remove('kb-row-hover'));
                 });
-                // Click delegation
                 diag.addEventListener('click', e => {
-                    const key = e.target.closest('.kb-sel');
-                    if (key && key.dataset.row) selectRow(key.dataset.row);
+                    const row = _rowFromEvent(e);
+                    if (row) selectRow(row);
                 });
             }
         }, 150);
