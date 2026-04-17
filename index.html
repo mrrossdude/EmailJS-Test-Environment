@@ -2017,6 +2017,43 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
     border-color: #007bff;
     background: rgba(0,123,255,0.12);
 }
+.profile-card.profile-unavailable {
+    opacity: 0.35;
+    filter: grayscale(1);
+    cursor: not-allowed;
+    pointer-events: none;
+    position: relative;
+}
+.profile-card.profile-unavailable:hover {
+    border-color: #444;
+    background: #1a1a1a;
+}
+/* Re-enable pointer events just to catch hover for tooltip */
+.profile-card.profile-unavailable {
+    pointer-events: auto;
+}
+.profile-card.profile-unavailable::after {
+    content: "Not available as shinethrough";
+    position: absolute;
+    bottom: calc(100% + 7px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(20,20,20,0.97);
+    color: #ccc;
+    font-size: 10px;
+    font-weight: 500;
+    white-space: nowrap;
+    padding: 5px 9px;
+    border-radius: 5px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+    border: 1px solid #444;
+    z-index: 9999;
+}
+.profile-card.profile-unavailable:hover::after {
+    opacity: 1;
+}
 
 /* Legend type selector cards */
 .legend-type-card {
@@ -2958,6 +2995,7 @@ let selectedRow        = null;
 let selectedLegendType = null; // 'shinethrough' or 'white'
 
 function selectProfile(profile) {
+    if (selectedLegendType === 'shinethrough' && NOT_SHINETHROUGH.includes(profile)) return;
     selectedProfile = profile;
     document.querySelectorAll('.profile-card').forEach(c => c.classList.remove('selected'));
     const card = document.getElementById('profile-' + profile);
@@ -2989,11 +3027,26 @@ function clearProfileSelection() {
     _updateOnboardingFooter();
 }
 
+const SHINETHROUGH_ONLY_PROFILES = ['OEM', 'CHERRY', 'XDA'];
+const NOT_SHINETHROUGH = ['LP', 'MOA', 'BLOCK', 'CHOC'];
+
 function selectLegendType(type) {
     selectedLegendType = type;
     document.querySelectorAll('.legend-type-card').forEach(c => c.classList.remove('selected'));
     const card = document.getElementById('legend-' + type);
     if (card) card.classList.add('selected');
+    // Grey out profiles that don't support shinethrough
+    NOT_SHINETHROUGH.forEach(key => {
+        const pc = document.getElementById('profile-' + key);
+        if (!pc) return;
+        if (type === 'shinethrough') {
+            pc.classList.add('profile-unavailable');
+            // If this profile was selected, clear it
+            if (selectedProfile === key) clearProfileSelection();
+        } else {
+            pc.classList.remove('profile-unavailable');
+        }
+    });
     _updateOnboardingFooter();
 }
 
