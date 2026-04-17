@@ -5461,7 +5461,7 @@ async function openOrderLightbox() {
         // Render composite canvas and stencil-only canvas in parallel
         const [canvas, stencilCanvas] = await Promise.all([
             generateHighResCanvas(),
-            generateStencilCanvas(500)
+            generateStencilCanvas(2000)
         ]);
 
         // 1600x1600 JPEG at 50% for Drive preview
