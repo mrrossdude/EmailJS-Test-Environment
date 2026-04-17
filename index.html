@@ -5892,7 +5892,7 @@ async function showPreview() {
         return el && el.style.display !== 'none';
     });
     if (!hasLayers) {
-        showNotification('Add at least one image or text layer before previewing.', 'error');
+        notify('Add at least one image or text layer before previewing.', 'error');
         return;
     }
 
