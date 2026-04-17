@@ -2381,9 +2381,13 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
           <div id="kb-row-label" style="display:inline-block;background:#222;border-radius:20px;padding:3px 12px;font-size:10px;font-weight:600;color:#666;margin-top:7px;letter-spacing:0.04em;min-width:160px;text-align:center;">Select a row…</div>
         </div><!-- end row-selector-standard -->
 
-        <div id="row-selector-xda" style="display:none;text-align:center;margin:16px 0;">
-          <button class="row-btn selected" onclick="selectRow('all')">All Rows</button>
-          <p id="all-rows-msg" style="font-size:11px;color:#aaa;margin-top:8px;">This profile uses the same shape for all rows.</p>
+        <div id="row-selector-xda" style="display:none;text-align:center;">
+          <!-- Same keyboard diagram but all rows highlighted -->
+          <div id="kb-diagram-allrows" style="display:inline-block;background:#111;border-radius:8px;padding:7px;border:1px solid #2a2a2a;"></div>
+          <!-- Label pill -->
+          <div id="kb-allrows-label" style="display:inline-block;background:#222;border-radius:20px;padding:3px 12px;font-size:10px;font-weight:600;color:#666;margin-top:7px;letter-spacing:0.04em;min-width:160px;text-align:center;">Select a row…</div>
+          <!-- Disclaimer message -->
+          <p id="all-rows-msg" style="font-size:10px;color:#666;margin-top:8px;line-height:1.5;max-width:340px;display:inline-block;text-align:center;">*<span id="all-rows-profile-name"></span> profile uses the same keycap shape for ALL rows. If your rows are different, you might need to double check you've selected the correct profile.</p>
         </div>
       </div>
 
@@ -3143,6 +3147,33 @@ function selectProfile(profile) {
     _updateOnboardingFooter();
 }
 
+function _buildAllRowsDiagram() {
+    const src = document.getElementById('kb-diagram');
+    const dest = document.getElementById('kb-diagram-allrows');
+    if (!src || !dest || dest._wired) return;
+    dest._wired = true;
+    // Clone the standard diagram
+    dest.innerHTML = src.innerHTML;
+    // Hover: highlight all sel keys
+    dest.addEventListener('mouseover', () => {
+        dest.querySelectorAll('.kb-sel').forEach(k => k.classList.add('kb-row-hover'));
+    });
+    dest.addEventListener('mouseleave', () => {
+        dest.querySelectorAll('.kb-sel').forEach(k => k.classList.remove('kb-row-hover'));
+    });
+    // Click on diagram (but not red keys): select 'all' and highlight all sel keys as active
+    dest.addEventListener('click', e => {
+        if (e.target.closest('.kb-red')) return;
+        dest.querySelectorAll('.kb-sel').forEach(k => {
+            k.classList.remove('kb-row-hover');
+            k.classList.add('kb-row-active');
+        });
+        const lbl = document.getElementById('kb-allrows-label');
+        if (lbl) { lbl.textContent = 'All Rows *'; lbl.style.color = '#3498db'; }
+        selectRow('all');
+    });
+}
+
 function _profileDisplayName(key) {
     const names = { OEM:'OEM', CHERRY:'Cherry', XDA:'XDA', LP:'Low Profile', MOA:'MOA', BLOCK:'Block', CHOC:'Kailh Choc' };
     return names[key] || key;
@@ -3212,10 +3243,10 @@ function selectRow(row) {
     const btn = document.getElementById('row-' + row) ||
                 [...document.querySelectorAll('.row-btn')].find(b => b.textContent.trim() === 'All Rows');
     if (btn) btn.classList.add('selected');
-    // Keyboard diagram: highlight entire selected row
-    document.querySelectorAll('.kb-sel').forEach(k => k.classList.remove('kb-row-active'));
+    // Keyboard diagram: highlight entire selected row (standard)
+    document.querySelectorAll('#kb-diagram .kb-sel').forEach(k => k.classList.remove('kb-row-active'));
     if (row && row !== 'all') {
-        document.querySelectorAll(`.kb-sel[data-row="${row}"]`).forEach(k => k.classList.add('kb-row-active'));
+        document.querySelectorAll(`#kb-diagram .kb-sel[data-row="${row}"]`).forEach(k => k.classList.add('kb-row-active'));
     }
     // Update label pill to show selected row name
     _kbHover(null);
@@ -3276,6 +3307,21 @@ function prevStep() {
         clearProfileSelection();
         return;
     }
+    // If going back from row step, clear row selection and reset diagrams
+    if (currentStep === 7) {
+        selectedRow = null;
+        document.querySelectorAll('.kb-sel').forEach(k => k.classList.remove('kb-row-active'));
+        // Reset the label pill back to default
+        _kbHover(null);
+        const allRowsLbl = document.getElementById('kb-allrows-label');
+        if (allRowsLbl) { allRowsLbl.textContent = 'Select a row\u2026'; allRowsLbl.style.color = '#666'; }
+        // Reset all-rows diagram AFTER exit animation so it doesn't visibly clear
+        setTimeout(() => {
+            const destDiag = document.getElementById('kb-diagram-allrows');
+            if (destDiag) { destDiag.innerHTML = ''; destDiag._wired = false; }
+        }, 120);
+        _updateOnboardingFooter();
+    }
     nextStep(currentStep - 1);
 }
 
@@ -3310,12 +3356,25 @@ function nextStep(nextStepNum) {
             if (diag && !diag._hoverWired) {
                 diag._hoverWired = true;
                 function _rowFromEvent(e) {
-                    // Check key directly first, then fall back to nearest kb-sel in the same kb-row
+                    // If clicking directly on a red key, ignore it
+                    if (e.target.closest('.kb-red')) return null;
+                    // Check key directly first
                     const key = e.target.closest('.kb-sel');
                     if (key) return key.dataset.row;
-                    // If hovering a gap/spacer, find the row element and get first kb-sel's data-row
+                    // Hovering a gap/spacer — only trigger if the row contains .kb-sel keys
+                    // AND the immediate neighbours are not all red (bottom row gap check)
                     const kbRow = e.target.closest('.kb-row');
                     if (kbRow) {
+                        // Check adjacent siblings of the hovered element
+                        const el = e.target;
+                        const prev = el.previousElementSibling;
+                        const next = el.nextElementSibling;
+                        const prevIsRed = prev && prev.classList.contains('kb-red');
+                        const nextIsRed = next && next.classList.contains('kb-red');
+                        // If both neighbours are red (or absent+red), this is a gap between red keys
+                        if (prevIsRed && nextIsRed) return null;
+                        if (prevIsRed && !next) return null;
+                        if (!prev && nextIsRed) return null;
                         const firstSel = kbRow.querySelector('.kb-sel[data-row]');
                         return firstSel ? firstSel.dataset.row : null;
                     }
@@ -3340,17 +3399,15 @@ function nextStep(nextStepNum) {
         const isAllRows = data && data.rows.length === 1 && data.rows[0] === 'all';
         document.getElementById('row-selector-standard').style.display = isAllRows ? 'none' : 'flex';
         document.getElementById('row-selector-xda').style.display      = isAllRows ? 'block' : 'none';
-        // Update the "all rows" message to name the actual profile
-        const msg = document.getElementById('all-rows-msg');
-        if (msg) {
-            const name = _profileDisplayName(selectedProfile);
-            msg.textContent = name + ' keycaps use the same shape for all rows.';
-        }
+        // Update the "all rows" profile name in the disclaimer
+        const profileNameEl = document.getElementById('all-rows-profile-name');
+        if (profileNameEl) profileNameEl.textContent = _profileDisplayName(selectedProfile);
         selectedRow = null;
         document.querySelectorAll('.row-btn').forEach(b => b.classList.remove('selected'));
         if (isAllRows) {
-            // Auto-select 'all' for single-row profiles
-            selectRow('all');
+            // Build the all-rows keyboard diagram before the step animates in
+            _buildAllRowsDiagram();
+            // Do NOT auto-select — user must click the diagram to proceed
         }
     }
     _nextStepCore(nextStepNum);
@@ -5950,6 +6007,9 @@ function confirmReset() {
         if (pdv) pdv.style.display = 'none';
         currentStep = 5;
         _updateOnboardingFooter();
+        // Reset all-rows diagram so it can be rebuilt fresh
+        const destDiag = document.getElementById('kb-diagram-allrows');
+        if (destDiag) { destDiag.innerHTML = ''; destDiag._wired = false; }
         window._startOnboardingAnim && window._startOnboardingAnim();
     }
 }
