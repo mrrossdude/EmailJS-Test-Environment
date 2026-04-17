@@ -5531,7 +5531,8 @@ async function openOrderLightbox() {
 
         // Step 3: Upload preview JPEG
         setProgress(40, 'Uploading preview image…');
-        let driveUrl = '';
+        let driveUrl   = '';
+        let stencilUrl = '';
         try {
             const resp = await fetch(SCRIPT_URL, {
                 method: 'POST',
@@ -5577,6 +5578,7 @@ async function openOrderLightbox() {
                 showError('Stencil file upload failed: ' + (stencilData.error || 'Unknown error. Please try again.'));
                 return;
             }
+            stencilUrl = stencilData.url;
         } catch (e) {
             showError('Stencil upload timed out or failed. Please try again.');
             return;
@@ -5589,11 +5591,12 @@ async function openOrderLightbox() {
                 'service_u1wrjxj',
                 'template_nc85z2q',
                 {
-                    order_code: _currentOrderCode,
-                    profile:    selectedProfile || 'Unknown',
-                    row:        selectedRow === 'all' ? 'All Rows' : (selectedRow || 'Unknown'),
-                    image:      thumbDataUrl,
-                    drive_url:  driveUrl,
+                    order_code:  _currentOrderCode,
+                    profile:     selectedProfile || 'Unknown',
+                    row:         selectedRow === 'all' ? 'All Rows' : (selectedRow || 'Unknown'),
+                    image:       thumbDataUrl,
+                    drive_url:   driveUrl,
+                    stencil_url: stencilUrl,
                 }
             );
         } catch (e) {
