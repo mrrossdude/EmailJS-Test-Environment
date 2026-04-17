@@ -3119,6 +3119,24 @@ function prevStep() {
 }
 
 function nextStep(nextStepNum) {
+    // Going from legend type step (5) to profile step (6) — pre-apply unavailable states
+    if (currentStep === 5 && nextStepNum === 6) {
+        // Reset profile grid to grid view (in case of back/forward navigation)
+        const pgv = document.getElementById('profile-grid-view');
+        const pdv = document.getElementById('profile-detail-view');
+        if (pgv) pgv.style.display = 'block';
+        if (pdv) pdv.style.display = 'none';
+        // Apply unavailable styling before step is visible
+        NOT_SHINETHROUGH.forEach(key => {
+            const pc = document.getElementById('profile-' + key);
+            if (!pc) return;
+            if (selectedLegendType === 'shinethrough') {
+                pc.classList.add('profile-unavailable');
+            } else {
+                pc.classList.remove('profile-unavailable');
+            }
+        });
+    }
     // Going from profile step (6) to row step (7) — set up row selector
     if (currentStep === 6 && nextStepNum === 7 && selectedProfile) {
         const data = KEYCAP_DATA[selectedProfile];
