@@ -2227,7 +2227,7 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
         </div>
         <div id="row-selector-xda" style="display:none;text-align:center;margin:16px 0;">
           <button class="row-btn selected" onclick="selectRow('all')">All Rows</button>
-          <p style="font-size:11px;color:#aaa;margin-top:8px;">XDA keycaps use the same shape for all rows.</p>
+          <p id="all-rows-msg" style="font-size:11px;color:#aaa;margin-top:8px;">This profile uses the same shape for all rows.</p>
         </div>
       </div>
 
@@ -2924,29 +2924,29 @@ const KEYCAP_DATA = {
         dims:  { width: '18.0 mm', height: '18.0 mm', top: '18.0 mm', rows: 'All Rows' },
     },
     LP: {
-        bg:    'https://i.ibb.co/mCyRDr8p/Keycap-Template-OEM-Test-Centred.jpg',
-        mask:  'https://i.ibb.co/XZbfJhm6/OEM-keycap-mask-test.png',
+        bg:    'https://i.ibb.co/TBvJ5LMr/Keycap-Template-Low-Profile-Test-Centred.jpg',
+        mask:  'https://i.ibb.co/0yqVLX2n/LOW-PROFILE-keycap-mask-test.png',
         thumb: 'https://i.ibb.co/F4P2982P/Keycap-Template-Profile-Selector-LP.jpg',
         rows:  ['all'],
         dims:  { width: '17.0 mm', height: '16.0 mm', top: '13.5 mm', rows: 'All Rows' },
     },
     MOA: {
-        bg:    'https://i.ibb.co/mCyRDr8p/Keycap-Template-OEM-Test-Centred.jpg',
-        mask:  'https://i.ibb.co/XZbfJhm6/OEM-keycap-mask-test.png',
+        bg:    'https://i.ibb.co/jvpC0vC7/Keycap-Template-MOA-Test-Centred.jpg',
+        mask:  'https://i.ibb.co/ymgnpbGQ/MOA-keycap-mask-test.png',
         thumb: 'https://i.ibb.co/9mzS7N8C/Keycap-Template-Profile-Selector-MOA.jpg',
         rows:  ['all'],
         dims:  { width: '18.0 mm', height: '18.0 mm', top: '16.0 mm', rows: 'All Rows' },
     },
     BLOCK: {
-        bg:    'https://i.ibb.co/mCyRDr8p/Keycap-Template-OEM-Test-Centred.jpg',
-        mask:  'https://i.ibb.co/XZbfJhm6/OEM-keycap-mask-test.png',
+        bg:    'https://i.ibb.co/S7ZNf8q1/Keycap-Template-BLOCK-Test-Centred.jpg',
+        mask:  'https://i.ibb.co/HLNBzmqH/BLOCK-keycap-mask-test.png',
         thumb: 'https://i.ibb.co/d44s7Z0w/Keycap-Template-Profile-Selector-BLOCK.jpg',
         rows:  ['all'],
         dims:  { width: '18.0 mm', height: '18.0 mm', top: '18.0 mm', rows: 'All Rows' },
     },
     CHOC: {
-        bg:    'https://i.ibb.co/mCyRDr8p/Keycap-Template-OEM-Test-Centred.jpg',
-        mask:  'https://i.ibb.co/XZbfJhm6/OEM-keycap-mask-test.png',
+        bg:    'https://i.ibb.co/WWw0hhCz/Keycap-Template-CHOC-Test-Centred.jpg',
+        mask:  'https://i.ibb.co/1Vd7yj6/CHOC-keycap-mask-test.png',
         thumb: 'https://i.ibb.co/DPw2QnhG/Keycap-Template-Profile-Selector-CHOC.jpg',
         rows:  ['all'],
         dims:  { width: '17.5 mm', height: '16.5 mm', top: '13.5 mm', rows: 'All Rows' },
@@ -3071,6 +3071,12 @@ function nextStep(nextStepNum) {
         const isAllRows = data && data.rows.length === 1 && data.rows[0] === 'all';
         document.getElementById('row-selector-standard').style.display = isAllRows ? 'none' : 'flex';
         document.getElementById('row-selector-xda').style.display      = isAllRows ? 'block' : 'none';
+        // Update the "all rows" message to name the actual profile
+        const msg = document.getElementById('all-rows-msg');
+        if (msg) {
+            const name = _profileDisplayName(selectedProfile);
+            msg.textContent = name + ' keycaps use the same shape for all rows.';
+        }
         selectedRow = null;
         document.querySelectorAll('.row-btn').forEach(b => b.classList.remove('selected'));
         if (isAllRows) {
