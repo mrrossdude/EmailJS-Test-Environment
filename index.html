@@ -1987,31 +1987,73 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 6px;
+    gap: 5px;
     cursor: pointer;
     border: 2px solid #444;
-    border-radius: 10px;
-    padding: 6px;
+    border-radius: 8px;
+    padding: 5px;
     background: #1a1a1a;
     transition: border-color 0.15s, background 0.15s;
-    width: 90px;
+    width: 78px;
 }
 .profile-card img {
-    width: 78px;
-    height: 78px;
+    width: 66px;
+    height: 66px;
     object-fit: cover;
-    border-radius: 6px;
+    border-radius: 5px;
     display: block;
 }
 .profile-card span {
-    font-size: 11px;
+    font-size: 10px;
     color: #ccc;
     font-weight: 600;
+    text-align: center;
+    line-height: 1.2;
 }
 .profile-card:hover {
     border-color: #007bff;
 }
 .profile-card.selected {
+    border-color: #007bff;
+    background: rgba(0,123,255,0.12);
+}
+
+/* Legend type selector cards */
+.legend-type-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    border: 2px solid #444;
+    border-radius: 12px;
+    padding: 10px;
+    background: #1a1a1a;
+    transition: border-color 0.15s, background 0.15s;
+    width: 150px;
+}
+.legend-type-thumb {
+    width: 120px;
+    height: 80px;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid #333;
+}
+.legend-type-label {
+    font-size: 12px;
+    color: #fff;
+    font-weight: 700;
+    text-align: center;
+}
+.legend-type-sub {
+    font-size: 10px;
+    color: #777;
+    text-align: center;
+}
+.legend-type-card:hover {
+    border-color: #007bff;
+}
+.legend-type-card.selected {
     border-color: #007bff;
     background: rgba(0,123,255,0.12);
 }
@@ -2054,6 +2096,8 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
       <span class="dot" id="dot-4"></span>
       <span class="dot" id="dot-5"></span>
       <span class="dot" id="dot-6"></span>
+      <span class="dot" id="dot-7"></span>
+      <span class="dot" id="dot-8"></span>
     </div>
 
     <div class="onboarding-body">
@@ -2085,28 +2129,95 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
         <p>If your image has a lot of empty space or needs elements removing, use the Crop tool to cut away any excess.</p>
       </div>
 
-      <!-- Step 5: Profile selector -->
+      <!-- Step 5: Legend type selector -->
       <div class="step-content" id="step-5" style="display:none;">
-        <h3>Choose Your Keycap Profile</h3>
-        <p style="font-size:12px;color:#aaa;margin-bottom:14px;">Select the profile that matches your keycap.</p>
-        <div style="display:flex;gap:10px;justify-content:center;margin-bottom:16px;">
-          <div class="profile-card" id="profile-OEM" onclick="selectProfile('OEM')">
-            <img src="https://i.ibb.co/21MQdpMb/Keycap-Template-Profile-Selector-OEM.jpg" alt="OEM">
-            <span>OEM</span>
+        <h3>Choose Your Legend Type</h3>
+        <p style="font-size:12px;color:#aaa;margin-bottom:16px;">What type of keycaps are you designing for?</p>
+        <div style="display:flex;gap:14px;justify-content:center;">
+          <div class="legend-type-card" id="legend-shinethrough" onclick="selectLegendType('shinethrough')">
+            <div class="legend-type-thumb">
+              <div style="width:100%;height:100%;background:linear-gradient(135deg,#1a1a2e,#16213e,#0f3460);border-radius:8px;display:flex;align-items:center;justify-content:center;">
+                <span style="font-size:22px;filter:drop-shadow(0 0 8px #3498db);">⌨</span>
+              </div>
+            </div>
+            <span class="legend-type-label">Shinethrough / Backlit</span>
+            <span class="legend-type-sub">RGB legends that glow</span>
           </div>
-          <div class="profile-card" id="profile-CHERRY" onclick="selectProfile('CHERRY')">
-            <img src="https://i.ibb.co/qLLXBVjR/Keycap-Template-Profile-Selector-CHERRY.jpg" alt="Cherry">
-            <span>Cherry</span>
-          </div>
-          <div class="profile-card" id="profile-XDA" onclick="selectProfile('XDA')">
-            <img src="https://i.ibb.co/5XNn34Cx/Keycap-Template-Profile-Selector-XDA.jpg" alt="XDA">
-            <span>XDA</span>
+          <div class="legend-type-card" id="legend-white" onclick="selectLegendType('white')">
+            <div class="legend-type-thumb">
+              <div style="width:100%;height:100%;background:linear-gradient(135deg,#2a2a2a,#3a3a3a,#444);border-radius:8px;display:flex;align-items:center;justify-content:center;">
+                <span style="font-size:22px;color:white;font-weight:bold;">⌨</span>
+              </div>
+            </div>
+            <span class="legend-type-label">Solid White</span>
+            <span class="legend-type-sub">Classic white legends</span>
           </div>
         </div>
       </div>
 
-      <!-- Step 6: Row selector -->
+      <!-- Step 6: Profile selector -->
       <div class="step-content" id="step-6" style="display:none;">
+        <!-- Grid view -->
+        <div id="profile-grid-view">
+          <h3>Choose Your Keycap Profile</h3>
+          <p style="font-size:12px;color:#aaa;margin-bottom:12px;">Select the profile that matches your keycap.</p>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;justify-items:center;margin-bottom:4px;">
+            <div class="profile-card" id="profile-OEM" onclick="selectProfile('OEM')">
+              <img src="https://i.ibb.co/tpfxqqzq/Keycap-Template-Profile-Selector-OEM.jpg" alt="OEM">
+              <span>OEM</span>
+            </div>
+            <div class="profile-card" id="profile-CHERRY" onclick="selectProfile('CHERRY')">
+              <img src="https://i.ibb.co/WWFrm1tL/Keycap-Template-Profile-Selector-CHERRY.jpg" alt="Cherry">
+              <span>Cherry</span>
+            </div>
+            <div class="profile-card" id="profile-XDA" onclick="selectProfile('XDA')">
+              <img src="https://i.ibb.co/jvDwsRM6/Keycap-Template-Profile-Selector-XDA.jpg" alt="XDA">
+              <span>XDA</span>
+            </div>
+            <div class="profile-card" id="profile-LP" onclick="selectProfile('LP')">
+              <img src="https://i.ibb.co/F4P2982P/Keycap-Template-Profile-Selector-LP.jpg" alt="Low Profile">
+              <span>Low Profile</span>
+            </div>
+            <div class="profile-card" id="profile-MOA" onclick="selectProfile('MOA')">
+              <img src="https://i.ibb.co/9mzS7N8C/Keycap-Template-Profile-Selector-MOA.jpg" alt="MOA">
+              <span>MOA</span>
+            </div>
+            <div class="profile-card" id="profile-BLOCK" onclick="selectProfile('BLOCK')">
+              <img src="https://i.ibb.co/d44s7Z0w/Keycap-Template-Profile-Selector-BLOCK.jpg" alt="Block">
+              <span>Block</span>
+            </div>
+            <div class="profile-card" id="profile-CHOC" onclick="selectProfile('CHOC')">
+              <img src="https://i.ibb.co/DPw2QnhG/Keycap-Template-Profile-Selector-CHOC.jpg" alt="Kailh Choc">
+              <span>Kailh Choc</span>
+            </div>
+          </div>
+        </div>
+        <!-- Detail view (shown after selection) -->
+        <div id="profile-detail-view" style="display:none;width:100%;">
+          <div style="display:flex;gap:14px;align-items:flex-start;">
+            <img id="profile-detail-img" src="" alt="" style="width:130px;height:130px;object-fit:cover;border-radius:10px;border:2px solid #3498db;flex-shrink:0;">
+            <div style="flex:1;text-align:left;">
+              <h3 id="profile-detail-name" style="margin-bottom:6px;"></h3>
+              <div id="profile-detail-dims" style="background:#111;border-radius:8px;padding:10px;font-size:11px;color:#aaa;border:1px solid #333;">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 14px;">
+                  <span style="color:#666;text-transform:uppercase;font-size:10px;letter-spacing:0.5px;">Width</span>
+                  <span style="color:#666;text-transform:uppercase;font-size:10px;letter-spacing:0.5px;">Height</span>
+                  <span id="dim-width" style="color:#ccc;font-weight:600;">— mm</span>
+                  <span id="dim-height" style="color:#ccc;font-weight:600;">— mm</span>
+                  <span style="color:#666;text-transform:uppercase;font-size:10px;letter-spacing:0.5px;">Top Width</span>
+                  <span style="color:#666;text-transform:uppercase;font-size:10px;letter-spacing:0.5px;">Rows</span>
+                  <span id="dim-top" style="color:#ccc;font-weight:600;">— mm</span>
+                  <span id="dim-rows" style="color:#ccc;font-weight:600;">—</span>
+                </div>
+              </div>
+              <button onclick="clearProfileSelection()" style="margin-top:10px;background:none;border:1px solid #444;color:#aaa;font-size:11px;padding:5px 12px;border-radius:5px;cursor:pointer;">← Choose different profile</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 7: Row selector -->
+      <div class="step-content" id="step-7" style="display:none;">
         <h3>Choose Your Keycap Row</h3>
         <div id="row-selector-standard" style="display:flex;gap:10px;justify-content:center;margin:16px 0;">
           <button class="row-btn" id="row-R4" onclick="selectRow('R4')">R4</button>
@@ -2119,6 +2230,8 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
           <p style="font-size:11px;color:#aaa;margin-top:8px;">XDA keycaps use the same shape for all rows.</p>
         </div>
       </div>
+
+      <!-- Step 8: placeholder for future or extend if needed -->
 
     </div>
 
@@ -2790,31 +2903,112 @@ let currentStep = 1;
 // ── Keycap profile / row data ─────────────────────────────────────────────
 const KEYCAP_DATA = {
     OEM: {
-        bg:   'https://i.ibb.co/mCyRDr8p/Keycap-Template-OEM-Test-Centred.jpg',
-        mask: 'https://i.ibb.co/XZbfJhm6/OEM-keycap-mask-test.png',
-        rows: ['R4','R3','R2','R1'],
+        bg:    'https://i.ibb.co/mCyRDr8p/Keycap-Template-OEM-Test-Centred.jpg',
+        mask:  'https://i.ibb.co/XZbfJhm6/OEM-keycap-mask-test.png',
+        thumb: 'https://i.ibb.co/tpfxqqzq/Keycap-Template-Profile-Selector-OEM.jpg',
+        rows:  ['R4','R3','R2','R1'],
+        dims:  { width: '18.1 mm', height: '18.1 mm', top: '12.0 mm', rows: 'R1–R4' },
     },
     CHERRY: {
-        bg:   'https://i.ibb.co/r2ngDJ4B/Keycap-Template-CHERRY-Test-Centred.jpg',
-        mask: 'https://i.ibb.co/zhhQS2n3/CHERRY-keycap-mask-test.png',
-        rows: ['R4','R3','R2','R1'],
+        bg:    'https://i.ibb.co/r2ngDJ4B/Keycap-Template-CHERRY-Test-Centred.jpg',
+        mask:  'https://i.ibb.co/zhhQS2n3/CHERRY-keycap-mask-test.png',
+        thumb: 'https://i.ibb.co/WWFrm1tL/Keycap-Template-Profile-Selector-CHERRY.jpg',
+        rows:  ['R4','R3','R2','R1'],
+        dims:  { width: '18.0 mm', height: '18.0 mm', top: '11.5 mm', rows: 'R1–R4' },
     },
     XDA: {
-        bg:   'https://i.ibb.co/Fbhz5hdJ/Keycap-Template-XDA-Test-Centred.jpg',
-        mask: 'https://i.ibb.co/vvCBw54R/XDA-keycap-mask-test.png',
-        rows: ['all'],
+        bg:    'https://i.ibb.co/Fbhz5hdJ/Keycap-Template-XDA-Test-Centred.jpg',
+        mask:  'https://i.ibb.co/vvCBw54R/XDA-keycap-mask-test.png',
+        thumb: 'https://i.ibb.co/jvDwsRM6/Keycap-Template-Profile-Selector-XDA.jpg',
+        rows:  ['all'],
+        dims:  { width: '18.0 mm', height: '18.0 mm', top: '18.0 mm', rows: 'All Rows' },
+    },
+    LP: {
+        bg:    'https://i.ibb.co/mCyRDr8p/Keycap-Template-OEM-Test-Centred.jpg',
+        mask:  'https://i.ibb.co/XZbfJhm6/OEM-keycap-mask-test.png',
+        thumb: 'https://i.ibb.co/F4P2982P/Keycap-Template-Profile-Selector-LP.jpg',
+        rows:  ['all'],
+        dims:  { width: '17.0 mm', height: '16.0 mm', top: '13.5 mm', rows: 'All Rows' },
+    },
+    MOA: {
+        bg:    'https://i.ibb.co/mCyRDr8p/Keycap-Template-OEM-Test-Centred.jpg',
+        mask:  'https://i.ibb.co/XZbfJhm6/OEM-keycap-mask-test.png',
+        thumb: 'https://i.ibb.co/9mzS7N8C/Keycap-Template-Profile-Selector-MOA.jpg',
+        rows:  ['all'],
+        dims:  { width: '18.0 mm', height: '18.0 mm', top: '16.0 mm', rows: 'All Rows' },
+    },
+    BLOCK: {
+        bg:    'https://i.ibb.co/mCyRDr8p/Keycap-Template-OEM-Test-Centred.jpg',
+        mask:  'https://i.ibb.co/XZbfJhm6/OEM-keycap-mask-test.png',
+        thumb: 'https://i.ibb.co/d44s7Z0w/Keycap-Template-Profile-Selector-BLOCK.jpg',
+        rows:  ['all'],
+        dims:  { width: '18.0 mm', height: '18.0 mm', top: '18.0 mm', rows: 'All Rows' },
+    },
+    CHOC: {
+        bg:    'https://i.ibb.co/mCyRDr8p/Keycap-Template-OEM-Test-Centred.jpg',
+        mask:  'https://i.ibb.co/XZbfJhm6/OEM-keycap-mask-test.png',
+        thumb: 'https://i.ibb.co/DPw2QnhG/Keycap-Template-Profile-Selector-CHOC.jpg',
+        rows:  ['all'],
+        dims:  { width: '17.5 mm', height: '16.5 mm', top: '13.5 mm', rows: 'All Rows' },
     },
 };
 
-let selectedProfile = null;
-let selectedRow     = null;
+let selectedProfile    = null;
+let selectedRow        = null;
+let selectedLegendType = null; // 'shinethrough' or 'white'
 
 function selectProfile(profile) {
     selectedProfile = profile;
     document.querySelectorAll('.profile-card').forEach(c => c.classList.remove('selected'));
     const card = document.getElementById('profile-' + profile);
     if (card) card.classList.add('selected');
+    // Show detail view
+    const data = KEYCAP_DATA[profile];
+    if (data) {
+        document.getElementById('profile-detail-img').src = data.thumb || '';
+        document.getElementById('profile-detail-name').textContent = _profileDisplayName(profile);
+        document.getElementById('dim-width').textContent  = data.dims ? data.dims.width  : '—';
+        document.getElementById('dim-height').textContent = data.dims ? data.dims.height : '—';
+        document.getElementById('dim-top').textContent    = data.dims ? data.dims.top    : '—';
+        document.getElementById('dim-rows').textContent   = data.dims ? data.dims.rows   : '—';
+        document.getElementById('profile-grid-view').style.display   = 'none';
+        document.getElementById('profile-detail-view').style.display = 'block';
+    }
     _updateOnboardingFooter();
+}
+
+function _profileDisplayName(key) {
+    const names = { OEM:'OEM', CHERRY:'Cherry', XDA:'XDA', LP:'Low Profile', MOA:'MOA', BLOCK:'Block', CHOC:'Kailh Choc' };
+    return names[key] || key;
+}
+
+function clearProfileSelection() {
+    selectedProfile = null;
+    document.getElementById('profile-grid-view').style.display   = 'block';
+    document.getElementById('profile-detail-view').style.display = 'none';
+    _updateOnboardingFooter();
+}
+
+function selectLegendType(type) {
+    selectedLegendType = type;
+    document.querySelectorAll('.legend-type-card').forEach(c => c.classList.remove('selected'));
+    const card = document.getElementById('legend-' + type);
+    if (card) card.classList.add('selected');
+    _updateOnboardingFooter();
+}
+
+function applyLegendType() {
+    if (selectedLegendType === 'white') {
+        // Set stencil colour to white
+        _applyStencilColour({ r: 1, g: 1, b: 1 });
+        _stencilColour = { r: 1, g: 1, b: 1 };
+        // Disable and hide backlight controls
+        const colourBtn    = document.getElementById('colour-btn');
+        const backlightBtn = document.getElementById('backlight-toggle-btn');
+        if (colourBtn)    { colourBtn.style.display    = 'none'; }
+        if (backlightBtn) { backlightBtn.style.display = 'none'; }
+    }
+    // Shinethrough: editor stays as-is
 }
 
 function selectRow(row) {
@@ -2837,41 +3031,52 @@ function _updateOnboardingFooter() {
     // Prev hidden on step 1
     prevBtn.classList.toggle('hidden', currentStep === 1);
 
-    // Next label changes on last step (now step 6)
-    nextBtn.textContent = currentStep === 6 ? 'Got it' : 'Next';
+    // Next label changes on last step (now step 7: row selector)
+    nextBtn.textContent = currentStep === 7 ? 'Start' : 'Next';
 
-    // Skip tutorial hidden once on profile/row steps (5 & 6)
+    // Skip tutorial hidden on selection steps (5, 6, 7)
     if (skipLink) skipLink.style.display = currentStep >= 5 ? 'none' : 'inline';
 
-    // Next disabled on step 5 until profile chosen, step 6 until row chosen
+    // Disable rules: step 5 = legend type, step 6 = profile, step 7 = row
     let disabled = false;
-    if (currentStep === 5 && !selectedProfile) disabled = true;
-    if (currentStep === 6 && !selectedRow)    disabled = true;
+    if (currentStep === 5 && !selectedLegendType) disabled = true;
+    if (currentStep === 6 && !selectedProfile)    disabled = true;
+    if (currentStep === 7 && !selectedRow)         disabled = true;
     nextBtn.disabled = disabled;
 }
 
 function onboardingNext() {
-    if (currentStep === 6) { finishOnboarding(); return; }
+    if (currentStep === 7) { finishOnboarding(); return; }
     nextStep(currentStep + 1);
 }
 
 function skipToProfile() {
-    _nextStepCore(5);
+    _nextStepCore(5); // skip to legend type
 }
 
 function prevStep() {
     if (currentStep <= 1) return;
+    // If on detail view of profile step, go back to grid instead of previous step
+    if (currentStep === 6 && selectedProfile) {
+        clearProfileSelection();
+        return;
+    }
     nextStep(currentStep - 1);
 }
 
 function nextStep(nextStepNum) {
-    if (currentStep === 5 && nextStepNum === 6 && selectedProfile) {
-        const isXDA = selectedProfile === 'XDA';
-        document.getElementById('row-selector-standard').style.display = isXDA ? 'none' : 'flex';
-        document.getElementById('row-selector-xda').style.display      = isXDA ? 'block' : 'none';
-        // Always require the user to click, so clear selectedRow and remove highlights
+    // Going from profile step (6) to row step (7) — set up row selector
+    if (currentStep === 6 && nextStepNum === 7 && selectedProfile) {
+        const data = KEYCAP_DATA[selectedProfile];
+        const isAllRows = data && data.rows.length === 1 && data.rows[0] === 'all';
+        document.getElementById('row-selector-standard').style.display = isAllRows ? 'none' : 'flex';
+        document.getElementById('row-selector-xda').style.display      = isAllRows ? 'block' : 'none';
         selectedRow = null;
         document.querySelectorAll('.row-btn').forEach(b => b.classList.remove('selected'));
+        if (isAllRows) {
+            // Auto-select 'all' for single-row profiles
+            selectRow('all');
+        }
     }
     _nextStepCore(nextStepNum);
 }
@@ -2913,6 +3118,8 @@ function applyKeycapProfile(profile) {
 
 
 function finishOnboarding() {
+    // Apply legend type (white vs shinethrough)
+    applyLegendType();
     // Apply the keycap profile now that profile+row are confirmed
     if (selectedProfile) applyKeycapProfile(selectedProfile);
     const overlay = document.getElementById('onboarding-overlay');
@@ -5380,12 +5587,20 @@ function confirmReset() {
         overlay.classList.remove('fade-out');
         overlay.style.opacity = '1';
         overlay.style.display = 'flex';
-        for (let i = 1; i <= 6; i++) {
+        for (let i = 1; i <= 8; i++) {
             const step = document.getElementById('step-' + i);
             const dot  = document.getElementById('dot-' + i);
             if (step) step.style.display = i === 5 ? 'block' : 'none';
             if (dot)  { dot.classList.remove('active'); if (i === 5) dot.classList.add('active'); }
         }
+        // Reset legend type selection
+        selectedLegendType = null;
+        document.querySelectorAll('.legend-type-card').forEach(c => c.classList.remove('selected'));
+        // Reset profile detail view back to grid
+        const pgv = document.getElementById('profile-grid-view');
+        const pdv = document.getElementById('profile-detail-view');
+        if (pgv) pgv.style.display = 'block';
+        if (pdv) pdv.style.display = 'none';
         currentStep = 5;
         _updateOnboardingFooter();
     }
