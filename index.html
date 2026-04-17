@@ -1668,8 +1668,8 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
   background: #1a1a1a;
   border: 3px solid #3498db;
   border-radius: 20px;
-  width: 500px;
-  height: 460px;
+  width: 520px;
+  height: 480px;
   display: flex;
   flex-direction: column;
   align-items: stretch;
@@ -2348,6 +2348,7 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
 
         <!-- Standard row selector: keyboard diagram -->
         <div id="row-selector-standard" style="display:flex;flex-direction:column;align-items:center;">
+          <div style="transform:scale(1.18);transform-origin:top center;display:inline-block;margin-bottom:24px;">
           <div id="kb-diagram" style="display:inline-block;background:#111;border-radius:8px;padding:7px;border:1px solid #2a2a2a;">
 
             <div class="kb-row">
@@ -2377,13 +2378,14 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
             </div>
 
           </div><!-- end kb-diagram -->
+          </div><!-- end scale wrapper -->
           <!-- Row label pill — below keyboard -->
           <div id="kb-row-label" style="display:inline-block;background:#222;border-radius:20px;padding:3px 12px;font-size:10px;font-weight:600;color:#666;margin-top:7px;letter-spacing:0.04em;min-width:160px;text-align:center;">Select a row…</div>
         </div><!-- end row-selector-standard -->
 
         <div id="row-selector-xda" style="display:none;text-align:center;">
           <!-- Same keyboard diagram but all rows highlighted -->
-          <div id="kb-diagram-allrows" style="display:inline-block;background:#111;border-radius:8px;padding:7px;border:1px solid #2a2a2a;"></div>
+          <div style="transform:scale(1.18);transform-origin:top center;display:inline-block;margin-bottom:24px;"><div id="kb-diagram-allrows" style="display:inline-block;background:#111;border-radius:8px;padding:7px;border:1px solid #2a2a2a;"></div></div>
           <!-- Label pill -->
           <div id="kb-allrows-label" style="display:inline-block;background:#222;border-radius:20px;padding:3px 12px;font-size:10px;font-weight:600;color:#666;margin-top:7px;letter-spacing:0.04em;min-width:160px;text-align:center;">Select a row…</div>
           <!-- Disclaimer message -->
