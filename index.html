@@ -5637,7 +5637,9 @@ async function generateHighResCanvas() {
     }
 
     // Disclaimer text below the keycap image
-    const disclaimer = 'Please bear in mind that this is a mockup. Consistency and brightness levels of the backlighting will depend on your particular switches and LED locations.';
+    const disclaimer = selectedLegendType === 'white'
+        ? 'Please bear in mind this is a mockup. There may be slight differences in visible design sharpness or keycap colours shown.'
+        : 'Please bear in mind that this is a mockup. Consistency and brightness levels of the backlighting will depend on your particular switches and LED locations.';
     const disclaimerSize = Math.round(canvas.width * 0.018);
     const maxLineWidth = canvas.width * 0.75;
     ctx.font = `300 ${disclaimerSize}px sans-serif`;
