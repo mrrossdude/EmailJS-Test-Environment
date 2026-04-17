@@ -2307,12 +2307,12 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
 </div>
 
 <div id="adj-tip-bubble" style="display:none; position:absolute; z-index:2500; pointer-events:auto;">
-  <div style="position:relative; background:#007bff; border:1px solid #0056b3; border-radius:8px; padding:12px 32px 12px 14px; width:240px; box-shadow:0 4px 16px rgba(0,0,0,0.4); font-size:12px; color:#fff; line-height:1.6;">
-    <div style="display:flex; align-items:flex-start; gap:6px;">
-      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width:14px;height:14px;flex-shrink:0;margin-top:2px;"><path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+  <div style="position:relative; background:#007bff; border:1px solid #0056b3; border-radius:7px; padding:7px 28px 7px 10px; box-shadow:0 4px 16px rgba(0,0,0,0.4); font-size:11px; color:#fff; line-height:1.4; white-space:nowrap;">
+    <div style="display:flex; align-items:center; gap:5px;">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width:12px;height:12px;flex-shrink:0;"><path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
       <span><strong>Tip:</strong> If your image isn't displaying correctly, try adjusting the settings here</span>
     </div>
-    <button onclick="closeAdjTip()" style="position:absolute; top:6px; right:8px; background:none; border:none; color:rgba(255,255,255,0.8); font-size:14px; cursor:pointer; padding:0; line-height:1; font-weight:bold;">✕</button>
+    <button onclick="closeAdjTip()" style="position:absolute; top:50%; right:7px; transform:translateY(-50%); background:none; border:none; color:rgba(255,255,255,0.8); font-size:13px; cursor:pointer; padding:0; line-height:1; font-weight:bold;">✕</button>
     <div style="position:absolute; top:-20px; left:14px; width:14px; height:20px; overflow:hidden;">
       <div style="width:14px; height:14px; background:#007bff; border-top:1px solid #0056b3; border-left:1px solid #0056b3; transform:rotate(45deg); margin-top:13px;"></div>
     </div>
@@ -3680,6 +3680,7 @@ let cropState = null;       // { x, y, w, h } px relative to wrapper display pos
 let cropOriginalState = null; // saved wrapper geometry to restore on cancel
 
 function toggleCropMode() {
+    closeAdjTip(true);
     if (!activeWrapper || activeWrapper.id !== 'wrapper') {
         notify('Select an image first!', 'error');
         return;
@@ -5586,6 +5587,7 @@ async function generateHighResCanvas() {
 }
 
 async function showPreview() {
+    closeAdjTip(true);
     const btn = document.querySelector('button[onclick="showPreview()"]');
     const originalHTML = btn.innerHTML;
     
@@ -5617,12 +5619,18 @@ async function showPreview() {
         btn.innerHTML = originalHTML;
     }
 }
-function closeAdjTip() {
+function closeAdjTip(instant) {
     const bubble = document.getElementById('adj-tip-bubble');
     if (!bubble) return;
-    bubble.style.opacity = '0';
-    bubble.style.transition = 'opacity 0.3s ease';
-    setTimeout(() => { bubble.style.display = 'none'; bubble.style.opacity = ''; }, 300);
+    if (instant) {
+        bubble.style.transition = 'none';
+        bubble.style.display = 'none';
+        bubble.style.opacity = '';
+    } else {
+        bubble.style.opacity = '0';
+        bubble.style.transition = 'opacity 0.3s ease';
+        setTimeout(() => { bubble.style.display = 'none'; bubble.style.opacity = ''; }, 300);
+    }
     if (window._adjTipTimeout) { clearTimeout(window._adjTipTimeout); window._adjTipTimeout = null; }
 }
 
@@ -5798,6 +5806,7 @@ async function generateStencilCanvas(size = 1000) {
 }
 
 async function openOrderLightbox() {
+    closeAdjTip(true);
     _currentOrderCode = generateOrderCode();
 
     // Show lightbox in uploading state
@@ -6331,6 +6340,7 @@ function dismissWandTutorial() {
   sessionStorage.setItem('hasSeenWandTutorial', 'true');
 }
 function toggleWandMode(isApply = false) {
+    closeAdjTip(true);
   if (!activeWrapper || activeWrapper.id !== 'wrapper') {
     notify("Select an image first!", "error"); 
     return;
