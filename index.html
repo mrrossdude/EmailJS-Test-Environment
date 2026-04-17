@@ -5461,7 +5461,7 @@ async function openOrderLightbox() {
         // Render composite canvas and stencil-only canvas in parallel
         const [canvas, stencilCanvas] = await Promise.all([
             generateHighResCanvas(),
-            generateStencilCanvas(2000)
+            generateStencilCanvas(1200)
         ]);
 
         // 1600x1600 JPEG at 50% for Drive preview
@@ -5504,9 +5504,12 @@ async function openOrderLightbox() {
 
         // 2. Upload stencil PNG to Drive
         try {
+            const stencilController = new AbortController();
+            const stencilTimeout = setTimeout(() => stencilController.abort(), 20000);
             const stencilResp = await fetch(SCRIPT_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'text/plain' },
+                signal: stencilController.signal,
                 body: JSON.stringify({
                     order_code: _currentOrderCode + '_stencil',
                     image:      stencilDataUrl,
@@ -5514,6 +5517,7 @@ async function openOrderLightbox() {
                     ext:        'png',
                 })
             });
+            clearTimeout(stencilTimeout);
             const stencilData = await stencilResp.json();
             if (!stencilData.success) console.warn('Drive stencil upload error:', stencilData.error);
             else console.log('Stencil uploaded:', stencilData.url);
