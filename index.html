@@ -3399,17 +3399,21 @@ function finishOnboarding() {
     const data = KEYCAP_DATA[selectedProfile];
     if (!data) { _doCloseOnboarding(); return; }
 
-    // Show loading state on the card while images preload
+    // Overlay spinner on top of card without destroying its HTML
     const card = document.querySelector('.tutorial-card');
-    if (card) {
-        card.innerHTML = `
-            <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:16px;">
-                <div style="width:36px;height:36px;border:3px solid #333;border-top-color:#3498db;border-radius:50%;animation:spin 0.8s linear infinite;"></div>
-                <p style="color:#888;font-size:13px;margin:0;">Loading your keycap…</p>
-            </div>`;
+    let spinner = document.getElementById('card-loading-spinner');
+    if (card && !spinner) {
+        spinner = document.createElement('div');
+        spinner.id = 'card-loading-spinner';
+        spinner.style.cssText = 'position:absolute;inset:0;background:#1a1a1a;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;border-radius:20px;';
+        spinner.innerHTML = `
+            <div style="width:36px;height:36px;border:3px solid #333;border-top-color:#3498db;border-radius:50%;animation:spin 0.8s linear infinite;"></div>
+            <p style="color:#888;font-size:13px;margin:0;">Loading your keycap…</p>`;
+        card.appendChild(spinner);
+    } else if (spinner) {
+        spinner.style.display = 'flex';
     }
 
-    // Preload bg and mask before closing overlay
     const bgImg   = new Image();
     const maskImg = new Image();
     bgImg.crossOrigin   = 'anonymous';
@@ -3419,18 +3423,16 @@ function finishOnboarding() {
     const onLoad = () => {
         loaded++;
         if (loaded === 2) {
-            // Both ready — apply profile and close
             applyKeycapProfile(selectedProfile);
             _doCloseOnboarding();
         }
     };
 
     bgImg.onload   = onLoad;
-    bgImg.onerror  = onLoad; // don't hang on error
+    bgImg.onerror  = onLoad;
     maskImg.onload = onLoad;
     maskImg.onerror = onLoad;
 
-    // 5s safety timeout in case images stall
     setTimeout(() => {
         if (loaded < 2) { applyKeycapProfile(selectedProfile); _doCloseOnboarding(); }
     }, 5000);
@@ -5930,6 +5932,9 @@ function confirmReset() {
         if (pdv) pdv.style.display = 'none';
         currentStep = 5;
         _updateOnboardingFooter();
+        // Hide spinner overlay if visible (card HTML is untouched)
+        const spinner = document.getElementById('card-loading-spinner');
+        if (spinner) spinner.style.display = 'none';
         window._startOnboardingAnim && window._startOnboardingAnim();
     }
 }
