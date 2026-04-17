@@ -5830,24 +5830,27 @@ async function openOrderLightbox() {
     };
 
     try {
-        // Step 1: Render canvases
+        // Step 1: Render both canvases in parallel
         setProgress(10, 'Rendering your design…');
         const [canvas, stencilCanvas] = await Promise.all([
             generateHighResCanvas(),
-            generateStencilCanvas(1200)
+            generateStencilCanvas(1000)  // 1000px is plenty for print; faster to encode
         ]);
 
-        // Step 2: Encode images
-        setProgress(25, 'Encoding images…');
+        // Step 2: Encode all images in one go (toDataURL is sync, batch immediately)
+        setProgress(22, 'Encoding images…');
 
+        // Preview JPEG — 1200px at q0.6 is visually identical to 1600px q0.5, much smaller payload
         const driveCanvas = document.createElement('canvas');
-        driveCanvas.width  = 1600;
-        driveCanvas.height = 1600;
-        driveCanvas.getContext('2d').drawImage(canvas, 0, 0, 1600, 1600);
-        const driveDataUrl = driveCanvas.toDataURL('image/jpeg', 0.5);
+        driveCanvas.width  = 1200;
+        driveCanvas.height = 1200;
+        driveCanvas.getContext('2d').drawImage(canvas, 0, 0, 1200, 1200);
+        const driveDataUrl = driveCanvas.toDataURL('image/jpeg', 0.6);
 
+        // Stencil PNG — already at 1000px
         const stencilDataUrl = stencilCanvas.toDataURL('image/png');
 
+        // Thumb for email
         const thumbCanvas = document.createElement('canvas');
         thumbCanvas.width  = 140;
         thumbCanvas.height = 140;
@@ -5856,83 +5859,81 @@ async function openOrderLightbox() {
 
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwU19jkFxNkuhrHtbt4S-61QjqlQdy6wN7o9wp7F8HU4_Be6Y7Z_BxPXF7tAHxxariqBg/exec';
 
-        // Step 3: Upload preview JPEG
-        setProgress(40, 'Uploading preview image…');
+        // Step 3: Fire both uploads in parallel
+        setProgress(35, 'Uploading files…');
         let driveUrl   = '';
         let stencilUrl = '';
+
+        const uploadController = new AbortController();
+        const uploadTimeout = setTimeout(() => uploadController.abort(), 25000);
+
         try {
-            const resp = await fetch(SCRIPT_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'text/plain' },
-                body: JSON.stringify({
-                    order_code: _currentOrderCode,
-                    image:      driveDataUrl,
-                    mime:       'image/jpeg',
-                    ext:        'jpg',
+            const [previewResp, stencilResp] = await Promise.all([
+                fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain' },
+                    signal: uploadController.signal,
+                    body: JSON.stringify({
+                        order_code: _currentOrderCode,
+                        image:      driveDataUrl,
+                        mime:       'image/jpeg',
+                        ext:        'jpg',
+                    })
+                }),
+                fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain' },
+                    signal: uploadController.signal,
+                    body: JSON.stringify({
+                        order_code: _currentOrderCode + '_stencil',
+                        image:      stencilDataUrl,
+                        mime:       'image/png',
+                        ext:        'png',
+                    })
                 })
-            });
-            const data = await resp.json();
-            if (data.success) {
-                driveUrl = data.url;
-            } else {
-                showError('Preview image upload failed: ' + (data.error || 'Unknown error. Please try again.'));
+            ]);
+            clearTimeout(uploadTimeout);
+
+            const [previewData, stencilData] = await Promise.all([
+                previewResp.json(),
+                stencilResp.json()
+            ]);
+
+            if (!previewData.success) {
+                showError('Preview upload failed: ' + (previewData.error || 'Unknown error. Please try again.'));
                 return;
             }
-        } catch (e) {
-            showError('Could not connect to upload server. Please check your connection and try again.');
-            return;
-        }
-
-        // Step 4: Upload stencil PNG
-        setProgress(65, 'Uploading stencil file…');
-        try {
-            const stencilController = new AbortController();
-            const stencilTimeout = setTimeout(() => stencilController.abort(), 20000);
-            const stencilResp = await fetch(SCRIPT_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'text/plain' },
-                signal: stencilController.signal,
-                body: JSON.stringify({
-                    order_code: _currentOrderCode + '_stencil',
-                    image:      stencilDataUrl,
-                    mime:       'image/png',
-                    ext:        'png',
-                })
-            });
-            clearTimeout(stencilTimeout);
-            const stencilData = await stencilResp.json();
             if (!stencilData.success) {
-                showError('Stencil file upload failed: ' + (stencilData.error || 'Unknown error. Please try again.'));
+                showError('Stencil upload failed: ' + (stencilData.error || 'Unknown error. Please try again.'));
                 return;
             }
+            driveUrl   = previewData.url;
             stencilUrl = stencilData.url;
+
         } catch (e) {
-            showError('Stencil upload timed out or failed. Please try again.');
+            clearTimeout(uploadTimeout);
+            showError('Upload timed out or failed. Please check your connection and try again.');
             return;
         }
 
-        // Step 5: Send email
-        setProgress(85, 'Sending confirmation email…');
-        try {
-            await emailjs.send(
-                'service_u1wrjxj',
-                'template_nc85z2q',
-                {
-                    order_code:  _currentOrderCode,
-                    profile:     selectedProfile || 'Unknown',
-                    row:         selectedRow === 'all' ? 'All Rows' : (selectedRow || 'Unknown'),
-                    image:       thumbDataUrl,
-                    drive_url:   driveUrl,
-                    stencil_url: stencilUrl,
-                }
-            );
-        } catch (e) {
-            console.warn('Email send failed:', e);
-        }
+        // Step 4: Send email (fire-and-forget — don't block success on it)
+        setProgress(90, 'Sending confirmation…');
+        emailjs.send(
+            'service_u1wrjxj',
+            'template_nc85z2q',
+            {
+                order_code:  _currentOrderCode,
+                profile:     selectedProfile || 'Unknown',
+                row:         selectedRow === 'all' ? 'All Rows' : (selectedRow || 'Unknown'),
+                image:       thumbDataUrl,
+                drive_url:   driveUrl,
+                stencil_url: stencilUrl,
+            }
+        ).catch(e => console.warn('Email send failed:', e));
 
-        // All done
+        // Done — don't wait for email
         setProgress(100, 'Complete!');
-        setTimeout(showSuccess, 400);
+        setTimeout(showSuccess, 300);
 
     } catch (err) {
         console.error('Order upload error:', err);
