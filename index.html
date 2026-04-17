@@ -3441,10 +3441,12 @@ function finishOnboarding() {
     maskImg.src = data.mask;
 }
 
+let _closeOnboardingTimer = null;
 function _doCloseOnboarding() {
     const overlay = document.getElementById('onboarding-overlay');
     overlay.classList.add('fade-out');
-    setTimeout(() => {
+    _closeOnboardingTimer = setTimeout(() => {
+        _closeOnboardingTimer = null;
         overlay.style.display = 'none';
         const label = document.getElementById('keycap-profile-label');
         if (label && selectedProfile && selectedRow) {
@@ -5899,6 +5901,8 @@ function closeResetConfirm() {
 }
 
 function confirmReset() {
+    // Cancel any in-flight close animation that could hide the overlay after we show it
+    if (_closeOnboardingTimer) { clearTimeout(_closeOnboardingTimer); _closeOnboardingTimer = null; }
     closeResetConfirm();
     // Clear all layers directly (skip the confirm dialog)
     clearWorkspace();
