@@ -5461,7 +5461,7 @@ async function openOrderLightbox() {
         // Render composite canvas and stencil-only canvas in parallel
         const [canvas, stencilCanvas] = await Promise.all([
             generateHighResCanvas(),
-            generateStencilCanvas(1000)
+            generateStencilCanvas(500)
         ]);
 
         // 1600x1600 JPEG at 50% for Drive preview
@@ -5471,7 +5471,8 @@ async function openOrderLightbox() {
         driveCanvas.getContext('2d').drawImage(canvas, 0, 0, 1600, 1600);
         const driveDataUrl = driveCanvas.toDataURL('image/jpeg', 0.5);
 
-        // 1000x1000 transparent PNG of stencil layers only
+        // 500x500 transparent PNG of stencil layers only — PNG is lossless so
+        // keeping dimensions small is important to stay under request limits
         const stencilDataUrl = stencilCanvas.toDataURL('image/png');
 
         // 140x140 JPEG thumbnail for email
@@ -5503,7 +5504,7 @@ async function openOrderLightbox() {
 
         // 2. Upload stencil PNG to Drive
         try {
-            await fetch(SCRIPT_URL, {
+            const stencilResp = await fetch(SCRIPT_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'text/plain' },
                 body: JSON.stringify({
@@ -5513,6 +5514,9 @@ async function openOrderLightbox() {
                     ext:        'png',
                 })
             });
+            const stencilData = await stencilResp.json();
+            if (!stencilData.success) console.warn('Drive stencil upload error:', stencilData.error);
+            else console.log('Stencil uploaded:', stencilData.url);
         } catch (e) { console.warn('Drive stencil upload failed:', e); }
 
         // 3. Send email via EmailJS
