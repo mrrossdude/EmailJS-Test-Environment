@@ -1697,7 +1697,7 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
 }
 
 .onboarding-prev-btn:hover {
-  color: #ccc;
+  color: #fff;
   background: rgba(255,255,255,0.06);
 }
 
@@ -1764,7 +1764,7 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
 }
 
 .tutorial-card p { 
-  color: #ccc; 
+  color: #fff; 
   line-height: 1.6; 
   font-size: 13px;
   margin-bottom: 20px; 
@@ -2005,7 +2005,7 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
 }
 .profile-card span {
     font-size: 10px;
-    color: #ccc;
+    color: #fff;
     font-weight: 600;
     text-align: center;
     line-height: 1.2;
@@ -2018,19 +2018,17 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
     background: rgba(0,123,255,0.12);
 }
 .profile-card.profile-unavailable {
-    opacity: 0.35;
-    filter: grayscale(1);
     cursor: not-allowed;
-    pointer-events: none;
+    pointer-events: auto;
     position: relative;
+}
+.profile-card.profile-unavailable img,
+.profile-card.profile-unavailable span {
+    filter: grayscale(1) brightness(0.4);
 }
 .profile-card.profile-unavailable:hover {
     border-color: #444;
     background: #1a1a1a;
-}
-/* Re-enable pointer events just to catch hover for tooltip */
-.profile-card.profile-unavailable {
-    pointer-events: auto;
 }
 .profile-card.profile-unavailable::after {
     content: "Not available as shinethrough";
@@ -2038,8 +2036,8 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
     bottom: calc(100% + 7px);
     left: 50%;
     transform: translateX(-50%);
-    background: rgba(20,20,20,0.97);
-    color: #ccc;
+    background: rgba(30,30,30,0.98);
+    color: #fff;
     font-size: 10px;
     font-weight: 500;
     white-space: nowrap;
@@ -2050,6 +2048,8 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
     transition: opacity 0.15s ease;
     border: 1px solid #444;
     z-index: 9999;
+    /* Override the parent opacity so tooltip appears fully visible */
+    filter: none;
 }
 .profile-card.profile-unavailable:hover::after {
     opacity: 1;
@@ -2096,7 +2096,7 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
 }
 .row-btn {
     background: #2a2a2a;
-    color: #ccc;
+    color: #fff;
     border: 2px solid #444;
     border-radius: 8px;
     padding: 10px 18px;
@@ -5671,11 +5671,12 @@ function generateOrderCode() {
     const now = new Date();
     const dd   = String(now.getDate()).padStart(2, '0');
     const mm   = String(now.getMonth() + 1).padStart(2, '0');
+    const legend = selectedLegendType === 'white' ? 'W' : 'B';
     const prof = (selectedProfile || 'OEM')[0].toUpperCase();
     const row  = selectedRow === 'all' ? '0' : (selectedRow || 'R1').replace('R', '');
     const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ';
     const rand = Array.from({length: 3}, () => chars[Math.floor(Math.random() * chars.length)]).join('');
-    return `${dd}${mm}${prof}${row}${rand}`;
+    return `${legend}${dd}${mm}${prof}${row}${rand}`;
 }
 
 // Generates a transparent PNG of just the stencil layers (no background).
@@ -5930,7 +5931,8 @@ async function saveDesign(filename) {
   // Download the high-res render (kept for internal use / testing)
   const canvas = await generateHighResCanvas();
   const designLink = document.createElement('a');
-  designLink.download = (filename || 'high-res-stencil') + '.png';
+  const legendPrefix = selectedLegendType === 'white' ? 'W' : 'B';
+  designLink.download = legendPrefix + '_' + (filename || 'high-res-stencil') + '.png';
   designLink.href = canvas.toDataURL('image/png', 1.0);
   designLink.click();
 
