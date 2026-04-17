@@ -2002,6 +2002,7 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
     object-fit: cover;
     border-radius: 5px;
     display: block;
+    background: #222;
 }
 .profile-card span {
     font-size: 10px;
@@ -2074,6 +2075,7 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
     border-radius: 8px;
     overflow: hidden;
     border: 1px solid #333;
+    background: #111;
 }
 .legend-type-thumb img {
     width: 100%;
@@ -2233,7 +2235,7 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
         <!-- Detail view (shown after selection) -->
         <div id="profile-detail-view" style="display:none;width:100%;">
           <div style="display:flex;gap:14px;align-items:flex-start;">
-            <img id="profile-detail-img" src="" alt="" style="width:130px;height:130px;object-fit:cover;border-radius:10px;border:2px solid #3498db;flex-shrink:0;">
+            <img id="profile-detail-img" src="" alt="" style="width:130px;height:130px;object-fit:cover;border-radius:10px;border:2px solid #3498db;flex-shrink:0;background:#222;">
             <div style="flex:1;text-align:left;">
               <h3 id="profile-detail-name" style="margin-bottom:6px;"></h3>
               <div id="profile-detail-dims" style="background:#111;border-radius:8px;padding:10px;font-size:11px;color:#aaa;border:1px solid #333;">
@@ -3121,6 +3123,10 @@ function prevStep() {
 function nextStep(nextStepNum) {
     // Going from legend type step (5) to profile step (6) — pre-apply unavailable states
     if (currentStep === 5 && nextStepNum === 6) {
+        // Preload all profile thumbnails so they're cached before the step animates in
+        Object.values(KEYCAP_DATA).forEach(d => {
+            if (d.thumb) { const i = new Image(); i.src = d.thumb; }
+        });
         // Reset profile grid to grid view (in case of back/forward navigation)
         const pgv = document.getElementById('profile-grid-view');
         const pdv = document.getElementById('profile-detail-view');
