@@ -1663,6 +1663,7 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
   box-shadow: 0 20px 50px rgba(0,0,0,0.5);
   position: relative;
   overflow: hidden;
+  box-sizing: border-box;
 }
 
 .onboarding-body {
@@ -1995,6 +1996,8 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
     background: #1a1a1a;
     transition: border-color 0.15s, background 0.15s;
     width: 78px;
+    box-sizing: border-box;
+    overflow: hidden;
 }
 .profile-card img {
     width: 66px;
@@ -2201,7 +2204,7 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
         <div id="profile-grid-view">
           <h3>Choose Your Keycap Profile</h3>
           <p style="font-size:12px;color:#aaa;margin-bottom:12px;">Select the profile that matches your keycap.</p>
-          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;justify-items:center;margin-bottom:4px;">
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;justify-items:center;margin-bottom:4px;width:100%;box-sizing:border-box;overflow:hidden;">
             <div class="profile-card" id="profile-OEM" onclick="selectProfile('OEM')">
               <img src="https://i.ibb.co/tpfxqqzq/Keycap-Template-Profile-Selector-OEM.jpg" alt="OEM">
               <span>OEM</span>
