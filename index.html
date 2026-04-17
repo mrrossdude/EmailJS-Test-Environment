@@ -2183,15 +2183,40 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
 <!-- Order lightbox -->
 <div id="order-lightbox" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:10001; flex-direction:column; align-items:center; justify-content:center; backdrop-filter:blur(5px);">
     <div style="background:#222; border:1px solid #444; border-radius:12px; padding:40px; max-width:480px; width:90%; text-align:center; box-shadow:0 20px 50px rgba(0,0,0,0.6);">
-        <div style="font-size:40px; margin-bottom:16px;">✅</div>
-        <h2 style="color:#fff; font-size:18px; margin-bottom:12px; font-weight:600;">Design Uploaded Successfully</h2>
-        <p style="color:#aaa; font-size:14px; line-height:1.6; margin-bottom:24px;">Your design has been successfully uploaded. Here's your unique custom order code:</p>
-        <div id="order-code-display" style="background:#111; border:2px solid #3498db; border-radius:8px; padding:16px 24px; font-size:28px; font-weight:700; letter-spacing:0.15em; color:#3498db; font-family:monospace; margin-bottom:24px;"></div>
-        <p style="color:#aaa; font-size:13px; line-height:1.6; margin-bottom:28px;">You can now head back to the Etsy product page and place your order, making sure to include the code shown above.</p>
-        <div style="display:flex; gap:12px; justify-content:center;">
-            <button onclick="copyOrderCode()" id="copy-order-btn" style="padding:10px 24px; background:#3498db; color:white; border:none; border-radius:6px; cursor:pointer; font-weight:bold; font-size:13px; width:110px; height:40px; white-space:nowrap;">Copy Code</button>
-            <button onclick="closeOrderLightbox()" style="padding:10px 24px; background:#444; color:white; border:none; border-radius:6px; cursor:pointer; font-weight:bold; font-size:13px;">Close</button>
+
+        <!-- Uploading state -->
+        <div id="order-state-uploading">
+            <div style="font-size:40px; margin-bottom:16px;">⏳</div>
+            <h2 style="color:#fff; font-size:18px; margin-bottom:12px; font-weight:600;">Uploading Your Design…</h2>
+            <p id="order-upload-status" style="color:#aaa; font-size:14px; line-height:1.6; margin-bottom:24px;">Please wait while your design is being processed.</p>
+            <div style="width:100%; height:4px; background:#333; border-radius:2px; overflow:hidden;">
+                <div id="order-progress-bar" style="height:100%; width:0%; background:#3498db; border-radius:2px; transition:width 0.4s ease;"></div>
+            </div>
         </div>
+
+        <!-- Success state -->
+        <div id="order-state-success" style="display:none;">
+            <div style="font-size:40px; margin-bottom:16px;">✅</div>
+            <h2 style="color:#fff; font-size:18px; margin-bottom:12px; font-weight:600;">Design Uploaded Successfully</h2>
+            <p style="color:#aaa; font-size:14px; line-height:1.6; margin-bottom:24px;">Your design has been successfully uploaded. Here's your unique custom order code:</p>
+            <div id="order-code-display" style="background:#111; border:2px solid #3498db; border-radius:8px; padding:16px 24px; font-size:28px; font-weight:700; letter-spacing:0.15em; color:#3498db; font-family:monospace; margin-bottom:24px;"></div>
+            <p style="color:#aaa; font-size:13px; line-height:1.6; margin-bottom:28px;">You can now head back to the Etsy product page and place your order, making sure to include the code shown above.</p>
+            <div style="display:flex; gap:12px; justify-content:center;">
+                <button onclick="copyOrderCode()" id="copy-order-btn" style="padding:10px 24px; background:#3498db; color:white; border:none; border-radius:6px; cursor:pointer; font-weight:bold; font-size:13px; width:110px; height:40px; white-space:nowrap;">Copy Code</button>
+                <button onclick="closeOrderLightbox()" style="padding:10px 24px; background:#444; color:white; border:none; border-radius:6px; cursor:pointer; font-weight:bold; font-size:13px;">Close</button>
+            </div>
+        </div>
+
+        <!-- Error state -->
+        <div id="order-state-error" style="display:none;">
+            <div style="font-size:40px; margin-bottom:16px;">❌</div>
+            <h2 style="color:#fff; font-size:18px; margin-bottom:12px; font-weight:600;">Upload Failed</h2>
+            <p id="order-error-message" style="color:#aaa; font-size:14px; line-height:1.6; margin-bottom:28px;">Something went wrong while uploading your design. Please try again.</p>
+            <div style="display:flex; gap:12px; justify-content:center;">
+                <button onclick="closeOrderLightbox()" style="padding:10px 24px; background:#e20000; color:white; border:none; border-radius:6px; cursor:pointer; font-weight:bold; font-size:13px;">Close</button>
+            </div>
+        </div>
+
     </div>
 </div>
 <div class="layer-manager-bar">
@@ -5448,34 +5473,54 @@ async function generateStencilCanvas(size = 1000) {
 async function openOrderLightbox() {
     _currentOrderCode = generateOrderCode();
 
-    // Show lightbox immediately in sending state
-    document.getElementById('order-code-display').textContent = '...';
+    // Show lightbox in uploading state
     document.getElementById('preview-lightbox').style.display = 'none';
     document.getElementById('order-lightbox').style.display = 'flex';
+    document.getElementById('order-state-uploading').style.display = 'block';
+    document.getElementById('order-state-success').style.display = 'none';
+    document.getElementById('order-state-error').style.display = 'none';
 
-    const codeDisplay = document.getElementById('order-code-display');
-    const copyBtn = document.getElementById('copy-order-btn');
-    if (copyBtn) { copyBtn.disabled = true; copyBtn.textContent = 'Sending…'; copyBtn.style.background = '#555'; }
+    const statusEl   = document.getElementById('order-upload-status');
+    const progressEl = document.getElementById('order-progress-bar');
+
+    const setProgress = (pct, msg) => {
+        progressEl.style.width = pct + '%';
+        if (msg) statusEl.textContent = msg;
+    };
+
+    const showError = (msg) => {
+        document.getElementById('order-state-uploading').style.display = 'none';
+        document.getElementById('order-state-error').style.display = 'block';
+        document.getElementById('order-error-message').textContent = msg;
+    };
+
+    const showSuccess = () => {
+        document.getElementById('order-state-uploading').style.display = 'none';
+        document.getElementById('order-state-success').style.display = 'block';
+        document.getElementById('order-code-display').textContent = _currentOrderCode;
+        const copyBtn = document.getElementById('copy-order-btn');
+        if (copyBtn) { copyBtn.textContent = 'Copy Code'; copyBtn.style.background = '#3498db'; }
+    };
 
     try {
-        // Render composite canvas and stencil-only canvas in parallel
+        // Step 1: Render canvases
+        setProgress(10, 'Rendering your design…');
         const [canvas, stencilCanvas] = await Promise.all([
             generateHighResCanvas(),
             generateStencilCanvas(1200)
         ]);
 
-        // 1600x1600 JPEG at 50% for Drive preview
+        // Step 2: Encode images
+        setProgress(25, 'Encoding images…');
+
         const driveCanvas = document.createElement('canvas');
         driveCanvas.width  = 1600;
         driveCanvas.height = 1600;
         driveCanvas.getContext('2d').drawImage(canvas, 0, 0, 1600, 1600);
         const driveDataUrl = driveCanvas.toDataURL('image/jpeg', 0.5);
 
-        // 500x500 transparent PNG of stencil layers only — PNG is lossless so
-        // keeping dimensions small is important to stay under request limits
         const stencilDataUrl = stencilCanvas.toDataURL('image/png');
 
-        // 140x140 JPEG thumbnail for email
         const thumbCanvas = document.createElement('canvas');
         thumbCanvas.width  = 140;
         thumbCanvas.height = 140;
@@ -5484,8 +5529,9 @@ async function openOrderLightbox() {
 
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwU19jkFxNkuhrHtbt4S-61QjqlQdy6wN7o9wp7F8HU4_Be6Y7Z_BxPXF7tAHxxariqBg/exec';
 
-        // 1. Upload preview JPEG to Drive
-        let driveUrl = 'Not available — check Drive folder';
+        // Step 3: Upload preview JPEG
+        setProgress(40, 'Uploading preview image…');
+        let driveUrl = '';
         try {
             const resp = await fetch(SCRIPT_URL, {
                 method: 'POST',
@@ -5498,11 +5544,19 @@ async function openOrderLightbox() {
                 })
             });
             const data = await resp.json();
-            if (data.success) driveUrl = data.url;
-            else console.warn('Drive JPEG upload error:', data.error);
-        } catch (e) { console.warn('Drive JPEG upload failed:', e); }
+            if (data.success) {
+                driveUrl = data.url;
+            } else {
+                showError('Preview image upload failed: ' + (data.error || 'Unknown error. Please try again.'));
+                return;
+            }
+        } catch (e) {
+            showError('Could not connect to upload server. Please check your connection and try again.');
+            return;
+        }
 
-        // 2. Upload stencil PNG to Drive
+        // Step 4: Upload stencil PNG
+        setProgress(65, 'Uploading stencil file…');
         try {
             const stencilController = new AbortController();
             const stencilTimeout = setTimeout(() => stencilController.abort(), 20000);
@@ -5519,31 +5573,40 @@ async function openOrderLightbox() {
             });
             clearTimeout(stencilTimeout);
             const stencilData = await stencilResp.json();
-            if (!stencilData.success) console.warn('Drive stencil upload error:', stencilData.error);
-            else console.log('Stencil uploaded:', stencilData.url);
-        } catch (e) { console.warn('Drive stencil upload failed:', e); }
-
-        // 3. Send email via EmailJS
-        await emailjs.send(
-            'service_u1wrjxj',
-            'template_nc85z2q',
-            {
-                order_code: _currentOrderCode,
-                profile:    selectedProfile || 'Unknown',
-                row:        selectedRow === 'all' ? 'All Rows' : (selectedRow || 'Unknown'),
-                image:      thumbDataUrl,
-                drive_url:  driveUrl,
+            if (!stencilData.success) {
+                showError('Stencil file upload failed: ' + (stencilData.error || 'Unknown error. Please try again.'));
+                return;
             }
-        );
+        } catch (e) {
+            showError('Stencil upload timed out or failed. Please try again.');
+            return;
+        }
 
-        codeDisplay.textContent = _currentOrderCode;
-        if (copyBtn) { copyBtn.disabled = false; copyBtn.textContent = 'Copy Code'; copyBtn.style.background = '#3498db'; }
+        // Step 5: Send email
+        setProgress(85, 'Sending confirmation email…');
+        try {
+            await emailjs.send(
+                'service_u1wrjxj',
+                'template_nc85z2q',
+                {
+                    order_code: _currentOrderCode,
+                    profile:    selectedProfile || 'Unknown',
+                    row:        selectedRow === 'all' ? 'All Rows' : (selectedRow || 'Unknown'),
+                    image:      thumbDataUrl,
+                    drive_url:  driveUrl,
+                }
+            );
+        } catch (e) {
+            console.warn('Email send failed:', e);
+        }
+
+        // All done
+        setProgress(100, 'Complete!');
+        setTimeout(showSuccess, 400);
 
     } catch (err) {
-        console.error('EmailJS error:', err);
-        codeDisplay.textContent = _currentOrderCode;
-        if (copyBtn) { copyBtn.disabled = false; copyBtn.textContent = 'Copy Code'; copyBtn.style.background = '#3498db'; }
-        notify('Design sent — but email delivery failed. Please screenshot your code.', 'error');
+        console.error('Order upload error:', err);
+        showError('An unexpected error occurred. Please try again.');
     }
 }
 
