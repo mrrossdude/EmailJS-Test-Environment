@@ -5916,6 +5916,8 @@ function confirmReset() {
         overlay.classList.remove('fade-out');
         overlay.style.opacity = '1';
         overlay.style.display = 'flex';
+        overlay.style.transition = 'none';
+        setTimeout(() => { overlay.style.transition = ''; }, 50);
         for (let i = 1; i <= 8; i++) {
             const step = document.getElementById('step-' + i);
             const dot  = document.getElementById('dot-' + i);
@@ -5932,9 +5934,9 @@ function confirmReset() {
         if (pdv) pdv.style.display = 'none';
         currentStep = 5;
         _updateOnboardingFooter();
-        // Hide spinner overlay if visible (card HTML is untouched)
+        // Remove spinner overlay entirely so it can't interfere
         const spinner = document.getElementById('card-loading-spinner');
-        if (spinner) spinner.style.display = 'none';
+        if (spinner) spinner.remove();
         window._startOnboardingAnim && window._startOnboardingAnim();
     }
 }
