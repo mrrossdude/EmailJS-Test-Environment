@@ -5359,6 +5359,92 @@ function generateOrderCode() {
     return `${dd}${mm}${prof}${row}${rand}`;
 }
 
+// Generates a transparent PNG of just the stencil layers (no background).
+// Same rendering pipeline as generateHighResCanvas but skips the bg draw
+// and returns the offscreen canvas scaled to the requested size.
+async function generateStencilCanvas(size = 1000) {
+    const maskImg = new Image();
+    maskImg.crossOrigin = 'anonymous';
+    maskImg.src = window._keycapMaskUrl || 'https://i.ibb.co/XZbfJhm6/OEM-keycap-mask-test.png';
+    await new Promise(res => { maskImg.onload = res; maskImg.onerror = res; });
+
+    const fullSize = 2000;
+    const scale = fullSize / workspace.offsetWidth;
+
+    const offscreen = document.createElement('canvas');
+    offscreen.width  = fullSize;
+    offscreen.height = fullSize;
+    const octx = offscreen.getContext('2d');
+    octx.clearRect(0, 0, fullSize, fullSize);
+
+    const layers = [
+        { wrap: document.getElementById('wrapper'),        content: document.getElementById('target-image'),  type: 'image' },
+        { wrap: document.getElementById('symbol-wrapper'), content: document.getElementById('target-symbol'), type: 'image' },
+        { wrap: document.getElementById('text-wrapper'),   content: document.getElementById('target-text'),   type: 'text' },
+        { wrap: document.getElementById('text-wrapper-2'), content: document.getElementById('target-text-2'), type: 'text' },
+        { wrap: document.getElementById('text-wrapper-3'), content: document.getElementById('target-text-3'), type: 'text' },
+        { wrap: document.getElementById('text-wrapper-4'), content: document.getElementById('target-text-4'), type: 'text' },
+        { wrap: document.getElementById('text-wrapper-5'), content: document.getElementById('target-text-5'), type: 'text' }
+    ];
+
+    layers.forEach(layer => {
+        if (!layer.wrap || layer.wrap.style.display === 'none' || !layer.content) return;
+        const width   = layer.wrap.offsetWidth  * scale;
+        const height  = layer.wrap.offsetHeight * scale;
+        if (width <= 0 || height <= 0) return;
+        const centerX = (layer.wrap.offsetLeft + layer.wrap.offsetWidth  / 2) * scale;
+        const centerY = (layer.wrap.offsetTop  + layer.wrap.offsetHeight / 2) * scale;
+
+        octx.save();
+        octx.translate(centerX, centerY);
+        const tr = window.getComputedStyle(layer.wrap).transform;
+        if (tr && tr !== 'none') {
+            const m = new DOMMatrix(tr);
+            octx.rotate(Math.atan2(m.b, m.a));
+        }
+        octx.filter = window.getComputedStyle(layer.content).filter;
+        octx.globalCompositeOperation = 'source-over';
+
+        if (layer.type === 'image' && layer.content.src) {
+            const flip = layerFlip[layer.wrap.id] || { h: 1, v: 1 };
+            octx.scale(flip.h, flip.v);
+            if (layer.wrap.id === 'symbol-wrapper' && layer.content.naturalWidth > 0) {
+                const natW = layer.content.naturalWidth || 24;
+                const natH = layer.content.naturalHeight || 24;
+                const ratio = natW / natH;
+                let drawW = width, drawH = height;
+                if (width / height > ratio) drawW = height * ratio;
+                else drawH = width / ratio;
+                octx.drawImage(layer.content, -drawW / 2, -drawH / 2, drawW, drawH);
+            } else {
+                octx.drawImage(layer.content, -width / 2, -height / 2, width, height);
+            }
+        } else if (layer.type === 'text') {
+            const fontStyle = window.getComputedStyle(layer.content);
+            const fontSize  = parseInt(fontStyle.fontSize) * scale;
+            octx.font        = `${fontStyle.fontStyle || ''} ${fontStyle.fontWeight || ''} ${fontSize}px ${fontStyle.fontFamily}`.trim();
+            octx.fillStyle   = fontStyle.color || 'white';
+            octx.textAlign   = 'center';
+            octx.textBaseline = 'middle';
+            const flip = layerFlip[layer.wrap.id] || { h: 1, v: 1 };
+            octx.scale(flip.h, flip.v);
+            octx.fillText(layer.content.innerText.replace(/\n$/, ''), 0, 0);
+        }
+        octx.restore();
+    });
+
+    // Mask to keycap shape
+    octx.globalCompositeOperation = 'destination-in';
+    octx.drawImage(maskImg, 0, 0, fullSize, fullSize);
+
+    // Scale down to requested output size
+    const out = document.createElement('canvas');
+    out.width  = size;
+    out.height = size;
+    out.getContext('2d').drawImage(offscreen, 0, 0, size, size);
+    return out;
+}
+
 async function openOrderLightbox() {
     _currentOrderCode = generateOrderCode();
 
@@ -5372,47 +5458,64 @@ async function openOrderLightbox() {
     if (copyBtn) { copyBtn.disabled = true; copyBtn.textContent = 'Sending…'; copyBtn.style.background = '#555'; }
 
     try {
-        // Render full 2000x2000 canvas
-        const canvas = await generateHighResCanvas();
+        // Render composite canvas and stencil-only canvas in parallel
+        const [canvas, stencilCanvas] = await Promise.all([
+            generateHighResCanvas(),
+            generateStencilCanvas(1000)
+        ]);
 
-        // 1000x1000 JPEG at 80% for Drive — good quality, manageable file size
+        // 1600x1600 JPEG at 50% for Drive preview
         const driveCanvas = document.createElement('canvas');
-        driveCanvas.width  = 1000;
-        driveCanvas.height = 1000;
-        driveCanvas.getContext('2d').drawImage(canvas, 0, 0, 1000, 1000);
-        const driveDataUrl = driveCanvas.toDataURL('image/jpeg', 0.8);
+        driveCanvas.width  = 1600;
+        driveCanvas.height = 1600;
+        driveCanvas.getContext('2d').drawImage(canvas, 0, 0, 1600, 1600);
+        const driveDataUrl = driveCanvas.toDataURL('image/jpeg', 0.5);
 
-        // 140x140 JPEG thumbnail for email preview
+        // 1000x1000 transparent PNG of stencil layers only
+        const stencilDataUrl = stencilCanvas.toDataURL('image/png');
+
+        // 140x140 JPEG thumbnail for email
         const thumbCanvas = document.createElement('canvas');
         thumbCanvas.width  = 140;
         thumbCanvas.height = 140;
         thumbCanvas.getContext('2d').drawImage(canvas, 0, 0, 140, 140);
         const thumbDataUrl = thumbCanvas.toDataURL('image/jpeg', 0.8);
 
-        // 1. Upload to Google Drive.
-        // Sent as text/plain to avoid CORS preflight — Apps Script accepts this
-        // and we can read the response to get the file URL back.
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwU19jkFxNkuhrHtbt4S-61QjqlQdy6wN7o9wp7F8HU4_Be6Y7Z_BxPXF7tAHxxariqBg/exec';
+
+        // 1. Upload preview JPEG to Drive
         let driveUrl = 'Not available — check Drive folder';
         try {
-            const driveResp = await fetch(
-                'https://script.google.com/macros/s/AKfycbwU19jkFxNkuhrHtbt4S-61QjqlQdy6wN7o9wp7F8HU4_Be6Y7Z_BxPXF7tAHxxariqBg/exec',
-                {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'text/plain' },
-                    body: JSON.stringify({
-                        order_code: _currentOrderCode,
-                        image:      driveDataUrl,
-                    })
-                }
-            );
-            const driveData = await driveResp.json();
-            if (driveData.success) driveUrl = driveData.url;
-            else console.warn('Drive upload error:', driveData.error);
-        } catch (driveErr) {
-            console.warn('Drive upload failed:', driveErr);
-        }
+            const resp = await fetch(SCRIPT_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain' },
+                body: JSON.stringify({
+                    order_code: _currentOrderCode,
+                    image:      driveDataUrl,
+                    mime:       'image/jpeg',
+                    ext:        'jpg',
+                })
+            });
+            const data = await resp.json();
+            if (data.success) driveUrl = data.url;
+            else console.warn('Drive JPEG upload error:', data.error);
+        } catch (e) { console.warn('Drive JPEG upload failed:', e); }
 
-        // 2. Send email via EmailJS with thumbnail + Drive link
+        // 2. Upload stencil PNG to Drive
+        try {
+            await fetch(SCRIPT_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain' },
+                body: JSON.stringify({
+                    order_code: _currentOrderCode + '_stencil',
+                    image:      stencilDataUrl,
+                    mime:       'image/png',
+                    ext:        'png',
+                })
+            });
+        } catch (e) { console.warn('Drive stencil upload failed:', e); }
+
+        // 3. Send email via EmailJS
         await emailjs.send(
             'service_u1wrjxj',
             'template_nc85z2q',
@@ -5425,7 +5528,6 @@ async function openOrderLightbox() {
             }
         );
 
-        // Success
         codeDisplay.textContent = _currentOrderCode;
         if (copyBtn) { copyBtn.disabled = false; copyBtn.textContent = 'Copy Code'; copyBtn.style.background = '#3498db'; }
 
