@@ -7798,7 +7798,7 @@ function _rgbToHsv(r, g, b) {
     return [h, s];
 }
 
-// ── 3D Model Viewer ───────────────────────────────────────────────────────────
+// ── 3D Model Viewer ─────────────────────────────────────────────────────────
 const _MODEL_3D_URLS = {
     OEM: 'https://mrrossdude.github.io/EmailJS-Test-Environment/OEMR4.obj',
 };
@@ -7806,27 +7806,31 @@ let _3dRenderer = null, _3dScene = null, _3dCamera = null, _3dAnimId = null;
 
 function open3DViewer() {
     try {
-    console.log("open3DViewer called, selectedProfile:", selectedProfile);
-    var lb = document.getElementById('model-3d-lightbox');
-    console.log("lb element:", lb);
-    if (!lb) { console.error('lightbox not found!'); return; }
-    lb.style.display = 'flex';
-    console.log("lightbox shown, starting setTimeout");
-    setTimeout(function() {
-        var canvas = document.getElementById('model-3d-canvas');
-        var W = lb.clientWidth, H = lb.clientHeight;
-        console.log('Canvas size:', W, H);
-        if (!W || !H) { console.error('Lightbox has zero size'); return; }
-        canvas.width = W; canvas.height = H;
-        _load3DLibs().then(function() {
-            console.log('Libs ready, initialising scene');
-            _init3DScene(canvas, W, H);
-            var url = _MODEL_3D_URLS[selectedProfile];
-            if (url) _load3DObj(url);
-        }).catch(function(e) { console.error('_load3DLibs failed:', e); });
-    }, 50);
-    } catch(e) { console.error('open3DViewer error:', e); }
+        console.log('[3D] open3DViewer, profile:', selectedProfile);
+        var lb = document.getElementById('model-3d-lightbox');
+        console.log('[3D] lightbox el:', lb ? 'found' : 'NULL - check HTML');
+        if (!lb) return;
+        lb.style.display = 'flex';
+        setTimeout(function() {
+            try {
+                var canvas = document.getElementById('model-3d-canvas');
+                var W = lb.clientWidth, H = lb.clientHeight;
+                console.log('[3D] canvas size:', W, 'x', H);
+                if (!W || !H) { console.error('[3D] zero size - lightbox not rendered'); return; }
+                canvas.width = W; canvas.height = H;
+                _load3DLibs().then(function() {
+                    console.log('[3D] libs ready');
+                    _init3DScene(canvas, W, H);
+                    var url = _MODEL_3D_URLS[selectedProfile];
+                    console.log('[3D] loading model:', url);
+                    if (url) _load3DObj(url);
+                    else console.error('[3D] no URL for profile:', selectedProfile);
+                }).catch(function(e) { console.error('[3D] libs failed:', e); });
+            } catch(e) { console.error('[3D] setTimeout error:', e); }
+        }, 100);
+    } catch(e) { console.error('[3D] open error:', e); }
 }
+
 function close3DViewer() {
     var lb = document.getElementById('model-3d-lightbox');
     if (lb) lb.style.display = 'none';
@@ -7834,32 +7838,38 @@ function close3DViewer() {
     if (_3dRenderer) { _3dRenderer.dispose(); _3dRenderer = null; }
     _3dScene = null; _3dCamera = null;
 }
+
 function _load3DLibs() {
     return new Promise(function(resolve, reject) {
-        if (window.THREE && window.THREE.OBJLoader && window.THREE.MTLLoader) { console.log('Libs already loaded'); resolve(); return; }
-        console.log('Loading Three.js...');
+        if (window.THREE && window.THREE.OBJLoader && window.THREE.MTLLoader) {
+            console.log('[3D] libs already cached');
+            resolve(); return;
+        }
+        console.log('[3D] loading Three.js from CDN...');
         var s1 = document.createElement('script');
         s1.src = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';
         s1.onload = function() {
-            console.log('Three.js loaded, loading MTLLoader...');
+            console.log('[3D] THREE loaded, loading MTLLoader...');
             var s2 = document.createElement('script');
             s2.src = 'https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/MTLLoader.js';
             s2.onload = function() {
-                console.log('MTLLoader loaded, loading OBJLoader...');
+                console.log('[3D] MTLLoader loaded, loading OBJLoader...');
                 var s3 = document.createElement('script');
                 s3.src = 'https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/OBJLoader.js';
-                s3.onload = function() { console.log('OBJLoader loaded, all ready'); resolve(); };
-                s3.onerror = function(e) { console.error('OBJLoader failed', e); reject(e); };
+                s3.onload = function() { console.log('[3D] OBJLoader loaded - all ready'); resolve(); };
+                s3.onerror = function(e) { console.error('[3D] OBJLoader load error:', e); reject(e); };
                 document.head.appendChild(s3);
             };
-            s2.onerror = function(e) { console.error('MTLLoader failed', e); reject(e); };
+            s2.onerror = function(e) { console.error('[3D] MTLLoader load error:', e); reject(e); };
             document.head.appendChild(s2);
         };
-        s1.onerror = function(e) { console.error('Three.js failed to load', e); reject(e); };
+        s1.onerror = function(e) { console.error('[3D] THREE load error:', e); reject(e); };
         document.head.appendChild(s1);
     });
 }
+
 function _init3DScene(canvas, W, H) {
+    console.log('[3D] initialising scene...');
     var THREE = window.THREE;
     _3dRenderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
     _3dRenderer.setSize(W, H);
@@ -7881,12 +7891,13 @@ function _init3DScene(canvas, W, H) {
     canvas.addEventListener('mousemove', function(e) { if (!isDragging) return; rotY += (e.clientX - prevX) * 0.01; rotX += (e.clientY - prevY) * 0.01; prevX = e.clientX; prevY = e.clientY; });
     canvas.addEventListener('mouseup', function() { isDragging = false; });
     canvas.addEventListener('mouseleave', function() { isDragging = false; });
-
     var lastTX = 0, lastTY = 0;
     canvas.addEventListener('touchstart', function(e) { lastTX = e.touches[0].clientX; lastTY = e.touches[0].clientY; });
     canvas.addEventListener('touchmove', function(e) { e.preventDefault(); rotY += (e.touches[0].clientX - lastTX) * 0.01; rotX += (e.touches[0].clientY - lastTY) * 0.01; lastTX = e.touches[0].clientX; lastTY = e.touches[0].clientY; }, { passive: false });
     (function animate() { _3dAnimId = requestAnimationFrame(animate); group.rotation.x = rotX; group.rotation.y = rotY; _3dCamera.position.z = zoom; _3dRenderer.render(_3dScene, _3dCamera); })();
+    console.log('[3D] scene ready, animating');
 }
+
 function _load3DObj(url) {
     var THREE = window.THREE;
     var lb = document.getElementById('model-3d-lightbox');
@@ -7895,28 +7906,56 @@ function _load3DObj(url) {
     loadEl.style.cssText = 'position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:#3498db;font-size:14px;';
     loadEl.textContent = 'Loading model…';
     if (lb) lb.appendChild(loadEl);
-    var loader = new THREE.OBJLoader();
-    loader.load(url, function(obj) {
-        var el = document.getElementById('model-3d-loading');
-        if (el) el.remove();
-        var box = new THREE.Box3().setFromObject(obj);
-        var centre = box.getCenter(new THREE.Vector3());
-        var size = box.getSize(new THREE.Vector3());
-        var maxDim = Math.max(size.x, size.y, size.z);
-        obj.scale.setScalar(3 / maxDim);
-        new THREE.Box3().setFromObject(obj).getCenter(centre);
-        obj.position.sub(centre);
-        obj.traverse(function(child) {
-            if (child.isMesh) child.material = new THREE.MeshPhongMaterial({ color: 0x1e1e1e, specular: 0x222222, shininess: 40, side: THREE.DoubleSide });
-        });
-        obj.rotation.y = Math.PI;
-        _3dScene._group.add(obj);
 
-    }, null, function() {
-        var el = document.getElementById('model-3d-loading');
-        if (el) el.textContent = 'Failed to load model.';
+    var mtlUrl = url.replace('.obj', '.mtl');
+    console.log('[3D] loading MTL:', mtlUrl);
+    var mtlLoader = new THREE.MTLLoader();
+    mtlLoader.setCrossOrigin('anonymous');
+    mtlLoader.load(mtlUrl, function(materials) {
+        console.log('[3D] MTL loaded, materials:', Object.keys(materials.materialsInfo));
+        materials.preload();
+        var objLoader = new THREE.OBJLoader();
+        objLoader.setMaterials(materials);
+        console.log('[3D] loading OBJ:', url);
+        objLoader.load(url, function(obj) {
+            console.log('[3D] OBJ loaded');
+            var el = document.getElementById('model-3d-loading');
+            if (el) el.remove();
+            var box = new THREE.Box3().setFromObject(obj);
+            var centre = box.getCenter(new THREE.Vector3());
+            var size = box.getSize(new THREE.Vector3());
+            var maxDim = Math.max(size.x, size.y, size.z);
+            obj.scale.setScalar(3 / maxDim);
+            new THREE.Box3().setFromObject(obj).getCenter(centre);
+            obj.position.sub(centre);
+            obj.rotation.y = Math.PI;
+            obj.traverse(function(child) {
+                if (child.isMesh) console.log('[3D] mesh:', child.name, 'material:', child.material && child.material.name, 'color:', child.material && child.material.color);
+            });
+            _3dScene._group.add(obj);
+        }, null, function(e) { console.error('[3D] OBJ load error:', e); });
+    }, null, function(e) {
+        console.warn('[3D] MTL failed, using fallback material:', e);
+        var objLoader = new THREE.OBJLoader();
+        objLoader.load(url, function(obj) {
+            var el = document.getElementById('model-3d-loading');
+            if (el) el.remove();
+            var box = new THREE.Box3().setFromObject(obj);
+            var centre = box.getCenter(new THREE.Vector3());
+            var size = box.getSize(new THREE.Vector3());
+            var maxDim = Math.max(size.x, size.y, size.z);
+            obj.scale.setScalar(3 / maxDim);
+            new THREE.Box3().setFromObject(obj).getCenter(centre);
+            obj.position.sub(centre);
+            obj.rotation.y = Math.PI;
+            obj.traverse(function(child) {
+                if (child.isMesh) child.material = new THREE.MeshPhongMaterial({ color: 0x1e1e1e, specular: 0x222222, shininess: 40, side: THREE.DoubleSide });
+            });
+            _3dScene._group.add(obj);
+        }, null, function(e2) { console.error('[3D] OBJ fallback error:', e2); });
     });
 }
+
 </script>
 
 </body>
