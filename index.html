@@ -209,6 +209,7 @@ body {
     z-index: 600;
     pointer-events: none;
     overflow: hidden;
+    zoom: 1.75;
 }
 
 .ctrl-group {
@@ -273,6 +274,7 @@ body {
     border-radius: 5px;
     padding: 0px 10px;
     z-index: 2000;
+    zoom: 1.75;
     
 
     
@@ -940,6 +942,7 @@ position: absolute;
   padding: 4px 7px;
   z-index: 2000;
   border-radius: 5px;
+  zoom: 1.75;
 }
 
 .layer-manager-bar, 
@@ -1118,6 +1121,7 @@ position: absolute;
   padding: 4px 10px;
   align-items: center;
   justify-content: space-between;
+  zoom: 1.75;
 }
 
 .inspector-group {
@@ -1527,7 +1531,8 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
   top: 20px;
   left: 50%;
   transform: translateX(-50%);
-  z-index: 2000;                     
+  z-index: 2000;
+  zoom: 1.75;
 }
 
 #wand-options-bar.inspector-overlay-bar {
@@ -1993,6 +1998,9 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
 .crop-e  { right:-5px; top:50%; transform:translateY(-50%); cursor:ew-resize; }
 
 /* Crop options bar must always be clickable regardless of wand-focus-mode */
+#crop-options-bar {
+    zoom: 1.75;
+}
 #crop-options-bar,
 #crop-options-bar button {
     pointer-events: auto !important;
