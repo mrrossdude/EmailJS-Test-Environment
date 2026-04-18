@@ -7805,6 +7805,7 @@ const _MODEL_3D_URLS = {
 let _3dRenderer = null, _3dScene = null, _3dCamera = null, _3dAnimId = null;
 
 function open3DViewer() {
+    console.log("open3DViewer called, selectedProfile:", selectedProfile);
     var lb = document.getElementById('model-3d-lightbox');
     if (!lb) return;
     lb.style.display = 'flex';
