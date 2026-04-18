@@ -126,10 +126,10 @@ body {
 /* ── Text layer label ───────────────────────────────────────────────────── */
 .layer-label {
     position: absolute;
-    bottom: -18px;
+    bottom: -29px;
     left: 50%;
     transform: translateX(-50%);
-    font-size: 11px;
+    font-size: 19px;
     font-weight: bold;
     white-space: nowrap;
     pointer-events: none;
@@ -150,7 +150,7 @@ body {
 
 /* ── Symbol picker ───────────────────────────────────────────────────────── */
 #symbol-picker input:focus {
-    border-color: #007bff !important;
+    border-color: #3498db !important;
 }
 #symbol-grid::-webkit-scrollbar { width: 6px; }
 #symbol-grid::-webkit-scrollbar-track { background: #1e1e1e; }
@@ -209,7 +209,6 @@ body {
     z-index: 600;
     pointer-events: none;
     overflow: hidden;
-    zoom: 1.75;
 }
 
 .ctrl-group {
@@ -269,12 +268,11 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between; 
-    height: 48px;
+    height: 72px;
     background: rgba(70, 70, 70, 0.95);
     border-radius: 5px;
     padding: 0px 10px;
     z-index: 2000;
-    zoom: 1.75;
     
 
     
@@ -421,60 +419,63 @@ body {
 
 .handle {
   position: absolute;
-  width: 10px;
-  height: 10px;
-  background: #007bff;
-  border: 1px solid white;
-  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  background: #3498db;
+  border: none;
+  border-radius: 0;
   z-index: 25;
 }
+.handle.nw { clip-path: polygon(0 0, 100% 0, 0 100%); }
+.handle.ne { clip-path: polygon(0 0, 100% 0, 100% 100%); }
+.handle.sw { clip-path: polygon(0 0, 0 100%, 100% 100%); }
+.handle.se { clip-path: polygon(100% 0, 100% 100%, 0 100%); }
 
 .handle.nw {
-  top: -4px;
-  left: -4px;
+  top: -8px;
+  left: -8px;
   cursor: nwse-resize;
 }
 
 .handle.ne {
-  top: -4px;
-  right: -4px;
+  top: -8px;
+  right: -8px;
   cursor: nesw-resize;
 }
 
 .handle.sw {
-  bottom: -4px;
-  left: -4px;
+  bottom: -8px;
+  left: -8px;
   cursor: nesw-resize;
 }
 
 .handle.se {
-  bottom: -4px;
-  right: -4px;
+  bottom: -8px;
+  right: -8px;
   cursor: nwse-resize;
 }
 
 .rotate-btn {
     position: absolute;
-    top: -10px; 
+    top: -11px;
     left: 50%;
     transform: translateX(-50%);
-    width: 17px;
-    height: 17px;
-    background: #007bff;
-    border: 1px solid white;
+    width: 22px;
+    height: 22px;
+    background: #3498db;
+    border: none;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 105; 
+    z-index: 105;
     cursor: grab;
-    font-size: 12px;
-    
+    font-size: 18px;
 }
 
 .rotate-btn:active {
   cursor: grabbing;
-  background: #0056b3;
+  background: #2075a8;
 }
 
 .bottom-controls {
@@ -509,15 +510,15 @@ body {
 }
 
 .tool-circle {
-  width: 28px;
-  height: 28px;
+  width: 50px;
+  height: 50px;
   background: #535353; 
   color: #ddd;
   border-radius: 2px;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 43px;
   transition: opacity 0.2s ease, background 0.2s ease;
   border: none !important;
   flex-shrink: 0;
@@ -528,16 +529,16 @@ body {
 .tool-circle::after {
   content: attr(data-tooltip);
   position: absolute;
-  bottom: calc(100% + 8px);
+  bottom: calc(100% + 18px);
   left: 50%;
   transform: translateX(-50%);
   background: rgba(30, 30, 30, 0.95);
   color: #eee;
-  font-size: 11px;
+  font-size: 22px;
   font-weight: 500;
   white-space: nowrap;
-  padding: 4px 8px;
-  border-radius: 5px;
+  padding: 8px 14px;
+  border-radius: 7px;
   pointer-events: none;
   opacity: 0;
   transition: opacity 0.15s ease;
@@ -622,8 +623,8 @@ button:hover {
 }
 
 .danger-btn {
-  color: #ff4d4d;
-  border-color: #631a1a;
+  color: #d3000a;
+  border-color: #3d0003;
 }
 
 label {
@@ -671,8 +672,8 @@ label {
 }
 
 .danger-btn {
-  color: #ff4d4d;
-  border-color: #631a1a;
+  color: #d3000a;
+  border-color: #3d0003;
   font-weight: 500; 
 }
 
@@ -857,8 +858,8 @@ label {
 
 .lock-btn {
 position: absolute;
-    top: -40px; 
-    left: 50% ;
+    top: -51px;
+    left: 50%;
     transform: translateX(-50%); 
   width: auto;
   height: auto;
@@ -904,8 +905,8 @@ position: absolute;
 
 .lock-icon-css {
   position: relative;
-  width: 12px;
-  height: 14px;
+  width: 16px;
+  height: 19px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -913,16 +914,16 @@ position: absolute;
 }
 
 .lock-body {
-  width: 12px;
-  height: 9px;
+  width: 16px;
+  height: 12px;
   background-color: white; 
   border-radius: 1px;
   z-index: 2;
 }
 
 .lock-size {
-  width: 13px;
-  height: 18px;
+  width: 18px;
+  height: 24px;
 }
 
 .shackle {
@@ -939,10 +940,9 @@ position: absolute;
   justify-content: space-between;
   align-items: center;
   background: rgba(70, 70, 70, 0.95);
-  padding: 4px 7px;
+  padding: 6px 10px;
   z-index: 2000;
   border-radius: 5px;
-  zoom: 1.75;
 }
 
 .layer-manager-bar, 
@@ -953,44 +953,81 @@ position: absolute;
 
 .add-buttons {
     display: flex;
-    gap: 8px;       
+    gap: 4px;       
     width: 100%;     
   
 }
  
 .preview-btn {
-  background-color: #007bff;
-  font-size: 11px;
+  background-color: #3498db;
+  font-size: 20px;
   font-weight: 700;
-  width: 90px;
+  width: auto;
+  padding: 12px 22px;
+  border-radius: 3px;
   transition: opacity 0.2s ease, background 0.2s ease;
+  box-sizing: border-box;
 }
 
+
+.preview-btn[data-tooltip]::after,
+.reset-btn[data-tooltip]::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 18px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(30, 30, 30, 0.95);
+  color: #eee;
+  font-size: 22px;
+  font-weight: 500;
+  white-space: nowrap;
+  padding: 8px 14px;
+  border-radius: 7px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  border: 1px solid #444;
+  z-index: 9999;
+}
+.preview-btn[data-tooltip]:hover::after,
+.reset-btn[data-tooltip]:hover::after {
+  opacity: 1;
+}
+.preview-btn, .reset-btn {
+  position: relative;
+}
 .preview-btn:hover {
-  background-color: #0056b3;
+  background-color: #2075a8;
   transition: opacity 0.2s ease, background 0.2s ease;
 }
 
 .reset-btn {
-  background-color: #e20000;
+  background-color: #d3000a;
   color: white;
-  border: 1px solid #e20000;
-  padding: 10px;
-  border-radius: 8px;
-  font-size: 11px;
+  border: none;
+  padding: 12px 18px;
+  border-radius: 3px;
+  font-size: 20px;
   font-weight: 700;
   cursor: pointer;
   transition: background 0.2s ease;
-  width: 90px;
+  width: auto;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: 8px;
+  box-sizing: border-box;
 }
 
 .reset-btn:hover {
-  background-color: #c30000;
-  border-color: #e20000;
+  background-color: #b3000a;
+  border-color: #d3000a;
+}
+.reset-btn.tool-circle {
+  width: auto !important;
+  height: auto !important;
+  font-size: 20px !important;
 }
 
 .add-btn {
@@ -1013,13 +1050,14 @@ position: absolute;
 .add-btn {
   background: rgba(60, 60, 60, 0.8) !important;
   border: 1px solid #444 !important;
-  padding: 3px 11px 3px 7px !important;
-  font-size: 11px !important;
+  padding: 5px 15px 5px 10px !important;
+  font-size: 17px !important;
   font-weight: 700 !important;
   border-radius: 3px !important;
   color: white !important;
   cursor: pointer;
-  min-width: 65px;
+  flex: none !important;
+  min-width: 130px;
 }
 
 
@@ -1029,51 +1067,52 @@ position: absolute;
 /* Active layer button highlight (image and text) */
 .add-btn.text-layer-active,
 .add-btn.image-layer-active {
-    background: #007bff !important;
-    border-color: #007bff !important;
+    background: #3498db !important;
+    border-color: #3498db !important;
     color: white !important;
 }
 .add-btn:hover {
-  background: #007bff !important;
-  border-color: #007bff !important;
+  background: #3498db !important;
+  border-color: #3498db !important;
 }
 
 .clear-all-btn {
-  background: #e20000 !important;
-  border-color: #e20000 !important;
+  background: #d3000a !important;
+  border-color: #d3000a !important;
   color: white !important;
 }
 
 .clear-all-btn:hover {
-  background: #c30000 !important;
-  border-color: #e20000 !important;
+  background: #b3000a !important;
+  border-color: #d3000a !important;
 }
 
 .add-btn span {
-  color: #007bff;
-  margin-right: 4px;
+  color: #3498db;
+}
+.clear-all-btn span {
+  color: white !important;
 }
 
 .delete-layer-btn {
  position: absolute;
- 
-    top: -5px; 
-    right: -5px;
+    top: -11px;
+    right: -11px;
     left: auto;
-    width: 12px;
-    height: 12px;
-    background: #ff5f52 !important;
+    width: 22px;
+    height: 22px;
+    background: #d3000a !important;
     color: white !important;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer !important;
-    font-size: 11px; 
+    font-size: 15px;
     font-family: sans-serif;
     z-index: 100;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    border: 1px solid white;
+    border: none;
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.2s ease, background 0.2s ease;
@@ -1099,36 +1138,36 @@ position: absolute;
 }
 
 .instruction-text {
-  font-size: 13px; 
+  font-size: 17px; 
   color: #888; 
-  margin-top: 15px;
+  margin-top: 0;
   text-align: center;
+  padding-left: 7px;
 }
 
 .layer-inspector-bar {
   position: absolute;
-  top: 37px; 
-  left: 5px;
-  right: 5px;
+  top: 59px; 
+  left: 4px;
+  right: 4px;
   background: rgba(70, 70, 70, 0.95);
   border-radius: 5px;
-  min-height: 25px;
+  min-height: 52px;
   display: flex;
   z-index: 1999;
   flex-wrap: nowrap; 
   overflow: hidden;
   gap: 8px;
-  padding: 4px 10px;
+  padding: 6px 10px;
   align-items: center;
   justify-content: space-between;
-  zoom: 1.75;
 }
 
 .inspector-group {
   display: flex;
   flex: 1;
   align-items: center;
-  gap: 6px;
+  gap: 28px;
   min-width: 0;
   min-height: 25px;
   background-color: transparent;
@@ -1137,7 +1176,7 @@ position: absolute;
 }
 
 .grid-active {
-    background-color: #007bff !important; 
+    background-color: #3498db !important; 
     color: white !important;              
 }
 
@@ -1147,22 +1186,25 @@ position: absolute;
   align-items: center;
   flex: 1;
   min-width: 40px;
+  margin-top: -5px;
 }
 
 .pill-slider span {
-  font-size: 9px;
+  font-size: 15px;
   line-height: 1;
-  margin-bottom: 5px;
+  margin-bottom: 13px;
+  margin-top: 4px;
   color: #e5e5e5;
+  font-weight: bold;
 
 
 }
 
 .mini-pill-btn {
   border-radius: 4px;
-  padding: 4px 6px;
-  font-size: 9px;
-  height: 24px;
+  padding: 8px 12px;
+  font-size: 15px;
+  height: 40px;
   flex-shrink: 0;
   cursor: pointer;
   border: 1px solid #444;
@@ -1170,8 +1212,8 @@ position: absolute;
 }
 
 #pill-adj-toggle {
-  width: 32px; 
-  height: 24px;
+  width: 55px; 
+  height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1192,8 +1234,8 @@ position: absolute;
   background: rgba(255, 255, 255, 1);
   border: 1px solid #444;
   color: rgba(0, 0, 0, 0.9);
-  font-size: 11px;
-  padding: 3px 8px;
+  font-size: 18px;
+  padding: 7px 12px;
   border-radius: 3px;
   flex: 1;
 }
@@ -1262,20 +1304,20 @@ position: absolute;
 
 .pill-slider input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
-  height: 8px;
-  width: 6px;
+  height: 10px;
+  width: 9px;
   background: #ffffff;
-  border-radius: 1px;
+  border-radius: 2px;
   cursor: pointer;
-  margin-top: -2px; 
+  margin-top: -3px; 
   box-shadow: 0 0 2px rgba(0,0,0,0.5);
 }
 
 .pill-slider input[type="range"]::-moz-range-thumb {
-  height: 8px;
-  width: 6px;
+  height: 10px;
+  width: 9px;
   background: #ffffff;
-  border-radius: 1px;
+  border-radius: 2px;
   border: none; 
   cursor: pointer;
   box-shadow: 0 0 2px rgba(0,0,0,0.5);
@@ -1294,8 +1336,8 @@ position: absolute;
 }
 
 .add-btn.wand-active {
-  background: #007bff !important;
-  border-color: #0056b3 !important;
+  background: #3498db !important;
+  border-color: #2075a8 !important;
   color: white !important;
 }
 
@@ -1453,11 +1495,13 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 90%;
-  max-width: 450px;
-  height: 80%;
+  width: 95%;
+  max-width: 700px;
+  max-height: 90%;
+  height: auto;
+  overflow: hidden;
   background: #1a1a1a;
-  border: 1px solid #333;
+  border: 3px solid #3498db;
   border-radius: 12px;
   z-index: 2000;
   display: flex;
@@ -1466,11 +1510,13 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
 }
 
 .font-grid-header {
-  padding: 15px;
+  padding: 15px 18px;
   display: flex;
   justify-content: space-between;
+  align-items: center;
   border-bottom: 1px solid #333;
   font-weight: bold;
+  font-size: 23px;
 }
 
 .font-size-heading {
@@ -1483,16 +1529,15 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
 
 .font-grid-container {
   flex-grow: 1;
-  overflow-y: auto;
+  overflow-y: visible;
+  overflow: visible;
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 8px;
   padding: 15px;
 }
 
-@media (min-width: 400px) {
-  .font-grid-container { grid-template-columns: repeat(4, 1fr); }
-}
+
 
 .font-tile {
   background: #262626;
@@ -1531,8 +1576,7 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
   top: 20px;
   left: 50%;
   transform: translateX(-50%);
-  z-index: 2000;
-  zoom: 1.75;
+  z-index: 2000;                     
 }
 
 #wand-options-bar.inspector-overlay-bar {
@@ -1650,19 +1694,66 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
 .step-content {
     animation: stepEnter 0.15s ease forwards;
 }
-
-@keyframes stepEnter {
-    from { opacity: 0; transform: translateX(30px); }
-    to   { opacity: 1; transform: translateX(0); }
+.step-section-title {
+    height: 45px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+.step-section-title h3 {
+    margin: 0;
+}
+.step-section-image {
+    height: 146px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+.step-section-image img {
+    max-width: 100%;
+    max-height: 142px;
+    object-fit: contain;
+    border-radius: 10px;
+    display: block;
+}
+.step-section-text {
+    height: 125px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    overflow: hidden;
+    padding-top: 8px;
+    box-sizing: border-box;
+}
+.step-section-text p {
+    margin: 0;
 }
 
+@keyframes stepEnter {
+    from { opacity: 0; transform: translateX(20px); }
+    to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes stepEnterReverse {
+    from { opacity: 0; transform: translateX(-20px); }
+    to   { opacity: 1; transform: translateX(0); }
+}
 @keyframes stepExit {
     from { opacity: 1; transform: translateX(0); }
-    to   { opacity: 0; transform: translateX(-30px); }
+    to   { opacity: 0; transform: translateX(-20px); }
+}
+@keyframes stepExitReverse {
+    from { opacity: 1; transform: translateX(0); }
+    to   { opacity: 0; transform: translateX(20px); }
 }
 
 .step-content.step-exiting {
     animation: stepExit 0.1s ease forwards;
+}
+.step-content.step-exiting-reverse {
+    animation: stepExitReverse 0.1s ease forwards;
 }
 
 .tutorial-overlay.fade-out {
@@ -1692,9 +1783,9 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 60px 40px 20px;
+  padding: 40px 40px 16px;
   overflow-x: hidden;
-  overflow-y: auto;
+  overflow-y: hidden;
 }
 
 .onboarding-footer {
@@ -1864,14 +1955,14 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
 
 .app-notification {
     position: absolute;
-    bottom: 70px; 
+    bottom: 95px; 
     left: 50%;
     transform: translateX(-50%) translateY(20px);
     background-color: #333; 
     color: white;
-    padding: 10px 20px;
+    padding: 11px 22px;
     border-radius: 20px; 
-    font-size: 14px;
+    font-size: 22px;
     font-weight: 500;
     pointer-events: none;
     opacity: 0;
@@ -1885,7 +1976,7 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
 
 
 .app-notification.error {
-    background-color: #ff4d4d;
+    background-color: #d3000a;
 }
 
 
@@ -1998,9 +2089,6 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
 .crop-e  { right:-5px; top:50%; transform:translateY(-50%); cursor:ew-resize; }
 
 /* Crop options bar must always be clickable regardless of wand-focus-mode */
-#crop-options-bar {
-    zoom: 1.75;
-}
 #crop-options-bar,
 #crop-options-bar button {
     pointer-events: auto !important;
@@ -2043,10 +2131,10 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
     width: 100%;
 }
 .profile-card:hover {
-    border-color: #007bff;
+    border-color: #3498db;
 }
 .profile-card.selected {
-    border-color: #007bff;
+    border-color: #3498db;
     background: rgba(0,123,255,0.12);
 }
 .profile-card.profile-unavailable {
@@ -2126,10 +2214,10 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
     text-align: center;
 }
 .legend-type-card:hover {
-    border-color: #007bff;
+    border-color: #3498db;
 }
 .legend-type-card.selected {
-    border-color: #007bff;
+    border-color: #3498db;
     background: rgba(0,123,255,0.12);
 }
 .row-btn {
@@ -2144,11 +2232,11 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
     transition: border-color 0.15s, background 0.15s;
 }
 .row-btn:hover {
-    border-color: #007bff;
+    border-color: #3498db;
     color: white;
 }
 .row-btn.selected {
-    border-color: #007bff;
+    border-color: #3498db;
     background: rgba(0,123,255,0.15);
     color: white;
 }
@@ -2237,32 +2325,39 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
     <div class="onboarding-body">
 
       <!-- Step 1: Welcome -->
-      <div class="step-content" id="step-1">
-        <h3>Welcome to the PicoSmiths Custom Keycap Editor</h3>
-        <p>Use this tool to convert any image to a custom keycap. Make sure to read these tips to get the best quality possible.</p>
+      <div class="step-content" id="step-1" style="width:100%;">
+        <div class="step-section-title"><h3>PicoSmiths Custom Keycap Editor</h3></div>
+        <div class="step-section-image">
+          <img src="https://i.ibb.co/jPQsBsD6/Onboarding-Intro.jpg" alt="PicoSmiths Keycap Editor">
+        </div>
+        <div class="step-section-text"><p>Use this tool to create your own custom keycap design. Upload an image, insert symbols, or add text to make your own bespoke cap. Make sure to read these tips to get the best quality possible.</p></div>
       </div>
+
 
       <!-- Step 2: Magic Eraser -->
-      <div class="step-content" id="step-2" style="display:none;">
-        <h3>Magic Eraser Tool</h3>
-        <img src="https://i.ibb.co/1t8pBjtX/Magic-Eraser-Tutorial.jpg" alt="Magic Eraser Tutorial" style="width:100%;border-radius:10px;margin:12px 0;display:block;">
-        <p>If you're using images with a solid colour background like JPG or BMP, use the Magic Eraser to strip away backgrounds. Simply click the area you want to remove and hit apply.</p>
+      <div class="step-content" id="step-2" style="display:none;width:100%;">
+        <div class="step-section-title"><h3>Magic Eraser Tool</h3></div>
+        <div class="step-section-image">
+          <img src="https://i.ibb.co/1t8pBjtX/Magic-Eraser-Tutorial.jpg" alt="Magic Eraser Tutorial">
+        </div>
+        <div class="step-section-text"><p>If you're using images with a solid colour background like JPG or BMP, use the Magic Eraser to strip away backgrounds. Simply click the area you want to remove and hit apply.</p></div>
       </div>
-
       <!-- Step 3: Image Adjustment -->
-      <div class="step-content" id="step-3" style="display:none;">
-        <h3>Image Adjustment Tool</h3>
-        <img src="https://i.ibb.co/bjNtCTPw/Adjustment-Image-Tutorial.jpg" alt="Image Adjustment Tutorial" style="width:100%;border-radius:10px;margin:12px 0;display:block;">
-        <p>If your image is more complex or the Magic Eraser isn't working for you, try enabling the Adjustment Tool and use the sliders to fine tune your image. This tool automatically strips out white backgrounds, so you might want to click the INVERT button if your image is on a dark background.</p>
+      <div class="step-content" id="step-3" style="display:none;width:100%;">
+        <div class="step-section-title"><h3>Image Adjustment Tool</h3></div>
+        <div class="step-section-image">
+          <img src="https://i.ibb.co/bjNtCTPw/Adjustment-Image-Tutorial.jpg" alt="Image Adjustment Tutorial">
+        </div>
+        <div class="step-section-text"><p>If your image is more complex or the Magic Eraser isn't working for you, try enabling the Adjustment Tool and use the sliders to fine tune your image. This tool automatically strips out white backgrounds, so you might want to click the INVERT button if your image is on a dark background.</p></div>
       </div>
-
       <!-- Step 4: Cropping Images -->
-      <div class="step-content" id="step-4" style="display:none;">
-        <h3>Cropping Images</h3>
-        <img src="https://i.ibb.co/BVF5tbzf/Crop-Image-Tutorial.jpg" alt="Crop Image Tutorial" style="width:100%;border-radius:10px;margin:12px 0;display:block;">
-        <p>If your image has a lot of empty space or needs elements removing, use the Crop tool to cut away any excess.</p>
+      <div class="step-content" id="step-4" style="display:none;width:100%;">
+        <div class="step-section-title"><h3>Cropping Images</h3></div>
+        <div class="step-section-image">
+          <img src="https://i.ibb.co/BVF5tbzf/Crop-Image-Tutorial.jpg" alt="Crop Image Tutorial">
+        </div>
+        <div class="step-section-text"><p>If your image has a lot of empty space or needs elements removing, use the Crop tool to cut away any excess.</p></div>
       </div>
-
       <!-- Step 5: Legend type selector -->
       <div class="step-content" id="step-5" style="display:none;">
         <h3>Choose Your Legend Type</h3>
@@ -2280,7 +2375,7 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
               <img src="https://i.ibb.co/xSS3wqK6/White-Legend.jpg" alt="White Legend" style="width:100%;height:auto;display:block;">
             </div>
             <span class="legend-type-label">Solid White</span>
-            <span class="legend-type-sub">Classic white legends</span>
+            <span class="legend-type-sub">Simple white legends</span>
           </div>
         </div>
       </div>
@@ -2290,7 +2385,7 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
         <!-- Grid view -->
         <div id="profile-grid-view">
           <h3>Choose Your Keycap Profile</h3>
-          <p style="font-size:12px;color:#aaa;margin-bottom:12px;">Select the profile that matches your keycap.</p>
+          <p style="font-size:12px;color:#aaa;margin-bottom:12px;">Select the profile that matches your current keycaps.</p>
           <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;justify-items:center;margin-bottom:4px;width:100%;box-sizing:border-box;">
             <div class="profile-card" id="profile-OEM" onclick="selectProfile('OEM')">
               <img src="https://i.ibb.co/tpfxqqzq/Keycap-Template-Profile-Selector-OEM.jpg" alt="OEM">
@@ -2325,11 +2420,14 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
         <!-- Detail view (shown after selection) -->
         <div id="profile-detail-view" style="display:none;width:100%;">
           <div style="display:flex;gap:14px;align-items:flex-start;">
-            <div style="position:relative;flex-shrink:0;width:130px;height:130px;">
-              <img id="profile-detail-img" src="" alt="" style="width:130px;height:130px;object-fit:cover;border-radius:10px;border:2px solid #3498db;background:#222;display:block;">
-              <button onclick="openProfileZoom()" style="position:absolute;bottom:6px;right:6px;background:rgba(0,0,0,0.55);border:none;border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;backdrop-filter:blur(2px);">
-                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width:13px;height:13px;"><path fill="white" d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
-              </button>
+            <div style="flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:6px;">
+              <div style="position:relative;width:130px;height:130px;">
+                <img id="profile-detail-img" src="" alt="" style="width:130px;height:130px;object-fit:cover;border-radius:10px;border:2px solid #3498db;background:#222;display:block;">
+                <button onclick="openProfileZoom()" style="position:absolute;bottom:6px;right:6px;background:rgba(0,0,0,0.55);border:none;border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;backdrop-filter:blur(2px);">
+                  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width:13px;height:13px;"><path fill="white" d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+                </button>
+              </div>
+              <button id="view-3d-btn" onclick="open3DViewer()" style="display:none;background:none;border:1px solid #3498db;color:#3498db;font-size:10px;padding:4px 10px;border-radius:5px;cursor:pointer;width:130px;text-align:center;"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width:11px;height:11px;margin-right:4px;vertical-align:middle;"><path fill="currentColor" d="M21 16.5c0 .38-.21.71-.53.88l-7.9 4.44c-.16.1-.34.14-.53.14s-.37-.04-.53-.14l-7.9-4.44A1 1 0 0 1 3 16.5v-9c0-.38.21-.71.53-.88l7.9-4.44c.32-.18.74-.18 1.06 0l7.9 4.44c.32.17.53.5.53.88v9M12 4.15L6.04 7.5 12 10.85l5.96-3.35L12 4.15M5 15.91l6 3.38v-6.71L5 9.21v6.7m14 0v-6.7l-6 3.37v6.71l6-3.38z"/></svg>View in 3D</button>
             </div>
             <div style="flex:1;text-align:left;">
               <h3 id="profile-detail-name" style="margin-bottom:6px;"></h3>
@@ -2354,7 +2452,7 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
       <!-- Step 7: Row selector -->
       <div class="step-content" id="step-7" style="display:none;">
         <h3>Choose Your Keycap Row</h3>
-        <p style="font-size:11px;color:#aaa;margin-bottom:10px;">Click a row on the keyboard below. Red keys are wider than 1U and not sold individually.</p>
+        <p style="font-size:11px;color:#aaa;margin-bottom:10px;">Click a row on the keyboard below. 1U widths are the only option currently available.</p>
 
         <!-- Standard row selector: keyboard diagram -->
         <div id="row-selector-standard" style="display:flex;flex-direction:column;align-items:center;">
@@ -2390,14 +2488,14 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
           </div><!-- end kb-diagram -->
           </div><!-- end scale wrapper -->
           <!-- Row label pill — below keyboard -->
-          <div id="kb-row-label" style="display:inline-block;background:#222;border-radius:20px;padding:3px 12px;font-size:10px;font-weight:600;color:#666;margin-top:7px;letter-spacing:0.04em;min-width:160px;text-align:center;">Select a row…</div>
+          <div id="kb-row-label" style="display:inline-block;background:#222;border-radius:20px;padding:12px 12px;font-size:14px;font-weight:600;color:#666;margin-top:17px;letter-spacing:0.04em;min-width:160px;text-align:center;">Select a row…</div>
         </div><!-- end row-selector-standard -->
 
         <div id="row-selector-xda" style="display:none;text-align:center;">
           <!-- Same keyboard diagram but all rows highlighted -->
           <div style="transform:scale(1.18);transform-origin:top center;display:inline-block;margin-bottom:24px;"><div id="kb-diagram-allrows" style="display:inline-block;background:#111;border-radius:8px;padding:7px;border:1px solid #2a2a2a;"></div></div>
           <!-- Label pill -->
-          <div id="kb-allrows-label" style="display:inline-block;background:#222;border-radius:20px;padding:3px 12px;font-size:10px;font-weight:600;color:#666;margin-top:7px;letter-spacing:0.04em;min-width:160px;text-align:center;">Select a row…</div>
+          <div id="kb-allrows-label" style="display:inline-block;background:#222;border-radius:20px;padding:12px 12px;font-size:14px;font-weight:600;color:#666;margin-top:17px;letter-spacing:0.04em;min-width:160px;text-align:center;">Select a row…</div>
           <!-- Disclaimer message -->
           <p id="all-rows-msg" style="font-size:10px;color:#666;margin-top:8px;line-height:1.5;max-width:340px;display:inline-block;text-align:center;">*<span id="all-rows-profile-name"></span> profile uses the same keycap shape for ALL rows. If your rows are different, you might need to double check you've selected the correct profile.</p>
         </div>
@@ -2414,6 +2512,13 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
         <button class="onboarding-next-btn" id="onboarding-next" onclick="onboardingNext()">Next</button>
       </div>
     </div>
+  <!-- 3D Model viewer lightbox -->
+  <div id="model-3d-lightbox" style="display:none;position:absolute;inset:0;background:#f0f0f0;z-index:99999;align-items:center;justify-content:center;border-radius:17px;overflow:hidden;flex-direction:column;">
+    <canvas id="model-3d-canvas" style="width:100%;height:100%;display:block;touch-action:none;"></canvas>
+    <div style="position:absolute;bottom:16px;left:50%;transform:translateX(-50%);color:#888;font-size:12px;pointer-events:none;white-space:nowrap;">Drag to rotate</div>
+    <button onclick="close3DViewer()" style="position:absolute;top:12px;right:12px;width:32px;height:32px;background:rgba(0,0,0,0.15);border:none;border-radius:50%;color:#333;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;">✕</button>
+  </div>
+
   <!-- Profile image zoom lightbox — scoped inside overlay -->
   <div id="profile-zoom-lightbox" style="display:none;position:absolute;inset:0;background:rgba(0,0,0,0.88);z-index:99999;align-items:center;justify-content:center;border-radius:20px;overflow:hidden;">
     <img id="profile-zoom-img" src="" alt="" style="max-width:90%;max-height:90%;border-radius:10px;display:block;box-shadow:0 10px 40px rgba(0,0,0,0.6);object-fit:contain;">
@@ -2421,38 +2526,32 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
   </div>
   </div>
 </div>
-<div id="profile-zoom-lightbox" style="display:none;position:absolute;inset:0;background:rgba(0,0,0,0.85);z-index:99999;align-items:center;justify-content:center;border-radius:20px;overflow:hidden;">
-  <div style="position:relative;max-width:90vw;max-height:90vh;">
-    <img id="profile-zoom-img" src="" alt="" style="max-width:90vw;max-height:90vh;border-radius:12px;display:block;box-shadow:0 20px 60px rgba(0,0,0,0.7);">
-    <button onclick="closeProfileZoom()" style="position:absolute;top:10px;right:10px;width:28px;height:28px;background:rgba(0,0,0,0.55);border:none;border-radius:50%;color:white;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;backdrop-filter:blur(2px);">✕</button>
-  </div>
-</div>
 
 <div id="colour-picker-lightbox" style="display:none; position:absolute; inset:0; background:rgba(0,0,0,0.75); z-index:3000; align-items:center; justify-content:center;">
-  <div style="background:#1e1e1e; border:1px solid #444; border-radius:14px; padding:20px; display:flex; flex-direction:column; align-items:center; gap:14px; box-shadow:0 20px 50px rgba(0,0,0,0.5); width:220px;">
-    <span style="color:white; font-size:14px; font-weight:600;">Backlight Colour</span>
-    <div style="position:relative; width:160px; height:160px; flex-shrink:0;">
-      <canvas id="colour-wheel" width="160" height="160" style="border-radius:50%; cursor:crosshair; display:block;"></canvas>
-      <div id="colour-wheel-cursor" style="position:absolute; width:12px; height:12px; border:2px solid white; border-radius:50%; box-shadow:0 0 3px rgba(0,0,0,0.8); pointer-events:none; transform:translate(-50%,-50%); top:50%; left:50%;"></div>
+  <div style="background:#1e1e1e; border:3px solid #3498db; border-radius:20px; padding:30px; display:flex; flex-direction:column; align-items:center; gap:21px; box-shadow:0 20px 50px rgba(0,0,0,0.5); width:330px;">
+    <span style="color:white; font-size:21px; font-weight:600;">Backlight Colour</span>
+    <div style="position:relative; width:240px; height:240px; flex-shrink:0;">
+      <canvas id="colour-wheel" width="240" height="240" style="border-radius:50%; cursor:crosshair; display:block;"></canvas>
+      <div id="colour-wheel-cursor" style="position:absolute; width:18px; height:18px; border:2px solid white; border-radius:50%; box-shadow:0 0 3px rgba(0,0,0,0.8); pointer-events:none; transform:translate(-50%,-50%); top:50%; left:50%;"></div>
     </div>
     <div style="display:flex; gap:10px; width:100%;">
-      <button onclick="confirmColour()" style="flex:1; padding:8px; background:#3498db; color:white; border:none; border-radius:6px; cursor:pointer; font-weight:bold; font-size:12px;">Apply</button>
-      <button onclick="closeColourPicker()" style="flex:1; padding:8px; background:#444; color:white; border:none; border-radius:6px; cursor:pointer; font-weight:bold; font-size:12px;">Cancel</button>
+      <button onclick="confirmColour()" style="flex:1; padding:12px; background:#3498db; color:white; border:none; border-radius:6px; cursor:pointer; font-weight:bold; font-size:18px;">Apply</button>
+      <button onclick="closeColourPicker()" style="flex:1; padding:12px; background:#444; color:white; border:none; border-radius:6px; cursor:pointer; font-weight:bold; font-size:18px;">Cancel</button>
     </div>
   </div>
 </div>
 
 <div id="adj-tip-bubble" style="display:none; position:absolute; z-index:2500; pointer-events:auto; filter:drop-shadow(0 4px 10px rgba(0,0,0,0.4));">
   <!-- Tail: separate from bubble so it doesn't split the border -->
-  <div style="position:absolute; top:-9px; left:16px; width:14px; height:13px; overflow:hidden; pointer-events:none; z-index:1;">
-    <div style="width:10px; height:10px; background:#007bff; transform:rotate(45deg); margin-top:5px; margin-left:2px;"></div>
+  <div style="position:absolute; top:-11px; left:18px; width:18px; height:16px; overflow:hidden; pointer-events:none; z-index:1;">
+    <div style="width:12px; height:12px; background:#3498db; transform:rotate(45deg); margin-top:6px; margin-left:3px;"></div>
   </div>
-  <div style="position:relative; background:#007bff; border:none; border-radius:7px; padding:7px 28px 7px 10px; font-size:11px; color:#fff; line-height:1.4; white-space:nowrap;">
+  <div style="position:relative; background:#3498db; border:none; border-radius:7px; padding:12px 38px 12px 16px; font-size:18px; color:#fff; line-height:1.4; white-space:nowrap;">
     <div style="display:flex; align-items:center; gap:5px;">
-      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width:12px;height:12px;flex-shrink:0;"><path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width:20px;height:20px;flex-shrink:0;"><path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
       <span><strong>Tip:</strong> If your image isn't displaying correctly, try adjusting the settings here</span>
     </div>
-    <button onclick="closeAdjTip()" style="position:absolute; top:50%; right:11px; transform:translateY(-50%); background:none; border:none; color:rgba(255,255,255,0.8); font-size:9px; cursor:pointer; padding:0; line-height:1; font-weight:bold;">✕</button>
+    <button onclick="closeAdjTip()" style="position:absolute; top:50%; right:11px; transform:translateY(-50%); background:none; border:none; color:rgba(255,255,255,0.8); font-size:16px; cursor:pointer; padding:0; line-height:1;"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width:16px;height:16px;"><path fill="currentColor" d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button>
   </div>
 </div>
 
@@ -2460,45 +2559,45 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
 
 <!-- Reset confirm lightbox -->
 <div id="reset-confirm-lightbox" style="display:none; position:absolute; inset:0; background:rgba(0,0,0,0.8); z-index:3500; align-items:center; justify-content:center;">
-  <div style="background:#1e1e1e; border:1px solid #555; border-radius:12px; padding:32px; max-width:340px; width:90%; text-align:center; box-shadow:0 20px 50px rgba(0,0,0,0.6);">
-    <div style="font-size:32px; margin-bottom:12px;">⚠️</div>
-    <h3 style="color:#fff; font-size:16px; margin-bottom:12px; font-weight:600;">Start Over?</h3>
-    <p style="color:#aaa; font-size:13px; line-height:1.6; margin-bottom:24px;">Do you want to start over? This will delete your current design and take you back to the keycap profile and row options.</p>
-    <div style="display:flex; gap:10px;">
-      <button onclick="confirmReset()" style="flex:1; padding:10px; background:#e20000; color:white; border:none; border-radius:6px; cursor:pointer; font-weight:bold; font-size:13px;">Yes, Reset</button>
-      <button onclick="closeResetConfirm()" style="flex:1; padding:10px; background:#444; color:white; border:none; border-radius:6px; cursor:pointer; font-weight:bold; font-size:13px;">Cancel</button>
+  <div style="background:#1e1e1e; border:3px solid #d3000a; border-radius:20px; padding:48px; max-width:510px; width:90%; text-align:center; box-shadow:0 20px 50px rgba(0,0,0,0.6);">
+    <div style="font-size:48px; margin-bottom:18px;">⚠️</div>
+    <h3 style="color:#fff; font-size:24px; margin-bottom:18px; font-weight:600;">Reset All?</h3>
+    <p style="color:#aaa; font-size:19px; line-height:1.6; margin-bottom:36px;">This will delete your current design and take you back to the keycap profile and row selection options.</p>
+    <div style="display:flex; gap:15px;">
+      <button onclick="confirmReset()" style="flex:1; padding:15px; background:#d3000a; color:white; border:none; border-radius:9px; cursor:pointer; font-weight:bold; font-size:19px;">Reset</button>
+      <button onclick="closeResetConfirm()" style="flex:1; padding:15px; background:#444; color:white; border:none; border-radius:9px; cursor:pointer; font-weight:bold; font-size:19px;">Cancel</button>
     </div>
   </div>
 </div>
 
 <div id="preview-lightbox" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:10000; flex-direction:column; align-items:center; justify-content:center; backdrop-filter: blur(5px);">
     
-    <div style="position: relative; background: #222; padding: 20px; border-radius: 8px; border: 1px solid #444; box-shadow: 0 20px 50px rgba(0,0,0,0.5); display: flex; flex-direction: column; align-items: center; max-width: 90%; max-height: 90%;">
+    <div style="position: relative; background: #222; padding: 20px; border-radius: 20px; border: 3px solid #3498db; box-shadow: 0 20px 50px rgba(0,0,0,0.5); display: flex; flex-direction: column; align-items: center; max-width: 90%; max-height: 90%;">
         
         <img id="lightbox-img" style="max-width:100%; max-height:70vh; border: 1px solid #555; background: #000; margin-bottom: 20px;">
         
-        <div style="display: flex; gap: 15px; width: 100%; justify-content: center;">
-            <button onclick="openOrderLightbox()" style="flex: 1; padding: 12px; background: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; display:flex; align-items:center; justify-content:center; gap:8px;">
-                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width:16px;height:16px;"><path fill="currentColor" d="M7 18c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm10 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm-16.5-16c-.28 0-.5.22-.5.5s.22.5.5.5H2l3.6 7.59-1.35 2.44C4.09 13.27 4 13.62 4 14c0 1.1.9 2 2 2h12v-2H6.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63H19c.75 0 1.41-.41 1.75-1.03l3.58-6.49A1 1 0 0 0 23.46 4H5.21l-.94-2H.5z"/></svg>
-                Proceed
-            </button>
-            <button onclick="closePreview()" style="flex: 1; padding: 12px; background: #444; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; display:flex; align-items:center; justify-content:center; gap:8px;">
-                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width:16px;height:16px;"><path fill="currentColor" d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+        <div style="display: flex; gap: 25px; justify-content: center; align-items: center; width: 100%;">
+            <div style="flex:1;"></div>
+            <button onclick="closePreview()" style="flex:1; padding: 10px 24px; background: #444; color: white; border: none; border-radius: 3px; cursor: pointer; font-weight: bold; font-size: 16px;">
                 Back
             </button>
+            <button onclick="openOrderLightbox()" style="flex:1; padding: 10px 24px; background: #28a745; color: white; border: none; border-radius: 3px; cursor: pointer; font-weight: bold; font-size: 16px;">
+                Proceed
+            </button>
+            <div style="flex:1;"></div>
         </div>
     </div>
 </div>
 
 <!-- Order lightbox -->
 <div id="order-lightbox" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:10001; flex-direction:column; align-items:center; justify-content:center; backdrop-filter:blur(5px);">
-    <div style="background:#222; border:1px solid #444; border-radius:12px; padding:40px; max-width:480px; width:90%; text-align:center; box-shadow:0 20px 50px rgba(0,0,0,0.6);">
+    <div style="background:#222; border:3px solid #3498db; border-radius:20px; padding:40px; max-width:480px; width:90%; text-align:center; box-shadow:0 20px 50px rgba(0,0,0,0.6);">
 
         <!-- Uploading state -->
         <div id="order-state-uploading">
-            <div style="font-size:40px; margin-bottom:16px;">⏳</div>
-            <h2 style="color:#fff; font-size:18px; margin-bottom:12px; font-weight:600;">Uploading Your Design…</h2>
-            <p id="order-upload-status" style="color:#aaa; font-size:14px; line-height:1.6; margin-bottom:24px;">Please wait while your design is being processed.</p>
+            <div style="margin-bottom:16px;"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width:52px;height:52px;animation:spin 0.8s linear infinite;"><circle cx="12" cy="12" r="10" stroke="#3498db" stroke-width="3" fill="none" stroke-dasharray="31.4" stroke-dashoffset="10"/></svg></div>
+            <h2 style="color:#fff; font-size:23px; margin-bottom:12px; font-weight:600;">Uploading Your Design…</h2>
+            <p id="order-upload-status" style="color:#aaa; font-size:18px; line-height:1.6; margin-bottom:24px;">Please wait while your design is being processed.</p>
             <div style="width:100%; height:4px; background:#333; border-radius:2px; overflow:hidden;">
                 <div id="order-progress-bar" style="height:100%; width:0%; background:#3498db; border-radius:2px; transition:width 0.4s ease;"></div>
             </div>
@@ -2506,24 +2605,24 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
 
         <!-- Success state -->
         <div id="order-state-success" style="display:none;">
-            <div style="font-size:40px; margin-bottom:16px;">✅</div>
-            <h2 style="color:#fff; font-size:18px; margin-bottom:12px; font-weight:600;">Design Uploaded Successfully</h2>
-            <p style="color:#aaa; font-size:14px; line-height:1.6; margin-bottom:24px;">Your design has been successfully uploaded. Here's your unique custom order code:</p>
-            <div id="order-code-display" style="background:#111; border:2px solid #3498db; border-radius:8px; padding:16px 24px; font-size:28px; font-weight:700; letter-spacing:0.15em; color:#3498db; font-family:monospace; margin-bottom:24px;"></div>
-            <p style="color:#aaa; font-size:13px; line-height:1.6; margin-bottom:28px;">You can now head back to the Etsy product page and place your order, making sure to include the code shown above.</p>
+            <div style="margin-bottom:16px;"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width:52px;height:52px;"><circle cx="12" cy="12" r="10" fill="#27ae60"/><path fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" d="M7 12.5l3.5 3.5 6.5-7"/></svg></div>
+            <h2 style="color:#fff; font-size:23px; margin-bottom:12px; font-weight:600;">Design Uploaded Successfully</h2>
+            <p style="color:#aaa; font-size:18px; line-height:1.6; margin-bottom:24px;">Your design has been successfully uploaded. Here's your unique custom order code:</p>
+            <div id="order-code-display" style="background:#111; border:2px solid #3498db; border-radius:8px; padding:16px 24px; font-size:36px; font-weight:700; letter-spacing:0.15em; color:#3498db; font-family:monospace; margin-bottom:24px;"></div>
+            <p style="color:#aaa; font-size:17px; line-height:1.6; margin-bottom:28px;">You can now head back to the Etsy product page and place your order, making sure to include the code shown above.</p>
             <div style="display:flex; gap:12px; justify-content:center;">
-                <button onclick="copyOrderCode()" id="copy-order-btn" style="padding:10px 24px; background:#3498db; color:white; border:none; border-radius:6px; cursor:pointer; font-weight:bold; font-size:13px; width:110px; height:40px; white-space:nowrap;">Copy Code</button>
-                <button onclick="closeOrderLightbox()" style="padding:10px 24px; background:#444; color:white; border:none; border-radius:6px; cursor:pointer; font-weight:bold; font-size:13px;">Close</button>
+                <button onclick="copyOrderCode()" id="copy-order-btn" style="padding:10px 24px; background:#3498db; color:white; border:none; border-radius:6px; cursor:pointer; font-weight:bold; font-size:17px; min-width:140px; white-space:nowrap; box-sizing:border-box;">Copy Code</button>
+                <button onclick="closeOrderLightbox()" style="padding:10px 24px; background:#444; color:white; border:none; border-radius:6px; cursor:pointer; font-weight:bold; font-size:17px;">Close</button>
             </div>
         </div>
 
         <!-- Error state -->
         <div id="order-state-error" style="display:none;">
-            <div style="font-size:40px; margin-bottom:16px;">❌</div>
-            <h2 style="color:#fff; font-size:18px; margin-bottom:12px; font-weight:600;">Upload Failed</h2>
-            <p id="order-error-message" style="color:#aaa; font-size:14px; line-height:1.6; margin-bottom:28px;">Something went wrong while uploading your design. Please try again.</p>
+            <div style="margin-bottom:16px;"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width:52px;height:52px;"><circle cx="12" cy="12" r="10" fill="#d3000a"/><path stroke="white" stroke-width="2" stroke-linecap="round" d="M8 8l8 8M16 8l-8 8"/></svg></div>
+            <h2 style="color:#fff; font-size:23px; margin-bottom:12px; font-weight:600;">Upload Failed</h2>
+            <p id="order-error-message" style="color:#aaa; font-size:18px; line-height:1.6; margin-bottom:28px;">Something went wrong while uploading your design. Please try again.</p>
             <div style="display:flex; gap:12px; justify-content:center;">
-                <button onclick="closeOrderLightbox()" style="padding:10px 24px; background:#e20000; color:white; border:none; border-radius:6px; cursor:pointer; font-weight:bold; font-size:13px;">Close</button>
+                <button onclick="closeOrderLightbox()" style="padding:10px 24px; background:#d3000a; color:white; border:none; border-radius:6px; cursor:pointer; font-weight:bold; font-size:17px;">Close</button>
             </div>
         </div>
 
@@ -2534,33 +2633,33 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
     <input type="file" id="multi-upload" accept="image/*" style="display: none;" onchange="addNewImageLayer(event)" />
     
     <button type="button" class="add-btn" id="btn-layer-image" onclick="document.getElementById('multi-upload').click()">
-<span style="font-size:15px;font-weight:700;margin-right:4px;vertical-align:middle;line-height:1;position:relative;top:2px;">+</span> Image
+<span style="font-size:25px;font-weight:700;margin-right:8px;vertical-align:middle;line-height:1;position:relative;top:1px;">+</span> Image
     </button>
     <button type="button" class="add-btn" id="btn-layer-symbol" onclick="openSymbolPicker()">
-<span style="font-size:15px;font-weight:700;margin-right:4px;vertical-align:middle;line-height:1;position:relative;top:2px;">+</span> Symbol
+<span style="font-size:25px;font-weight:700;margin-right:8px;vertical-align:middle;line-height:1;position:relative;top:1px;">+</span> Symbol
     </button>
 
     <button type="button" class="add-btn" id="btn-layer-text-1" onclick="addNewTextLayer()">
-<span style="font-size:15px;font-weight:700;margin-right:4px;vertical-align:middle;line-height:1;position:relative;top:2px;">+</span> Text
+<span style="font-size:25px;font-weight:700;margin-right:8px;vertical-align:middle;line-height:1;position:relative;top:1px;">+</span> Text
     </button>
     <button type="button" class="add-btn" id="btn-layer-text-2" onclick="addNewTextLayer2()">
-<span style="font-size:15px;font-weight:700;margin-right:4px;vertical-align:middle;line-height:1;position:relative;top:2px;">+</span> Text 2
+<span style="font-size:25px;font-weight:700;margin-right:8px;vertical-align:middle;line-height:1;position:relative;top:1px;">+</span> Text 2
     </button>
     <button type="button" class="add-btn" id="btn-layer-text-3" onclick="addNewTextLayer3()">
-<span style="font-size:15px;font-weight:700;margin-right:4px;vertical-align:middle;line-height:1;position:relative;top:2px;">+</span> Text 3
+<span style="font-size:25px;font-weight:700;margin-right:8px;vertical-align:middle;line-height:1;position:relative;top:1px;">+</span> Text 3
     </button>
     <button type="button" class="add-btn" id="btn-layer-text-4" onclick="addNewTextLayer4()">
-<span style="font-size:15px;font-weight:700;margin-right:4px;vertical-align:middle;line-height:1;position:relative;top:2px;">+</span> Text 4
+<span style="font-size:25px;font-weight:700;margin-right:8px;vertical-align:middle;line-height:1;position:relative;top:1px;">+</span> Text 4
     </button>
     <button type="button" class="add-btn" id="btn-layer-text-5" onclick="addNewTextLayer5()">
-<span style="font-size:15px;font-weight:700;margin-right:4px;vertical-align:middle;line-height:1;position:relative;top:2px;">+</span> Text 5
+<span style="font-size:25px;font-weight:700;margin-right:8px;vertical-align:middle;line-height:1;position:relative;top:1px;">+</span> Text 5
     </button>
 
-    <button type="button" class="add-btn clear-all-btn" onclick="confirmClearUI()" style="border-left: 1px solid #444; margin-left: 10px; padding-left: 15px;">
-      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width: 15px; height: 15px; margin-right: 6px;">
+    <button type="button" class="add-btn clear-all-btn" onclick="confirmClearUI()" style="margin-left: auto; flex: 0 0 auto;">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width: 20px; height: 20px; margin-right: 6px;">
         <path fill="currentColor" d="M9,3V4H4V6H5V19A2,2 0 0,0 7,21H17A2,2 0 0,0 19,19V6H20V4H15V3H9M7,6H17V19H7V6M9,8V17H11V8H9M13,8V17H15V8H13Z" />
       </svg>
-      Clear All
+      <span style="position:relative;top:1px;color:white;">Clear</span>
     </button>
   </div>
 </div>
@@ -2569,7 +2668,12 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
       <div id="image-tools" class="inspector-group" style="display: none;">
 
   <button type="button" id="pill-adj-toggle" class="mini-pill-btn toggle-active" onclick="toggleJpegMode()">
-  <span class="settings-icon"></span>
+  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width:24px;height:24px;">
+    <line x1="4" y1="7" x2="21" y2="7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+    <circle cx="4" cy="7" r="3.5" fill="currentColor"/>
+    <line x1="3" y1="17" x2="20" y2="17" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+    <circle cx="20" cy="17" r="3.5" fill="currentColor"/>
+  </svg>
 </button>
   <div class="pill-slider" title="Contrast">
     <span>Contrast ◑</span>
@@ -2587,7 +2691,7 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
     <span>Threshold ◓</span>
     <input type="range" id="jpeg-threshold" min="0.01" max="1" step="0.001" value="0.3" oninput="updateSliderFill(this); applyFilters();">
   </div>
-  <button type="button" id="pill-invert-btn" class="mini-pill-btn" onclick="toggleInvert()">Invert</button>
+  <button type="button" id="pill-invert-btn" class="mini-pill-btn" onclick="toggleInvert()"><strong>Invert</strong></button>
 </div>
 
 
@@ -2646,7 +2750,7 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
 </div>
 
       <div id="idle-tools" class="inspector-group">
-        <span style="font-size: 10px; color: #a8a8a8">Select a layer to edit</span>
+        <span class="instruction-text">Select a layer to edit</span>
       </div>
       
     
@@ -2687,7 +2791,7 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
       </div>
   
 
-      <button type="button" class="mini-pill-btn" style="background: #e20000; margin-left: 10px;" onclick="resetWandChanges()">
+      <button type="button" class="mini-pill-btn" style="background: #d3000a; margin-left: 10px;" onclick="resetWandChanges()">
   ↺ Reset
 </button>
 
@@ -2785,10 +2889,10 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
         <rect y="6" width="14" height="10" rx="1.5" fill="white"/>
       </svg>
     </button>
-    <div class="rotate-btn" id="symbol-rotate">↻</div>
+    <div class="rotate-btn" id="symbol-rotate"><span style="font-size:16px;position:relative;top:0px;left:0px;line-height:1;">↻</span></div>
     <div class="handle nw"></div><div class="handle ne"></div>
     <div class="handle sw"></div><div class="handle se"></div>
-    <div class="delete-layer-btn" onclick="deleteLayer('symbol')" title="Delete">✕</div>
+    <div class="delete-layer-btn" onclick="deleteLayer('symbol')" title="Delete"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width:14px;height:14px;"><path fill="white" stroke="white" stroke-width="1" d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></div>
   </div>
   <div class="ctrl-group" id="ctrl-wrapper" style="display:none;">
     <button class="lock-btn" onclick="toggleLock('wrapper', this)">
@@ -2797,10 +2901,10 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
         <rect y="6" width="14" height="10" rx="1.5" fill="white"/>
       </svg>
     </button>
-    <div class="rotate-btn" id="rotate" title="Rotate">↻</div>
+    <div class="rotate-btn" id="rotate" title="Rotate"><span style="font-size:16px;position:relative;top:0px;left:0px;line-height:1;">↻</span></div>
     <div class="handle nw"></div><div class="handle ne"></div>
     <div class="handle sw"></div><div class="handle se"></div>
-    <div class="delete-layer-btn" onclick="deleteLayer('image')" title="Delete">✕</div>
+    <div class="delete-layer-btn" onclick="deleteLayer('image')" title="Delete"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width:14px;height:14px;"><path fill="white" stroke="white" stroke-width="1" d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></div>
   </div>
 
   <div class="ctrl-group" id="ctrl-text-wrapper" style="display:none;">
@@ -2810,10 +2914,10 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
         <rect y="6" width="14" height="10" rx="1.5" fill="white"/>
       </svg>
     </button>
-    <div class="rotate-btn" id="text-rotate">↻</div>
+    <div class="rotate-btn" id="text-rotate"><span style="font-size:16px;position:relative;top:0px;left:0px;line-height:1;">↻</span></div>
     <div class="handle nw"></div><div class="handle ne"></div>
     <div class="handle sw"></div><div class="handle se"></div>
-    <div class="delete-layer-btn" onclick="deleteLayer('text')" title="Delete">✕</div>
+    <div class="delete-layer-btn" onclick="deleteLayer('text')" title="Delete"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width:14px;height:14px;"><path fill="white" stroke="white" stroke-width="1" d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></div>
   </div>
 
   <div class="ctrl-group" id="ctrl-text-wrapper-2" style="display:none;">
@@ -2823,10 +2927,10 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
         <rect y="6" width="14" height="10" rx="1.5" fill="white"/>
       </svg>
     </button>
-    <div class="rotate-btn" id="text-rotate-2">↻</div>
+    <div class="rotate-btn" id="text-rotate-2"><span style="font-size:16px;position:relative;top:0px;left:0px;line-height:1;">↻</span></div>
     <div class="handle nw"></div><div class="handle ne"></div>
     <div class="handle sw"></div><div class="handle se"></div>
-    <div class="delete-layer-btn" onclick="deleteLayer('text-2')" title="Delete">✕</div>
+    <div class="delete-layer-btn" onclick="deleteLayer('text-2')" title="Delete"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width:14px;height:14px;"><path fill="white" stroke="white" stroke-width="1" d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></div>
   </div>
 
   <div class="ctrl-group" id="ctrl-text-wrapper-3" style="display:none;">
@@ -2836,10 +2940,10 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
         <rect y="6" width="14" height="10" rx="1.5" fill="white"/>
       </svg>
     </button>
-    <div class="rotate-btn" id="text-rotate-3">↻</div>
+    <div class="rotate-btn" id="text-rotate-3"><span style="font-size:16px;position:relative;top:0px;left:0px;line-height:1;">↻</span></div>
     <div class="handle nw"></div><div class="handle ne"></div>
     <div class="handle sw"></div><div class="handle se"></div>
-    <div class="delete-layer-btn" onclick="deleteLayer('text-3')" title="Delete">✕</div>
+    <div class="delete-layer-btn" onclick="deleteLayer('text-3')" title="Delete"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width:14px;height:14px;"><path fill="white" stroke="white" stroke-width="1" d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></div>
   </div>
 
 
@@ -2850,10 +2954,10 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
         <rect y="6" width="14" height="10" rx="1.5" fill="white"/>
       </svg>
     </button>
-    <div class="rotate-btn" id="text-rotate-4">↻</div>
+    <div class="rotate-btn" id="text-rotate-4"><span style="font-size:16px;position:relative;top:0px;left:0px;line-height:1;">↻</span></div>
     <div class="handle nw"></div><div class="handle ne"></div>
     <div class="handle sw"></div><div class="handle se"></div>
-    <div class="delete-layer-btn" onclick="deleteLayer('text-4')" title="Delete">✕</div>
+    <div class="delete-layer-btn" onclick="deleteLayer('text-4')" title="Delete"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width:14px;height:14px;"><path fill="white" stroke="white" stroke-width="1" d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></div>
   </div>
 
   <div class="ctrl-group" id="ctrl-text-wrapper-5" style="display:none;">
@@ -2863,10 +2967,10 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
         <rect y="6" width="14" height="10" rx="1.5" fill="white"/>
       </svg>
     </button>
-    <div class="rotate-btn" id="text-rotate-5">↻</div>
+    <div class="rotate-btn" id="text-rotate-5"><span style="font-size:16px;position:relative;top:0px;left:0px;line-height:1;">↻</span></div>
     <div class="handle nw"></div><div class="handle ne"></div>
     <div class="handle sw"></div><div class="handle se"></div>
-    <div class="delete-layer-btn" onclick="deleteLayer('text-5')" title="Delete">✕</div>
+    <div class="delete-layer-btn" onclick="deleteLayer('text-5')" title="Delete"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width:14px;height:14px;"><path fill="white" stroke="white" stroke-width="1" d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></div>
   </div>
 
 </div>
@@ -2875,7 +2979,7 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
 <div class="footer-controls">
   <div class="footer-section left">
     <div class="tool-circle" id="gridBtn" onclick="toggleGrid()" data-tooltip="Toggle Grid">
-  <svg viewBox="0 0 56 56" xmlns="http://www.w3.org/2000/svg" style="width: 17px; height: 17px;">
+  <svg viewBox="0 0 56 56" xmlns="http://www.w3.org/2000/svg" style="width: 25px; height: 25px;">
     <path 
       d="M 7.2109 38.1836 L 17.5703 38.1836 L 17.5703 48.3555 C 17.5703 49.5039 18.2500 50.2070 19.3515 50.2070 C 20.4296 50.2070 21.1093 49.5039 21.1093 48.3555 L 21.1093 38.1836 L 34.7500 38.1836 L 34.7500 48.3555 C 34.7500 49.5039 35.4296 50.2070 36.5312 50.2070 C 37.6093 50.2070 38.2890 49.5039 38.2890 48.3555 L 38.2890 38.1836 L 48.8123 38.1836 C 49.9609 38.1836 50.6641 37.5039 50.6641 36.4023 C 50.6641 35.3008 49.9609 34.6445 48.8123 34.6445 L 38.2890 34.6445 L 38.2890 21.4492 L 48.8123 21.4492 C 49.9609 21.4492 50.6641 20.7695 50.6641 19.6914 C 50.6641 18.5898 49.9609 17.9101 48.8123 17.9101 L 38.2890 17.9101 L 38.2890 7.6679 C 38.2890 6.5195 37.6093 5.7930 36.5312 5.7930 C 35.4296 5.7930 34.7500 6.5195 34.7500 7.6679 L 34.7500 17.9101 L 21.1093 17.9101 L 21.1093 7.6679 C 21.1093 6.5195 20.4296 5.7930 19.3515 5.7930 C 18.2500 5.7930 17.5703 6.5195 17.5703 7.6679 L 17.5703 17.9101 L 7.2109 17.9101 C 6.0390 17.9101 5.3359 18.5898 5.3359 19.6914 C 5.3359 20.7695 6.0390 21.4492 7.2109 21.4492 L 17.5703 21.4492 L 17.5703 34.6445 L 7.2109 34.6445 C 6.0390 34.6445 5.3359 35.3008 5.3359 36.4023 C 5.3359 37.5039 6.0390 38.1836 7.2109 38.1836 Z M 21.1093 34.6445 L 21.1093 21.4492 L 34.7500 21.4492 L 34.7500 34.6445 Z" 
       fill="currentColor"
@@ -2883,7 +2987,7 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
   </svg>
 </div>
  <div class="tool-circle" id="wand-btn" onclick="toggleWandMode()" data-tooltip="Magic Eraser">
-  <svg viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg" style="width: 20px; height: 20px;">
+  <svg viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg" style="width: 25px; height: 25px;">
     <path 
       d="M56,60a8.00008,8.00008,0,0,1,8-8H76V40a8,8,0,0,1,16,0V52h12a8,8,0,0,1,0,16H92V80a8,8,0,0,1-16,0V68H64A8.00008,8.00008,0,0,1,56,60Zm184,84H224V128a8,8,0,0,0-16,0v16H192a8,8,0,0,0,0,16h16v16a8,8,0,0,0,16,0V160h16a8,8,0,0,0,0-16Zm-58.34619-26.33984L75.31445,224a16.02252,16.02252,0,0,1-22.62793.001L32,203.31348a15.99888,15.99888,0,0,1,.001-22.62793L180.68555,32a16.02162,16.02162,0,0,1,22.62793-.001L224,52.68652a15.99888,15.99888,0,0,1-.001,22.62793l-42.33886,42.33887-.00293.00342ZM176,100.686,212.68555,64l.001-.001.00684-.00732L192,43.31348,155.314,80ZM184,192h-8v-8a8,8,0,0,0-16,0v8h-8a8,8,0,0,0,0,16h8v8a8,8,0,0,0,16,0v-8h8a8,8,0,0,0,0-16Z" 
       fill="currentColor"
@@ -2891,24 +2995,24 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
   </svg>
 </div>
 <div class="tool-circle" id="crop-btn" onclick="toggleCropMode()" data-tooltip="Crop Image">
-  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width: 17px; height: 17px;">
+  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width: 25px; height: 25px;">
     <path fill="currentColor" d="M17 15h2V7c0-1.1-.9-2-2-2H9v2h8v8zM7 17V1H5v4H1v2h4v10c0 1.1.9 2 2 2h10v4h2v-4h4v-2H7z"/>
   </svg>
 </div>
 
 <div class="tool-circle" id="colour-btn" onclick="openColourPicker()" data-tooltip="Backlight Colour">
-  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width: 18px; height: 18px;">
+  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width: 25px; height: 25px;">
     <path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10c.28 0 .5-.22.5-.5 0-.16-.08-.28-.14-.35-.41-.46-.63-1.05-.63-1.65 0-1.38 1.12-2.5 2.5-2.5H16c2.76 0 5-2.24 5-5 0-4.42-4.03-8-9-8zm-5.5 9c-.83 0-1.5-.67-1.5-1.5S5.67 8 6.5 8 8 8.67 8 9.5 7.33 11 6.5 11zm3-4C8.67 7 8 6.33 8 5.5S8.67 4 9.5 4s1.5.67 1.5 1.5S10.33 7 9.5 7zm5 0c-.83 0-1.5-.67-1.5-1.5S13.67 4 14.5 4s1.5.67 1.5 1.5S15.33 7 14.5 7zm3 4c-.83 0-1.5-.67-1.5-1.5S16.67 8 17.5 8s1.5.67 1.5 1.5S18.33 11 17.5 11z"/>
   </svg>
 </div>
 
 <div class="tool-circle" id="backlight-toggle-btn" onclick="toggleBacklighting()" data-tooltip="Toggle Backlighting">
   <!-- ON state: filled bulb = clearly lit -->
-  <svg id="backlight-icon-on" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width: 18px; height: 18px;">
+  <svg id="backlight-icon-on" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width: 25px; height: 25px;">
     <path fill="currentColor" d="M9 21h6v-1H9v1zm3-20C8.13 1 5 4.13 5 8c0 2.38 1.19 4.47 3 5.74V16c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.87-3.13-7-7-7z"/>
   </svg>
   <!-- OFF state: plain dimmed bulb = off -->
-  <svg id="backlight-icon-off" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width: 18px; height: 18px; display: none; opacity: 0.45;">
+  <svg id="backlight-icon-off" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width: 25px; height: 25px; display: none; opacity: 0.45;">
     <path fill="currentColor" d="M9 21h6v-1H9v1zm3-20C8.13 1 5 4.13 5 8c0 2.38 1.19 4.47 3 5.74V16c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.87-3.13-7-7-7zm2 12.5V15h-4v-1.5C8.38 12.53 7 10.42 7 8c0-2.76 2.24-5 5-5s5 2.24 5 5c0 2.42-1.38 4.53-3 5.5z"/>
   </svg>
 </div>
@@ -2919,7 +3023,7 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
     <div class="workspace-tools"> 
 
       <div class="tool-circle" onclick="fitToWorkspace()" data-tooltip="Fit to Workspace">
-  <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" style="width: 13px; height: 13px;">
+  <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" style="width: 20px; height: 20px;">
     <path fill="currentColor" d="M19,0h-6c-0.6,0-1,0.4-1,1s0.4,1,1,1h3.6l-4.3,4.3c-0.4,0.4-0.4,1,0,1.4c0.4,0.4,1,0.4,1.4,0L18,3.4V7c0,0.6,0.4,1,1,1 s1-0.4,1-1V1C20,0.4,19.6,0,19,0z"/>
     <path fill="currentColor" d="M8,1c0-0.6-0.4-1-1-1H1C0.5,0,0,0.5,0,1v6c0,0.6,0.4,1,1,1s1-0.4,1-1V3.4l4.3,4.3C6.5,7.9,6.7,8,7,8s0.5-0.1,0.7-0.3 c0.4-0.4,0.4-1,0-1.4L3.4,2H7C7.6,2,8,1.6,8,1z"/>
     <path fill="currentColor" d="M20,13c0-0.6-0.4-1-1-1s-1,0.4-1,1v3.6l-4.3-4.3c-0.4-0.4-1-0.4-1.4,0s-0.4,1,0,1.4l4.3,4.3H13c-0.6,0-1,0.4-1,1s0.4,1,1,1 h6c0.5,0,1-0.5,1-1V13z"/>
@@ -2928,26 +3032,26 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
 </div>
 
       <div class="tool-circle" onclick="centerStencil()" data-tooltip="Center Layer">
-  <svg viewBox="0 0 297 297" xmlns="http://www.w3.org/2000/svg" style="width: 15x; height: 15px;">
+  <svg viewBox="0 0 297 297" xmlns="http://www.w3.org/2000/svg" style="width: 21px; height: 21px;">
     <path fill="currentColor" d="M281.991,133.496h-13.445c-6.8-54.74-50.31-98.25-105.05-105.05V15c0-8.284-6.716-15-15-15c-8.284,0-15,6.716-15,15v13.446 c-54.74,6.8-98.25,50.31-105.05,105.05H15.001c-8.284,0-15,6.716-15,15c0,8.284,6.716,15,15,15h13.445 c6.8,54.74,50.31,98.25,105.05,105.05v13.445c0,8.284,6.716,15,15,15c8.284,0,15-6.716,15-15v-13.445 c54.74-6.8,98.25-50.31,105.05-105.05h13.445c8.284,0,15-6.716,15-15C296.991,140.212,290.275,133.496,281.991,133.496z M163.496,238.232V191c0-8.284-6.716-15-15-15c-8.284,0-15,6.716-15,15v47.232c-38.172-6.36-68.376-36.564-74.736-74.736h47.231 c8.284,0,15-6.716,15-15c0-8.284-6.716-15-15-15H58.76c6.36-38.172,36.564-68.376,74.736-74.736v47.231c0,8.284,6.716,15,15,15 c8.284,0,15-6.716,15-15V58.76c38.172,6.36,68.376,36.564,74.736,74.736h-47.231c-8.284,0-15,6.716-15,15c0,8.284,6.716,15,15,15 h47.231C231.872,201.668,201.667,231.872,163.496,238.232z"/>
   </svg>
 </div>
 
       <div class="tool-circle" onclick="toggleFlip('H')" data-tooltip="Flip Horizontal">
-  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width: 18px; height: 18px;">
+  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width: 25px; height: 25px;">
     <path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd" d="M15.079 3.46209C15.3762 3.17355 15.851 3.18054 16.1396 3.47771L19.538 6.9777C19.8205 7.26871 19.8205 7.73162 19.538 8.02263L16.1396 11.5226C15.851 11.8198 15.3762 11.8268 15.079 11.5382C14.7819 11.2497 14.7749 10.7749 15.0634 10.4777L17.2263 8.25015L4.99989 8.25015C4.58567 8.25015 4.24989 7.91437 4.24989 7.50015C4.24989 7.08594 4.58567 6.75015 4.99989 6.75015L17.2263 6.75015L15.0634 4.52264C14.7749 4.22546 14.7819 3.75064 15.079 3.46209ZM8.92071 12.4618C9.21788 12.7504 9.22488 13.2252 8.93633 13.5224L6.77327 15.7501L18.9999 15.7501C19.4141 15.7501 19.7499 16.0859 19.7499 16.5001C19.7499 16.9143 19.4141 17.2501 18.9999 17.2501L6.77366 17.2501L8.93633 19.4774C9.22488 19.7746 9.21788 20.2494 8.92071 20.538C8.62353 20.8265 8.14871 20.8195 7.86016 20.5224L4.46177 17.0224C4.17922 16.7314 4.17922 16.2685 4.46177 15.9774L7.86016 12.4775C8.14871 12.1803 8.62353 12.1733 8.92071 12.4618Z"/>
   </svg>
 </div>
 
       <div class="tool-circle" onclick="toggleFlip('V')" data-tooltip="Flip Vertical">
-  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width: 18px; height: 18px;">
+  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width: 25px; height: 25px;">
     <path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd" d="M7.49976 4.25001C7.91398 4.25001 8.24976 4.5858 8.24976 5.00001L8.24976 17.2266L10.4775 15.0636C10.7747 14.775 11.2495 14.782 11.538 15.0792C11.8266 15.3763 11.8196 15.8512 11.5224 16.1397L8.02243 19.5381C7.73142 19.8207 7.26851 19.8207 6.9775 19.5381L3.47751 16.1397C3.18034 15.8512 3.17335 15.3763 3.4619 15.0792C3.75044 14.782 4.22527 14.775 4.52244 15.0636L6.74976 17.2262L6.74976 5.00001C6.74976 4.5858 7.08555 4.25001 7.49976 4.25001Z"/>
     <path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd" d="M15.9773 4.4619C16.2683 4.17934 16.7312 4.17934 17.0222 4.4619L20.5222 7.86029C20.8193 8.14884 20.8263 8.62366 20.5378 8.92083C20.2492 9.21801 19.7744 9.225 19.4772 8.93645L17.2497 6.7736L17.2497 19C17.2497 19.4142 16.9139 19.75 16.4997 19.75C16.0855 19.75 15.7497 19.4142 15.7497 19L15.7497 6.77358L13.5222 8.93645C13.225 9.225 12.7502 9.21801 12.4616 8.92083C12.1731 8.62366 12.1801 8.14884 12.4773 7.86029L15.9773 4.4619Z"/>
   </svg>
 </div>
 
       <div class="tool-circle" onclick="resetRotation()" data-tooltip="Reset Angle">
-  <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" style="width: 16px; height: 16px;">
+  <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" style="width: 25px; height: 25px;">
     <path d="M11.1139 18L14.877 3.95581L41.9229 11.2027L40.1016 18M7.89848 30L6.07715 36.7973L33.1231 44.0442L36.8862 30" 
           stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
     <path d="M4 24H44" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="2 5" fill="none"/>
@@ -2955,7 +3059,7 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
 </div>
 
       <div class="tool-circle" onclick="resetStencil()" data-tooltip="Reset All">
-  <svg viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg" style="width: 16px; height: 16px;">
+  <svg viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg" style="width: 25px; height: 25px;">
     <path fill-rule="evenodd" clip-rule="evenodd" fill="currentColor"
       d="M4.85355 2.14645C5.04882 2.34171 5.04882 2.65829 4.85355 2.85355L3.70711 4H9C11.4853 4 13.5 6.01472 13.5 8.5C13.5 10.9853 11.4853 13 9 13H5C4.72386 13 4.5 12.7761 4.5 12.5C4.5 12.2239 4.72386 12 5 12H9C10.933 12 12.5 10.433 12.5 8.5C12.5 6.567 10.933 5 9 5H3.70711L4.85355 6.14645C5.04882 6.34171 5.04882 6.65829 4.85355 6.85355C4.65829 7.04882 4.34171 7.04882 4.14645 6.85355L2.14645 4.85355C1.95118 4.65829 1.95118 4.34171 2.14645 4.14645L4.14645 2.14645C4.34171 1.95118 4.65829 1.95118 4.85355 2.14645Z"
     />
@@ -2966,12 +3070,11 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
   </div>
 
   <div class="footer-section right" style="gap: 8px;">
-    <button type="button" class="reset-btn" onclick="openResetConfirm()" style="margin: 0;">
-      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width:14px;height:14px;"><path fill="currentColor" d="M17.65 6.35A7.958 7.958 0 0 0 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0 1 12 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
-      Reset
+    <button type="button" class="reset-btn tool-circle" onclick="openResetConfirm()" data-tooltip="Reset" style="margin:0;">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width:23px;height:23px;"><path fill="currentColor" d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5-5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>
     </button>
-    <button type="button" class="preview-btn" onclick="showPreview()" style="margin: 0; display:flex; align-items:center; gap:6px;">
-      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width:14px;height:14px;"><path fill="currentColor" d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+    <button type="button" class="preview-btn" onclick="showPreview()" data-tooltip="Preview Design" style="margin: 0; display:flex; align-items:center; gap:8px;">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width:23px;height:23px;"><path fill="currentColor" d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
       Preview
     </button>
   </div>
@@ -2981,7 +3084,7 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
 
 <div id="font-library" class="font-grid-overlay" style="display: none;">
       <div class="font-grid-header">
-        <span>Font Library</span>
+        <span>Choose a Font</span>
         <button type="button" class="close-grid-btn" onclick="toggleFontLibrary()">✕</button>
       </div>
       <div class="font-grid-container" id="font-grid">
@@ -3014,23 +3117,23 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
 
 <!-- Symbol Picker Lightbox -->
 <div id="symbol-picker" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:3000; justify-content:center; align-items:center;">
-  <div style="background:#1e1e1e; border-radius:12px; padding:20px; width:580px; height:600px; display:flex; flex-direction:column; gap:10px; border:1px solid #444; box-sizing:border-box; flex-shrink:0;">
+  <div style="background:#1e1e1e; border-radius:14px; padding:23px; width:667px; height:690px; display:flex; flex-direction:column; gap:11px; border:3px solid #3498db; box-sizing:border-box; flex-shrink:0;">
     <div style="display:flex; justify-content:space-between; align-items:center; flex-shrink:0;">
-      <span style="color:white; font-size:14px; font-weight:bold;">Choose a Symbol</span>
-      <span id="symbol-count" style="color:#666;font-size:11px;margin-left:auto;margin-right:12px;"></span>
-      <button onclick="closeSymbolPicker()" style="background:none; border:none; color:#aaa; font-size:18px; cursor:pointer; line-height:1; flex-shrink:0;">✕</button>
+      <span style="color:white; font-size:16px; font-weight:bold;">Choose a Symbol</span>
+      <span id="symbol-count" style="color:#666;font-size:13px;margin-left:auto;margin-right:12px;"></span>
+      <button onclick="closeSymbolPicker()" style="background:none; border:none; color:#aaa; font-size:21px; cursor:pointer; line-height:1; flex-shrink:0;">✕</button>
     </div>
     <input id="symbol-search" type="text" placeholder="Search symbols..." oninput="filterSymbols(this.value)"
-      style="background:#2a2a2a; border:1px solid #555; border-radius:6px; color:white; padding:8px 10px; font-size:13px; outline:none; width:100%; box-sizing:border-box; flex-shrink:0;">
+      style="background:#2a2a2a; border:1px solid #555; border-radius:6px; color:white; padding:9px 11px; font-size:15px; outline:none; width:100%; box-sizing:border-box; flex-shrink:0;">
     <div style="display:flex; gap:8px; align-items:center; flex-shrink:0;">
       <input id="symbol-url-input" type="text" placeholder="Or paste an SVG URL…"
         onkeydown="if(event.key==='Enter') previewUrlSymbol()"
-        style="background:#2a2a2a; border:1px solid #555; border-radius:6px; color:white; padding:8px 10px; font-size:13px; outline:none; flex:1; box-sizing:border-box;">
-      <button id="symbol-preview-btn" onclick="previewUrlSymbol()" style="background:#444; color:white; border:none; border-radius:6px; padding:8px 12px; font-size:12px; cursor:pointer; white-space:nowrap; flex-shrink:0;">Preview</button>
+        style="background:#2a2a2a; border:1px solid #555; border-radius:6px; color:white; padding:9px 11px; font-size:15px; outline:none; flex:1; box-sizing:border-box;">
+      <button id="symbol-preview-btn" onclick="previewUrlSymbol()" style="background:#444; color:white; border:none; border-radius:6px; padding:9px 14px; font-size:14px; cursor:pointer; white-space:nowrap; flex-shrink:0;">Preview</button>
       <div id="symbol-url-preview-wrap" style="display:none; width:36px; height:36px; border:1px solid #444; border-radius:8px; padding:6px; background:#2a2a2a; flex-shrink:0; box-sizing:border-box; align-items:center; justify-content:center;">
         <img id="symbol-url-preview" src="" alt="" style="width:100%;height:100%;object-fit:contain;filter:invert(1);">
       </div>
-      <button id="symbol-url-add" onclick="addUrlSymbol()" style="display:none; background:#007bff; color:white; border:none; border-radius:6px; padding:8px 12px; font-size:12px; cursor:pointer; white-space:nowrap; flex-shrink:0;">Add</button>
+      <button id="symbol-url-add" onclick="addUrlSymbol()" style="display:none; background:#3498db; color:white; border:none; border-radius:6px; padding:9px 14px; font-size:14px; cursor:pointer; white-space:nowrap; flex-shrink:0;">Add</button>
     </div>
     <div id="symbol-grid" style="display:grid; grid-template-columns:repeat(10,1fr); gap:4px; overflow-y:auto; flex:1; padding-right:4px; align-content:start;">
       <!-- populated by JS -->
@@ -3158,6 +3261,8 @@ function selectProfile(profile) {
         document.getElementById('dim-rows').textContent   = data.dims ? data.dims.rows   : '—';
         document.getElementById('profile-grid-view').style.display   = 'none';
         document.getElementById('profile-detail-view').style.display = 'block';
+        const _btn3d = document.getElementById('view-3d-btn');
+        if (_btn3d) _btn3d.style.display = (_MODEL_3D_URLS && _MODEL_3D_URLS[profile]) ? 'inline-block' : 'none';
     }
     _updateOnboardingFooter();
 }
@@ -3338,10 +3443,10 @@ function prevStep() {
         }, 120);
         _updateOnboardingFooter();
     }
-    nextStep(currentStep - 1);
+    nextStep(currentStep - 1, true);
 }
 
-function nextStep(nextStepNum) {
+function nextStep(nextStepNum, reverse) {
     // Going from legend type step (5) to profile step (6) — pre-apply unavailable states
     if (currentStep === 5 && nextStepNum === 6) {
         // Preload all profile thumbnails so they're cached before the step animates in
@@ -3426,23 +3531,25 @@ function nextStep(nextStepNum) {
             // Do NOT auto-select — user must click the diagram to proceed
         }
     }
-    _nextStepCore(nextStepNum);
+    _nextStepCore(nextStepNum, reverse);
 }
 
-function _nextStepCore(nextStepNum) {
+function _nextStepCore(nextStepNum, reverse) {
     const currentEl = document.getElementById(`step-${currentStep}`);
     const nextEl    = document.getElementById(`step-${nextStepNum}`);
+    const exitClass = reverse ? 'step-exiting-reverse' : 'step-exiting';
+    const enterAnim = reverse ? 'stepEnterReverse 0.15s ease forwards' : 'stepEnter 0.15s ease forwards';
 
-    currentEl.classList.add('step-exiting');
+    currentEl.classList.add(exitClass);
     setTimeout(() => {
-        currentEl.classList.remove('step-exiting');
+        currentEl.classList.remove(exitClass);
         currentEl.style.display = 'none';
         document.getElementById(`dot-${currentStep}`).classList.remove('active');
 
         nextEl.style.display = 'block';
         nextEl.style.animation = 'none';
         void nextEl.offsetWidth;
-        nextEl.style.animation = '';
+        nextEl.style.animation = enterAnim;
         document.getElementById(`dot-${nextStepNum}`).classList.add('active');
         currentStep = nextStepNum;
         _updateOnboardingFooter();
@@ -3850,26 +3957,33 @@ function addNewTextLayer() {
   const textDisplay = document.getElementById('target-text');
   textDisplay.innerText = "double-click to edit";
   textDisplay.style.fontFamily = "'Orbitron', sans-serif";
-  textDisplay.style.fontSize = '32px';
+  textDisplay.style.fontSize = '40px';
+  textDisplay.style.whiteSpace = 'nowrap';
   layerFlip['text-wrapper'] = { h: 1, v: 1 };
   textDisplay.style.transform = '';
   textWrap.style.display = 'block';
-  textWrap.style.width = 'auto';
+  textWrap.style.width = 'max-content';
   textWrap.style.height = 'auto';
   textWrap.style.transform = 'translate(0px, 0px) rotate(0deg) scale(1)';
   textCount = 1;
   updateAddTextButtonText(true);
   activeWrapper = textWrap;
-  setTimeout(() => {
-    const w = textDisplay.scrollWidth  || 200;
-    const h = textDisplay.scrollHeight || 25;
+  const doMeasure = () => {
+    const w = Math.max(textDisplay.scrollWidth, textDisplay.offsetWidth) || 300;
+    const h = Math.max(textDisplay.scrollHeight, textDisplay.offsetHeight) || 60;
     textWrap.style.width  = w + 'px';
     textWrap.style.height = h + 'px';
     positionTextLayer(textWrap, 0.20);
     syncStencilMask(textWrap);
     updateControls(textWrap);
     updateInspector();
-  }, 0);
+  };
+  // Wait for Orbitron font to be ready before measuring
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(doMeasure);
+  } else {
+    setTimeout(doMeasure, 100);
+  }
 }
 
 function addNewTextLayer2() {
@@ -3877,7 +3991,7 @@ function addNewTextLayer2() {
   const textDisplay = document.getElementById('target-text-2');
   textDisplay.innerText = "double-click to edit";
   textDisplay.style.fontFamily = "'Orbitron', sans-serif";
-  textDisplay.style.fontSize = '32px';
+  textDisplay.style.fontSize = '40px';
   layerFlip['text-wrapper-2'] = { h: 1, v: 1 };
   textDisplay.style.transform = '';
   textWrap.style.display = 'block';
@@ -3907,7 +4021,7 @@ function addNewTextLayer3() {
   const textDisplay = document.getElementById('target-text-3');
   textDisplay.innerText = "double-click to edit";
   textDisplay.style.fontFamily = "'Orbitron', sans-serif";
-  textDisplay.style.fontSize = '32px';
+  textDisplay.style.fontSize = '40px';
   layerFlip['text-wrapper-3'] = { h: 1, v: 1 };
   textDisplay.style.transform = '';
   textWrap.style.display = 'block';
@@ -3937,7 +4051,7 @@ function addNewTextLayer4() {
   const textDisplay = document.getElementById('target-text-4');
   textDisplay.innerText = "double-click to edit";
   textDisplay.style.fontFamily = "'Orbitron', sans-serif";
-  textDisplay.style.fontSize = '32px';
+  textDisplay.style.fontSize = '40px';
   layerFlip['text-wrapper-4'] = { h: 1, v: 1 };
   textDisplay.style.transform = '';
   textWrap.style.display = 'block';
@@ -3967,7 +4081,7 @@ function addNewTextLayer5() {
   const textDisplay = document.getElementById('target-text-5');
   textDisplay.innerText = "double-click to edit";
   textDisplay.style.fontFamily = "'Orbitron', sans-serif";
-  textDisplay.style.fontSize = '32px';
+  textDisplay.style.fontSize = '40px';
   layerFlip['text-wrapper-5'] = { h: 1, v: 1 };
   textDisplay.style.transform = '';
   textWrap.style.display = 'block';
@@ -4625,9 +4739,9 @@ function setSymbolLib(lib) {
         const t = document.getElementById('symtab-' + l);
         if (!t) return;
         const active = l === lib;
-        t.style.background = active ? '#007bff' : 'transparent';
+        t.style.background = active ? '#3498db' : 'transparent';
         t.style.color       = active ? 'white' : '#aaa';
-        t.style.borderColor = active ? '#007bff' : '#444';
+        t.style.borderColor = active ? '#3498db' : '#444';
     });
     buildSymbolGrid(document.getElementById('symbol-search')?.value?.toLowerCase().trim() || '');
 }
@@ -4688,7 +4802,7 @@ function buildSymbolGrid(filter) {
             const btn  = document.createElement('button');
             btn.title  = icon.name;
             btn.style.cssText = 'background:#2a2a2a;border:1px solid #444;border-radius:6px;padding:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:border-color 0.15s;min-width:0;aspect-ratio:1;';
-            btn.onmouseover = () => btn.style.borderColor = '#007bff';
+            btn.onmouseover = () => btn.style.borderColor = '#3498db';
             btn.onmouseout  = () => btn.style.borderColor = '#444';
 
             const img = document.createElement('img');
@@ -4740,8 +4854,8 @@ async function previewUrlSymbol() {
     const showValidationError = (msg) => {
         restorePreviewBtn();
         if (!input) return;
-        input.style.borderColor = '#c0392b';
-        input.style.color = '#c0392b';
+        input.style.borderColor = '#d3000a';
+        input.style.color = '#d3000a';
         input.value = '';
         input.placeholder = msg;
         setTimeout(() => {
@@ -4802,7 +4916,7 @@ async function previewUrlSymbol() {
             if (addBtn) addBtn.style.display = 'inline-block';
             if (input) { input.style.borderColor = '#27ae60'; setTimeout(() => { input.style.borderColor = '#555'; }, 2000); }
         } else {
-            if (input) { input.style.borderColor = '#c0392b'; setTimeout(() => { input.style.borderColor = '#555'; }, 2000); }
+            if (input) { input.style.borderColor = '#d3000a'; setTimeout(() => { input.style.borderColor = '#555'; }, 2000); }
         }
         return;
     }
@@ -5708,11 +5822,11 @@ function confirmClearUI() {
     const overlay = document.createElement('div');
     overlay.id = 'clear-confirm-overlay';
     overlay.innerHTML = `
-        <div style="background: #222; border: 1px solid #b30000; padding: 20px; border-radius: 8px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 1000;">
-            <p style="margin: 0 0 15px 0; color: #fff; font-weight: bold;">Clear all?</p>
-            <div style="display: flex; gap: 10px; justify-content: center;">
-                <button id="confirm-yes" style="background: #e20000; color: white; border: 1px solid #b30000; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-weight: bold;" onmouseover="this.style.background='#c30000'" onmouseout="this.style.background='#e20000'">Yes, Clear</button>
-                <button id="confirm-no" style="background: #444; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer;">Cancel</button>
+        <div style="background: #222; border: 3px solid #d3000a; padding: 30px; border-radius: 20px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 1000; min-width: 280px;">
+            <p style="margin: 0 0 22px 0; color: #fff; font-weight: bold; font-size: 19px;">Clear all layers?</p>
+            <div style="display: flex; gap: 15px; justify-content: center;">
+                <button id="confirm-yes" style="background: #d3000a; color: white; border: 1px solid #b3000a; padding: 12px 24px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 19px;" onmouseover="this.style.background='#b3000a'" onmouseout="this.style.background='#d3000a'">Clear</button>
+                <button id="confirm-no" style="background: #444; color: white; border: none; padding: 12px 24px; border-radius: 6px; cursor: pointer; font-size: 19px;">Cancel</button>
             </div>
         </div>
     `;
@@ -5887,9 +6001,9 @@ async function generateHighResCanvas() {
     const disclaimer = selectedLegendType === 'white'
         ? 'Please bear in mind this is a mockup. There may be slight differences in visible design sharpness or keycap colours shown.'
         : 'Please bear in mind that this is a mockup. Consistency and brightness levels of the backlighting will depend on your particular switches and LED locations.';
-    const disclaimerSize = Math.round(canvas.width * 0.018);
+    const disclaimerSize = Math.round(canvas.width * 0.0193);
     const maxLineWidth = canvas.width * 0.75;
-    ctx.font = `300 ${disclaimerSize}px sans-serif`;
+    ctx.font = `bold ${disclaimerSize}px sans-serif`;
     ctx.fillStyle = 'rgba(30,30,30,0.9)';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'top';
@@ -5937,7 +6051,9 @@ async function showPreview() {
     const originalHTML = btn.innerHTML;
     
     btn.disabled = true;
-    btn.innerHTML = "Generating...";
+    btn.style.minWidth = btn.offsetWidth + "px";
+    btn.style.justifyContent = "center";
+    btn.innerHTML = '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width:18px;height:18px;animation:spin 0.8s linear infinite;flex-shrink:0;"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" fill="none" stroke-dasharray="31.4" stroke-dashoffset="10"/></svg> Loading';
 
     try {
         const finalCanvas = await generateHighResCanvas();
@@ -5961,6 +6077,7 @@ async function showPreview() {
     } finally {
         // Reset button state
         btn.disabled = false;
+        btn.style.minWidth = "";
         btn.innerHTML = originalHTML;
     }
 }
@@ -6312,9 +6429,9 @@ function copyOrderCode() {
     if (!_currentOrderCode) return;
     navigator.clipboard.writeText(_currentOrderCode).then(() => {
         const btn = document.getElementById('copy-order-btn');
-        if (btn) { btn.textContent = '✓ Copied!'; btn.style.background = '#27ae60'; }
+        if (btn) { btn.style.minWidth = btn.offsetWidth + 'px'; btn.textContent = 'Copied!'; btn.style.background = '#27ae60'; }
         setTimeout(() => {
-            if (btn) { btn.textContent = 'Copy Code'; btn.style.background = '#3498db'; }
+            if (btn) { btn.textContent = 'Copy Code'; btn.style.background = '#3498db'; btn.style.minWidth = ''; }
         }, 2000);
     });
 }
@@ -6940,8 +7057,8 @@ function toggleFontLibrary() {
   }
 }
 
-const _plusIcon = `<span style="font-size:15px;font-weight:700;margin-right:4px;vertical-align:middle;line-height:1;position:relative;top:2px;">+</span>`;
-const _swapIcon = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width:15px;height:15px;margin-right:5px;vertical-align:middle;"><path fill="currentColor" d="M17.65 6.35A7.958 7.958 0 0 0 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0 1 12 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>`;
+const _plusIcon = `<span style="font-size:25px;font-weight:700;margin-right:8px;vertical-align:middle;line-height:1;position:relative;top:1px;">+</span>`;
+const _swapIcon = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width:20px;height:20px;margin-right:6px;vertical-align:middle;"><path fill="currentColor" d="M17.65 6.35A7.958 7.958 0 0 0 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0 1 12 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>`;
 
 function updateAddImageButtonText(hasImage) {
   const btn = document.querySelector('button[onclick*="multi-upload"]');
@@ -7679,6 +7796,106 @@ function _rgbToHsv(r, g, b) {
         }
     }
     return [h, s];
+}
+
+// ── 3D Model Viewer ───────────────────────────────────────────────────────────
+const _MODEL_3D_URLS = {
+    OEM: 'https://mrrossdude.github.io/EmailJS-Test-Environment/OEMR4.obj',
+};
+let _3dRenderer = null, _3dScene = null, _3dCamera = null, _3dAnimId = null;
+
+function open3DViewer() {
+    var lb = document.getElementById('model-3d-lightbox');
+    if (!lb) return;
+    lb.style.display = 'flex';
+    var canvas = document.getElementById('model-3d-canvas');
+    var W = lb.clientWidth, H = lb.clientHeight;
+    canvas.width = W; canvas.height = H;
+    _load3DLibs().then(function() { _init3DScene(canvas, W, H); var url = _MODEL_3D_URLS[selectedProfile]; if (url) _load3DObj(url); });
+}
+function close3DViewer() {
+    var lb = document.getElementById('model-3d-lightbox');
+    if (lb) lb.style.display = 'none';
+    if (_3dAnimId) { cancelAnimationFrame(_3dAnimId); _3dAnimId = null; }
+    if (_3dRenderer) { _3dRenderer.dispose(); _3dRenderer = null; }
+    _3dScene = null; _3dCamera = null;
+}
+function _load3DLibs() {
+    return new Promise(function(resolve) {
+        if (window.THREE && window.THREE.OBJLoader && window.THREE.MTLLoader) { resolve(); return; }
+        var s1 = document.createElement('script');
+        s1.src = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';
+        s1.onload = function() {
+            var s2 = document.createElement('script');
+            s2.src = 'https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/MTLLoader.js';
+            s2.onload = function() {
+                var s3 = document.createElement('script');
+                s3.src = 'https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/OBJLoader.js';
+                s3.onload = resolve;
+                document.head.appendChild(s3);
+            };
+            document.head.appendChild(s2);
+        };
+        document.head.appendChild(s1);
+    });
+}
+function _init3DScene(canvas, W, H) {
+    var THREE = window.THREE;
+    _3dRenderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
+    _3dRenderer.setSize(W, H);
+    _3dRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    _3dRenderer.setClearColor(0xf0f0f0, 1);
+    _3dScene = new THREE.Scene();
+    _3dCamera = new THREE.PerspectiveCamera(15, W / H, 0.1, 1000);
+    _3dCamera.position.set(0, 0, 18);
+    _3dScene.add(new THREE.AmbientLight(0xffffff, 0.6));
+    var dir = new THREE.DirectionalLight(0xffffff, 1.0);
+    dir.position.set(5, 10, 7); _3dScene.add(dir);
+    var fill = new THREE.DirectionalLight(0x8888ff, 0.3);
+    fill.position.set(-5, -5, -5); _3dScene.add(fill);
+    var group = new THREE.Group();
+    _3dScene.add(group);
+    _3dScene._group = group;
+    var isDragging = false, prevX = 0, prevY = 0, rotX = 0, rotY = 0, zoom = 18;
+    canvas.addEventListener('mousedown', function(e) { isDragging = true; prevX = e.clientX; prevY = e.clientY; });
+    canvas.addEventListener('mousemove', function(e) { if (!isDragging) return; rotY += (e.clientX - prevX) * 0.01; rotX += (e.clientY - prevY) * 0.01; prevX = e.clientX; prevY = e.clientY; });
+    canvas.addEventListener('mouseup', function() { isDragging = false; });
+    canvas.addEventListener('mouseleave', function() { isDragging = false; });
+
+    var lastTX = 0, lastTY = 0;
+    canvas.addEventListener('touchstart', function(e) { lastTX = e.touches[0].clientX; lastTY = e.touches[0].clientY; });
+    canvas.addEventListener('touchmove', function(e) { e.preventDefault(); rotY += (e.touches[0].clientX - lastTX) * 0.01; rotX += (e.touches[0].clientY - lastTY) * 0.01; lastTX = e.touches[0].clientX; lastTY = e.touches[0].clientY; }, { passive: false });
+    (function animate() { _3dAnimId = requestAnimationFrame(animate); group.rotation.x = rotX; group.rotation.y = rotY; _3dCamera.position.z = zoom; _3dRenderer.render(_3dScene, _3dCamera); })();
+}
+function _load3DObj(url) {
+    var THREE = window.THREE;
+    var lb = document.getElementById('model-3d-lightbox');
+    var loadEl = document.createElement('div');
+    loadEl.id = 'model-3d-loading';
+    loadEl.style.cssText = 'position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:#3498db;font-size:14px;';
+    loadEl.textContent = 'Loading model…';
+    if (lb) lb.appendChild(loadEl);
+    var loader = new THREE.OBJLoader();
+    loader.load(url, function(obj) {
+        var el = document.getElementById('model-3d-loading');
+        if (el) el.remove();
+        var box = new THREE.Box3().setFromObject(obj);
+        var centre = box.getCenter(new THREE.Vector3());
+        var size = box.getSize(new THREE.Vector3());
+        var maxDim = Math.max(size.x, size.y, size.z);
+        obj.scale.setScalar(3 / maxDim);
+        new THREE.Box3().setFromObject(obj).getCenter(centre);
+        obj.position.sub(centre);
+        obj.traverse(function(child) {
+            if (child.isMesh) child.material = new THREE.MeshPhongMaterial({ color: 0x1e1e1e, specular: 0x222222, shininess: 40, side: THREE.DoubleSide });
+        });
+        obj.rotation.y = Math.PI;
+        _3dScene._group.add(obj);
+
+    }, null, function() {
+        var el = document.getElementById('model-3d-loading');
+        if (el) el.textContent = 'Failed to load model.';
+    });
 }
 </script>
 
