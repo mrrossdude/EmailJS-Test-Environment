@@ -1679,6 +1679,8 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
   position: relative;
   overflow: hidden;
   box-sizing: border-box;
+  transform-origin: center center;
+  flex-shrink: 0;
 }
 
 .onboarding-body {
@@ -3199,6 +3201,7 @@ function closeProfileZoom() {
 
 function clearProfileSelection() {
     selectedProfile = null;
+    document.querySelectorAll('.profile-card').forEach(c => c.classList.remove('selected'));
     document.getElementById('profile-grid-view').style.display   = 'block';
     document.getElementById('profile-detail-view').style.display = 'none';
     _updateOnboardingFooter();
@@ -3531,7 +3534,27 @@ window.addEventListener('DOMContentLoaded', () => {
     const overlay = document.getElementById('onboarding-overlay');
     if (overlay) overlay.style.display = 'flex';
     _updateOnboardingFooter();
+    _initCardScale();
 });
+
+function _initCardScale() {
+    const container = document.querySelector('.container');
+    const card      = document.querySelector('.tutorial-card');
+    if (!container || !card) return;
+
+    const CARD_NATURAL_W = 520; // px — the card's designed width
+    const PADDING        = 80;  // px of overlay padding each side
+
+    function applyScale() {
+        const available = container.offsetWidth - PADDING;
+        const scale     = Math.min(Math.max(available / CARD_NATURAL_W, 0.5), 1.6);
+        card.style.transform = `scale(${scale.toFixed(4)})`;
+    }
+
+    applyScale();
+    new ResizeObserver(applyScale).observe(container);
+    window.addEventListener('resize', applyScale);
+}
 
 function addTextLayer() {
   const textInput = document.getElementById('custom-text-input');
