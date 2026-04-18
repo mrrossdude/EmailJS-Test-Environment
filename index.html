@@ -7822,7 +7822,7 @@ function open3DViewer() {
                     console.log('[3D] libs ready');
                     _init3DScene(canvas, W, H);
                     var url = _MODEL_3D_URLS[selectedProfile];
-                    console.log('[3D] loading model:', url);
+                    console.log('[3D] selectedProfile at load time:', selectedProfile, 'url:', url);
                     if (url) _load3DObj(url);
                     else console.error('[3D] no URL for profile:', selectedProfile);
                 }).catch(function(e) { console.error('[3D] libs failed:', e); });
@@ -7869,6 +7869,7 @@ function _load3DLibs() {
 }
 
 function _init3DScene(canvas, W, H) {
+    try {
     console.log('[3D] initialising scene...');
     var THREE = window.THREE;
     _3dRenderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
@@ -7896,6 +7897,7 @@ function _init3DScene(canvas, W, H) {
     canvas.addEventListener('touchmove', function(e) { e.preventDefault(); rotY += (e.touches[0].clientX - lastTX) * 0.01; rotX += (e.touches[0].clientY - lastTY) * 0.01; lastTX = e.touches[0].clientX; lastTY = e.touches[0].clientY; }, { passive: false });
     (function animate() { _3dAnimId = requestAnimationFrame(animate); group.rotation.x = rotX; group.rotation.y = rotY; _3dCamera.position.z = zoom; _3dRenderer.render(_3dScene, _3dCamera); })();
     console.log('[3D] scene ready, animating');
+    } catch(e) { console.error('[3D] _init3DScene error:', e); }
 }
 
 function _load3DObj(url) {
