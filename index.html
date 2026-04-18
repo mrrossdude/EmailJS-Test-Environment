@@ -7809,10 +7809,19 @@ function open3DViewer() {
     var lb = document.getElementById('model-3d-lightbox');
     if (!lb) return;
     lb.style.display = 'flex';
-    var canvas = document.getElementById('model-3d-canvas');
-    var W = lb.clientWidth, H = lb.clientHeight;
-    canvas.width = W; canvas.height = H;
-    _load3DLibs().then(function() { _init3DScene(canvas, W, H); var url = _MODEL_3D_URLS[selectedProfile]; if (url) _load3DObj(url); });
+    setTimeout(function() {
+        var canvas = document.getElementById('model-3d-canvas');
+        var W = lb.clientWidth, H = lb.clientHeight;
+        console.log('Canvas size:', W, H);
+        if (!W || !H) { console.error('Lightbox has zero size'); return; }
+        canvas.width = W; canvas.height = H;
+        _load3DLibs().then(function() {
+            console.log('Libs ready, initialising scene');
+            _init3DScene(canvas, W, H);
+            var url = _MODEL_3D_URLS[selectedProfile];
+            if (url) _load3DObj(url);
+        }).catch(function(e) { console.error('_load3DLibs failed:', e); });
+    }, 50);
 }
 function close3DViewer() {
     var lb = document.getElementById('model-3d-lightbox');
