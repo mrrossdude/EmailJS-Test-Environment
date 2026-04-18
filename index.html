@@ -7805,6 +7805,7 @@ const _MODEL_3D_URLS = {
 let _3dRenderer = null, _3dScene = null, _3dCamera = null, _3dAnimId = null;
 
 function open3DViewer() {
+    try {
     console.log("open3DViewer called, selectedProfile:", selectedProfile);
     var lb = document.getElementById('model-3d-lightbox');
     console.log("lb element:", lb);
@@ -7824,6 +7825,7 @@ function open3DViewer() {
             if (url) _load3DObj(url);
         }).catch(function(e) { console.error('_load3DLibs failed:', e); });
     }, 50);
+    } catch(e) { console.error('open3DViewer error:', e); }
 }
 function close3DViewer() {
     var lb = document.getElementById('model-3d-lightbox');
