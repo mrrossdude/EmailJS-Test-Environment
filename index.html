@@ -5163,7 +5163,6 @@ function placeSymbolDirect(iconUrl, showErrorOnFail = false) {
     const prevTransform = isSwap ? symWrap.style.transform : null;
     const prevFlip = isSwap ? { ...layerFlip['symbol-wrapper'] } : null;
 
-    symImg.removeAttribute('crossorigin'); // fully remove — don't set even empty
     symImg.style.filter = 'url(#green-stencil)';
     symImg.style.mixBlendMode = 'screen';
     symImg.src = '';          // reset src first to force a clean load
@@ -5248,7 +5247,6 @@ async function placeSymbol(name, iconUrl) {
         const prevTransform = isSwap ? symWrap.style.transform : null;
         const prevFlip      = isSwap ? { ...layerFlip['symbol-wrapper'] } : null;
 
-        symImg.crossOrigin = 'anonymous';
         symImg.style.filter = 'url(#green-stencil)';
         symImg.style.mixBlendMode = 'screen';
         symImg.src = dataUrl;
@@ -6134,11 +6132,13 @@ async function generateHighResCanvas() {
             octx.rotate(Math.atan2(m.b, m.a));
         }
 
-        // Apply CSS filter from the element (brightness/contrast/url(#green-stencil) etc)
-        // Always use source-over within the offscreen — screen blend is applied once
-        // at the end when compositing onto the background. Per-layer screen blending
-        // causes overlap darkening when multiple layers are drawn onto each other.
-        octx.filter = window.getComputedStyle(layer.content).filter;
+        // Strip url(#...) SVG filter references before applying to canvas — they taint
+        // the canvas in cross-origin iframe contexts and block toDataURL().
+        // Standard CSS filters (brightness, contrast, etc.) are preserved and work fine.
+        const _rawFilter = layer.wrap.id === 'symbol-wrapper'
+            ? 'none'
+            : window.getComputedStyle(layer.content).filter;
+        octx.filter = _rawFilter.replace(/url\([^)]*\)/g, '').trim() || 'none';
         octx.globalCompositeOperation = 'source-over';
 
         if (layer.type === 'image' && layer.content.src) {
@@ -6146,31 +6146,13 @@ async function generateHighResCanvas() {
             octx.scale(flip.h, flip.v);
 
             if (layer.wrap.id === 'symbol-wrapper' && layer.content.naturalWidth > 0) {
-                // Fetch SVG as blob to avoid cross-origin canvas taint when hosted in an iframe
-                const _drawSymbol = async (imgEl) => {
-                    let drawSrc = imgEl;
-                    try {
-                        const resp = await fetch(imgEl.src, { mode: 'cors' });
-                        if (resp.ok) {
-                            const blob = await resp.blob();
-                            const blobUrl = URL.createObjectURL(blob);
-                            drawSrc = await new Promise((res, rej) => {
-                                const bi = new Image();
-                                bi.onload = () => res(bi);
-                                bi.onerror = () => res(imgEl); // fall back to original
-                                bi.src = blobUrl;
-                            });
-                        }
-                    } catch(e) { /* fall back to original img element */ }
-                    const natW = drawSrc.naturalWidth  || 24;
-                    const natH = drawSrc.naturalHeight || 24;
-                    const ratio = natW / natH;
-                    let drawW = width, drawH = height;
-                    if (width / height > ratio) drawW = height * ratio;
-                    else drawH = width / ratio;
-                    octx.drawImage(drawSrc, -drawW / 2, -drawH / 2, drawW, drawH);
-                };
-                await _drawSymbol(layer.content);
+                const natW = layer.content.naturalWidth  || 24;
+                const natH = layer.content.naturalHeight || 24;
+                const ratio = natW / natH;
+                let drawW = width, drawH = height;
+                if (width / height > ratio) drawW = height * ratio;
+                else drawH = width / ratio;
+                octx.drawImage(layer.content, -drawW / 2, -drawH / 2, drawW, drawH);
             } else {
                 octx.drawImage(layer.content, -width / 2, -height / 2, width, height);
             }
@@ -6513,35 +6495,23 @@ async function generateStencilCanvas(size = 1000) {
             const m = new DOMMatrix(tr);
             octx.rotate(Math.atan2(m.b, m.a));
         }
-        octx.filter = window.getComputedStyle(layer.content).filter;
+        const _rawFilter2 = layer.wrap.id === 'symbol-wrapper'
+            ? 'none'
+            : window.getComputedStyle(layer.content).filter;
+        octx.filter = _rawFilter2.replace(/url\([^)]*\)/g, '').trim() || 'none';
         octx.globalCompositeOperation = 'source-over';
 
         if (layer.type === 'image' && layer.content.src) {
             const flip = layerFlip[layer.wrap.id] || { h: 1, v: 1 };
             octx.scale(flip.h, flip.v);
             if (layer.wrap.id === 'symbol-wrapper' && layer.content.naturalWidth > 0) {
-                // Fetch SVG as blob to avoid cross-origin canvas taint in iframe
-                let drawSrc = layer.content;
-                try {
-                    const resp = await fetch(layer.content.src, { mode: 'cors' });
-                    if (resp.ok) {
-                        const blob = await resp.blob();
-                        const blobUrl = URL.createObjectURL(blob);
-                        drawSrc = await new Promise((res) => {
-                            const bi = new Image();
-                            bi.onload = () => res(bi);
-                            bi.onerror = () => res(layer.content);
-                            bi.src = blobUrl;
-                        });
-                    }
-                } catch(e) { /* fall back to original */ }
-                const natW = drawSrc.naturalWidth  || 24;
-                const natH = drawSrc.naturalHeight || 24;
+                const natW = layer.content.naturalWidth  || 24;
+                const natH = layer.content.naturalHeight || 24;
                 const ratio = natW / natH;
                 let drawW = width, drawH = height;
                 if (width / height > ratio) drawW = height * ratio;
                 else drawH = width / ratio;
-                octx.drawImage(drawSrc, -drawW / 2, -drawH / 2, drawW, drawH);
+                octx.drawImage(layer.content, -drawW / 2, -drawH / 2, drawW, drawH);
             } else {
                 octx.drawImage(layer.content, -width / 2, -height / 2, width, height);
             }
