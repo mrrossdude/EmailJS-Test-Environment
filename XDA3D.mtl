@@ -2,7 +2,7 @@
 # www.blender.org
 
 newmtl Nylon_12_(with_Formlabs_Fuse_1_3D_Printer)
-Kd 0.800000 0.800000 0.800000
+Kd 0.098039 0.098039 0.098039
 
 newmtl Plastic_-_Translucent_Glossy_(White)
-Kd 0.098039 0.098039 0.098039
+Kd 0.800000 0.800000 0.800000
