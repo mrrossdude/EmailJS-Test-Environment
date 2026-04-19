@@ -3171,7 +3171,7 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
     <input id="symbol-search" type="text" placeholder="Search symbols..." oninput="filterSymbols(this.value)"
       style="background:#2a2a2a; border:1px solid #555; border-radius:6px; color:white; padding:9px 11px; font-size:15px; outline:none; width:100%; box-sizing:border-box; flex-shrink:0;">
     <div style="display:flex; gap:8px; align-items:center; flex-shrink:0;">
-      <input id="symbol-url-input" type="text" placeholder="Or paste an SVG URL…"
+      <input id="symbol-url-input" type="text" placeholder="Or paste an Iconify URL here to upload…"
         onkeydown="if(event.key==='Enter') previewUrlSymbol()"
         style="background:#2a2a2a; border:1px solid #555; border-radius:6px; color:white; padding:9px 11px; font-size:15px; outline:none; flex:1; box-sizing:border-box;">
       <button id="symbol-preview-btn" onclick="previewUrlSymbol()" style="background:#444; color:white; border:none; border-radius:6px; padding:9px 14px; font-size:14px; cursor:pointer; white-space:nowrap; flex-shrink:0;">Preview</button>
@@ -4903,7 +4903,7 @@ function openSymbolPicker() {
     const urlInput = document.getElementById('symbol-url-input');
     const urlPreview = document.getElementById('symbol-url-preview');
     const urlAdd = document.getElementById('symbol-url-add');
-    if (urlInput) { urlInput.value = ''; urlInput.style.borderColor = '#555'; urlInput.style.color = 'white'; urlInput.placeholder = 'Or paste an SVG URL…'; }
+    if (urlInput) { urlInput.value = ''; urlInput.style.borderColor = '#555'; urlInput.style.color = 'white'; urlInput.placeholder = 'Or paste an Iconify URL here to upload…'; }
     if (urlPreview) { urlPreview.src = ''; } const urlPreviewWrap = document.getElementById('symbol-url-preview-wrap'); if (urlPreviewWrap) urlPreviewWrap.style.display = 'none';
     if (urlAdd) urlAdd.style.display = 'none';
     const picker = document.getElementById('symbol-picker');
@@ -4977,128 +4977,127 @@ async function previewUrlSymbol() {
     const input = document.getElementById('symbol-url-input');
     const preview = document.getElementById('symbol-url-preview');
     const addBtn = document.getElementById('symbol-url-add');
-    const previewBtn = document.getElementById('symbol-preview-btn');
+    const previewWrap = document.getElementById('symbol-url-preview-wrap');
     const url = input ? input.value.trim() : '';
 
-    // Reset state
-    if (preview) { preview.src = ''; } const previewWrap = document.getElementById('symbol-url-preview-wrap'); if (previewWrap) previewWrap.style.display = 'none';
+    if (preview) preview.src = '';
+    if (previewWrap) previewWrap.style.display = 'none';
     if (addBtn) addBtn.style.display = 'none';
-    if (input) { input.style.borderColor = '#555'; input.style.color = 'white'; }
-
     if (!url) return;
 
-    // Show spinner on preview button, disable input
-    const origPreviewHTML = previewBtn ? previewBtn.innerHTML : null;
-    if (previewBtn) {
-        previewBtn.disabled = true;
-        previewBtn.innerHTML = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width:12px;height:12px;animation:spin 0.8s linear infinite;vertical-align:middle;"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" fill="none" stroke-dasharray="31.4" stroke-dashoffset="10"/></svg>`;
-    }
-    if (input) { input.disabled = true; input.style.opacity = '0.5'; }
-    const restorePreviewBtn = () => {
-        if (previewBtn) { previewBtn.disabled = false; previewBtn.innerHTML = origPreviewHTML; }
-        if (input) { input.disabled = false; input.style.opacity = '1'; }
-    };
-
-    const SVG_ERROR_MSG = 'Please provide links to SVG vector files only';
-
-    const showValidationError = (msg) => {
-        restorePreviewBtn();
-        if (!input) return;
-        input.style.borderColor = '#d3000a';
-        input.style.color = '#d3000a';
-        input.value = '';
-        input.placeholder = msg;
-        setTimeout(() => {
-            input.placeholder = 'Or paste an SVG URL…';
-            input.style.borderColor = '#555';
-            input.style.color = 'white';
-        }, 3000);
-    };
-
-    // Very lenient SVG check — if it contains svg anywhere it's probably SVG
-    // Also accept if content-type says image/svg or text/xml
-    const isSvgContent = (text, contentType) => {
-        if (contentType && (contentType.includes('svg') || contentType.includes('xml'))) return true;
-        if (!text) return false;
-        const lower = text.toLowerCase();
-        return lower.includes('<svg') || lower.includes('xmlns') && lower.includes('svg');
-    };
-
-    // Reject obvious non-SVG extensions only
-    const isObviouslyNotSvg = /\.(png|jpg|jpeg|gif|webp|bmp|ico|tiff|pdf|mp4|mp3|zip)(\?|$)/i.test(url);
-    if (isObviouslyNotSvg) {
-        showValidationError(SVG_ERROR_MSG);
+    // Reject obvious non-SVG extensions
+    if (/\.(png|jpg|jpeg|gif|webp|bmp|ico|tiff|pdf|mp4|mp3|zip)(\?|$)/i.test(url)) {
+        _symbolUrlError(input, 'Please provide a link to an SVG file');
         return;
     }
 
-    // Try proxies
-    const proxies = [
-        'https://corsproxy.io/?' + encodeURIComponent(url),
-        'https://api.allorigins.win/raw?url=' + encodeURIComponent(url),
-    ];
-
-    let svgText = null;
-    for (const proxyUrl of proxies) {
-        try {
-            const resp = await fetch(proxyUrl, { signal: AbortSignal.timeout(10000) });
-            if (!resp.ok) continue;
-            const contentType = resp.headers.get('content-type') || '';
-            const text = await resp.text();
-            if (isSvgContent(text, contentType)) { svgText = text; break; }
-        } catch(e) { /* try next */ }
-    }
-
-    if (!svgText) {
-        // Proxies failed — try loading directly as img to see if browser can handle it
-        // (works for same-origin or CORS-enabled hosts)
-        const directWorks = await new Promise(resolve => {
-            const testImg = new Image();
-            testImg.onload = () => resolve(true);
-            testImg.onerror = () => resolve(false);
-            setTimeout(() => resolve(false), 5000);
-            testImg.src = url;
-        });
-
-        restorePreviewBtn();
-        if (directWorks) {
-            // Can load directly — show preview without tinting
-            if (preview) { preview.src = url; } if (previewWrap) previewWrap.style.display = 'flex';
-            if (addBtn) addBtn.style.display = 'inline-block';
-            if (input) { input.style.borderColor = '#27ae60'; setTimeout(() => { input.style.borderColor = '#555'; }, 2000); }
-        } else {
-            if (input) { input.style.borderColor = '#d3000a'; setTimeout(() => { input.style.borderColor = '#555'; }, 2000); }
+    // CORS check — fetch the SVG text. If this succeeds the URL is usable for canvas export.
+    // If it fails the server doesn't allow external use.
+    try {
+        const resp = await fetch(url);
+        if (!resp.ok) throw new Error('HTTP ' + resp.status);
+        const text = await resp.text();
+        if (!text.includes('<svg') && !text.includes('<SVG')) {
+            _symbolUrlError(input, 'Please provide a link to an SVG file');
+            return;
         }
-        return;
+        // CORS passed — store SVG text on input element for addUrlSymbol to use
+        input._svgText = text;
+        if (preview) preview.src = url;
+        if (previewWrap) previewWrap.style.display = 'flex';
+        if (addBtn) addBtn.style.display = 'inline-block';
+        if (input) { input.style.borderColor = '#27ae60'; setTimeout(() => { input.style.borderColor = '#555'; }, 2000); }
+    } catch(e) {
+        _symbolUrlError(input, 'Resource does not allow links, try saving and uploading as image layer');
     }
+}
 
-    // Valid SVG fetched — tint and show preview
-    restorePreviewBtn();
-    const tinted = svgText
+function _symbolUrlError(input, msg) {
+    if (!input) return;
+    const orig = input.placeholder;
+    input.style.borderColor = '#d3000a';
+    input.style.color = '#d3000a';
+    input.placeholder = msg;
+    const val = input.value;
+    input.value = '';
+    setTimeout(() => {
+        input.style.borderColor = '#555';
+        input.style.color = 'white';
+        input.placeholder = orig;
+        input.value = val;
+        input._svgText = null;
+    }, 3000);
+}
+
+function addUrlSymbol() {
+    const input = document.getElementById('symbol-url-input');
+    const url = input ? input.value.trim() : '';
+    if (!url || !input._svgText) return;
+    // SVG text already fetched and CORS-verified by previewUrlSymbol
+    // Convert to data URL and place exactly like a library symbol
+    let svgText = input._svgText;
+    svgText = svgText
         .replace(/stroke="[^"]*"/g, 'stroke="white"')
         .replace(/fill="currentColor"/g, 'fill="white"')
         .replace(/fill="none"/g, 'fill="none"')
         .replace(/<svg /, '<svg style="background:transparent;color:white;" ');
-    const dataUrl = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(tinted);
-
-    if (preview) { preview.src = dataUrl; } if (previewWrap) previewWrap.style.display = 'flex';
-    if (addBtn) addBtn.style.display = 'inline-block';
-    if (input) { input.style.borderColor = '#27ae60'; setTimeout(() => { input.style.borderColor = '#555'; }, 2000); }
+    const dataUrl = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgText);
+    closeSymbolPicker();
+    placeSymbolDirect(dataUrl);
 }
 
-async function addUrlSymbol() {
-    const input = document.getElementById('symbol-url-input');
-    const url = input ? input.value.trim() : '';
-    if (!url) return;
+// Rasterises the symbol from the already-loaded symImg element.
+// Draws at 2x the workspace size for quality, applies stencil colour via source-in.
+// Stored as symWrap._symbolSnapshot — drawn with drawImage() at export time (no toDataURL).
+function _rasteriseSymbolFromDataUrl(symWrap, dataUrl) {
+    // Build a high-res snapshot canvas from a same-origin data URL.
+    // Canvas drawn from a data: URL is never tainted.
+    const img = new Image();
+    img.onload = function() {
+        const natW = img.naturalWidth  || 512;
+        const natH = img.naturalHeight || 512;
+        const SIZE = Math.max(natW, natH, 512) * 2;
+        const ratio = natW / natH;
+        let dw = SIZE, dh = SIZE;
+        if (ratio > 1) dh = Math.round(SIZE / ratio);
+        else           dw = Math.round(SIZE * ratio);
 
-    closeSymbolPicker(); // close grid immediately so workspace spinner is visible
+        const cvs = document.createElement('canvas');
+        cvs.width = dw; cvs.height = dh;
+        const ctx = cvs.getContext('2d');
+        ctx.clearRect(0, 0, dw, dh);
+        ctx.drawImage(img, 0, 0, dw, dh);
 
-    // Try multiple CORS proxies in order, then fall back to direct src
-    const proxies = [
-        'https://corsproxy.io/?' + encodeURIComponent(url),
-        'https://api.allorigins.win/raw?url=' + encodeURIComponent(url),
-        'https://cors-anywhere.herokuapp.com/' + url,
-    ];
+        const sc = window._stencilR !== undefined
+            ? `rgb(${Math.round(window._stencilR*255)},${Math.round(window._stencilG*255)},${Math.round(window._stencilB*255)})`
+            : '#0dff13';
+        ctx.globalCompositeOperation = 'source-in';
+        ctx.fillStyle = sc;
+        ctx.fillRect(0, 0, dw, dh);
+        ctx.globalCompositeOperation = 'source-over';
 
+        symWrap._symbolSnapshot = cvs;
+        symWrap._symbolRatio    = ratio;
+    };
+    img.src = dataUrl; // same-origin data URL — clean canvas guaranteed
+}
+
+// Keep old name as alias for colour-change re-rasterisation
+function _rasteriseSymbolFromImg(symWrap, symImg) {
+    if (symWrap._symbolDataUrl) {
+        _rasteriseSymbolFromDataUrl(symWrap, symWrap._symbolDataUrl);
+    }
+}
+
+// Legacy async version for colour-change re-rasterisation (uses stored svgText)
+async function _rasteriseSymbol(symWrap, svgText) {
+    const symImg2 = symWrap.querySelector('img') || document.getElementById('target-symbol');
+    if (symImg2 && symImg2.complete && symImg2.naturalWidth > 0) {
+        _rasteriseSymbolFromImg(symWrap, symImg2);
+    }
+}
+
+function placeSymbolDirect(iconUrl, showErrorOnFail = false) {
     const symBtn = document.getElementById('btn-layer-symbol');
     const origBtnHTML = symBtn ? symBtn.innerHTML : null;
     if (symBtn) {
@@ -5108,86 +5107,43 @@ async function addUrlSymbol() {
     const wsSpinner = document.getElementById('workspace-spinner');
     if (wsSpinner) wsSpinner.style.display = 'flex';
 
-    const restore = () => {
-        if (wsSpinner) wsSpinner.style.display = 'none';
-        if (symBtn) { symBtn.disabled = false; symBtn.innerHTML = origBtnHTML; }
-    };
-
-    // Try each proxy
-    for (const proxyUrl of proxies) {
-        try {
-            const resp = await fetch(proxyUrl, { signal: AbortSignal.timeout(6000) });
-            if (!resp.ok) continue;
-            let svgText = await resp.text();
-            if (!svgText.includes('<svg') && !svgText.includes('<SVG')) continue;
-            svgText = svgText
-                .replace(/stroke="[^"]*"/g, 'stroke="white"')
-                .replace(/fill="currentColor"/g, 'fill="white"')
-                .replace(/fill="none"/g, 'fill="none"')
-                .replace(/<svg /, '<svg style="background:transparent;color:white;" ');
-            const dataUrl = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgText);
-            restore();
-            // Use placeSymbolDirect with the data URL so no further fetch needed
-            placeSymbolDirect(dataUrl);
-            return;
-        } catch(e) { /* try next */ }
-    }
-
-    // All proxies failed — try loading directly as img src as last resort (no tinting)
-    restore();
-    placeSymbolDirect(url, true); // pass flag to show error if this also fails
-}
-
-function placeSymbolDirect(iconUrl, showErrorOnFail = false) {
-    closeSymbolPicker();
-
-    const symBtn = document.getElementById('btn-layer-symbol');
-    const origBtnHTML = symBtn ? symBtn.innerHTML : null;
-    if (symBtn) {
-        symBtn.disabled = true;
-        symBtn.innerHTML = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width:14px;height:14px;margin-right:6px;animation:spin 0.8s linear infinite;">
-            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" fill="none" stroke-dasharray="31.4" stroke-dashoffset="10"/>
-        </svg> Loading…`;
-    }
-    const wsSpinner = document.getElementById('workspace-spinner');
-    if (wsSpinner) wsSpinner.style.display = 'flex';
-
     const symImg = document.getElementById('target-symbol');
     const symWrap = document.getElementById('symbol-wrapper');
-
     const isSwap = symWrap.style.display !== 'none';
     const prevW = isSwap ? symWrap.style.width : null;
     const prevH = isSwap ? symWrap.style.height : null;
     const prevLeft = isSwap ? symWrap.style.left : null;
-    const prevTop  = isSwap ? symWrap.style.top  : null;
+    const prevTop = isSwap ? symWrap.style.top : null;
     const prevTransform = isSwap ? symWrap.style.transform : null;
     const prevFlip = isSwap ? { ...layerFlip['symbol-wrapper'] } : null;
 
+    symWrap._symbolSnapshot = null;
+    symImg.removeAttribute('crossOrigin');
     symImg.style.filter = 'url(#green-stencil)';
     symImg.style.mixBlendMode = 'screen';
-    symImg.src = '';          // reset src first to force a clean load
+    symImg.src = '';
     symImg.src = iconUrl;
     symImg.onload = () => {
         if (isSwap && prevW) {
-            symWrap.style.width     = prevW;
-            symWrap.style.height    = prevH;
-            symWrap.style.left      = prevLeft;
-            symWrap.style.top       = prevTop;
+            symWrap.style.width = prevW; symWrap.style.height = prevH;
+            symWrap.style.left = prevLeft; symWrap.style.top = prevTop;
             symWrap.style.transform = prevTransform;
             layerFlip['symbol-wrapper'] = prevFlip;
-            symImg.style.transform  = `scale(${prevFlip.h}, ${prevFlip.v})`;
-            symWrap.style.display   = 'block';
+            symImg.style.transform = `scale(${prevFlip.h}, ${prevFlip.v})`;
+            symWrap.style.display = 'block';
         } else {
             layerFlip['symbol-wrapper'] = { h: 1, v: 1 };
             symImg.style.transform = '';
             symWrap.style.transform = 'rotate(0deg)';
             const size = workspace.offsetWidth * 0.25;
-            symWrap.style.width  = size + 'px';
-            symWrap.style.height = size + 'px';
-            symWrap.style.left = ((workspace.offsetWidth  - size) / 2) + 'px';
-            symWrap.style.top  = ((workspace.offsetHeight - size) / 2) + 'px';
+            symWrap.style.width = size + 'px'; symWrap.style.height = size + 'px';
+            symWrap.style.left = ((workspace.offsetWidth - size) / 2) + 'px';
+            symWrap.style.top = ((workspace.offsetHeight - size) / 2) + 'px';
             symWrap.style.display = 'block';
         }
+        // iconUrl is always a data URL at this point (enforced by callers)
+        symWrap._symbolDataUrl = iconUrl;
+        _rasteriseSymbolFromDataUrl(symWrap, iconUrl);
         activeWrapper = symWrap;
         updateSymbolButtonText(true);
         syncStencilMask(symWrap);
@@ -5200,104 +5156,36 @@ function placeSymbolDirect(iconUrl, showErrorOnFail = false) {
     symImg.onerror = () => {
         if (wsSpinner) wsSpinner.style.display = 'none';
         if (symBtn) { symBtn.disabled = false; symBtn.innerHTML = origBtnHTML; }
-        if (showErrorOnFail) {
-            notify('Upload Error: Please try uploading again or use a different SVG link', 'error');
-        }
-        console.error('Symbol URL failed to load:', iconUrl);
+        if (showErrorOnFail) notify('Upload Error: Please try uploading again or use a different SVG link', 'error');
     };
 }
+
+
 async function placeSymbol(name, iconUrl) {
     closeSymbolPicker();
-
-    // Show loading state on the symbol button
+    // Fetch SVG text and convert to data URL — makes img src same-origin so canvas is clean
     const symBtn = document.getElementById('btn-layer-symbol');
     const origBtnHTML = symBtn ? symBtn.innerHTML : null;
-    if (symBtn) {
-        symBtn.disabled = true;
-        symBtn.innerHTML = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width:14px;height:14px;margin-right:6px;animation:spin 0.8s linear infinite;">
-            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" fill="none" stroke-dasharray="31.4" stroke-dashoffset="10"/>
-        </svg> Loading…`;
-    }
-
-    // Show workspace spinner
+    if (symBtn) { symBtn.disabled = true; symBtn.innerHTML = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width:14px;height:14px;margin-right:6px;animation:spin 0.8s linear infinite;"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" fill="none" stroke-dasharray="31.4" stroke-dashoffset="10"/></svg> Loading…`; }
     const wsSpinner = document.getElementById('workspace-spinner');
     if (wsSpinner) wsSpinner.style.display = 'flex';
-
     try {
         const resp = await fetch(iconUrl);
         let svgText = await resp.text();
-        // Set stroke to white and remove any fill that could block transparency
-        // Force all strokes/fills white so green-stencil filter colours them green
         svgText = svgText
             .replace(/stroke="[^"]*"/g, 'stroke="white"')
             .replace(/fill="currentColor"/g, 'fill="white"')
             .replace(/fill="none"/g, 'fill="none"')
             .replace(/<svg /, '<svg style="background:transparent;color:white;" ');
         const dataUrl = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgText);
-
-        const symImg = document.getElementById('target-symbol');
-        const symWrap = document.getElementById('symbol-wrapper');
-
-        // Preserve current size/position/transform if symbol is already placed (swap)
-        const isSwap = symWrap.style.display !== 'none';
-        const prevW         = isSwap ? symWrap.style.width     : null;
-        const prevH         = isSwap ? symWrap.style.height    : null;
-        const prevLeft      = isSwap ? symWrap.style.left      : null;
-        const prevTop       = isSwap ? symWrap.style.top       : null;
-        const prevTransform = isSwap ? symWrap.style.transform : null;
-        const prevFlip      = isSwap ? { ...layerFlip['symbol-wrapper'] } : null;
-
-        symImg.style.filter = 'url(#green-stencil)';
-        symImg.style.mixBlendMode = 'screen';
-        symImg.src = dataUrl;
-        symImg.onload = () => {
-            if (isSwap && prevW) {
-                // Restore previous geometry
-                symWrap.style.width     = prevW;
-                symWrap.style.height    = prevH;
-                symWrap.style.left      = prevLeft;
-                symWrap.style.top       = prevTop;
-                symWrap.style.transform = prevTransform;
-                layerFlip['symbol-wrapper'] = prevFlip;
-                symImg.style.transform  = `scale(${prevFlip.h}, ${prevFlip.v})`;
-                symWrap.style.display   = 'block';
-            } else {
-                // Fresh placement — size and pre-position before centering
-                layerFlip['symbol-wrapper'] = { h: 1, v: 1 };
-                symImg.style.transform = '';
-                symWrap.style.transform = 'rotate(0deg)';
-                const size = workspace.offsetWidth * 0.25;
-                symWrap.style.width  = size + 'px';
-                symWrap.style.height = size + 'px';
-                // Pre-position at workspace centre so offsetLeft/Top are valid
-                symWrap.style.left = ((workspace.offsetWidth  - size) / 2) + 'px';
-                symWrap.style.top  = ((workspace.offsetHeight - size) / 2) + 'px';
-                symWrap.style.display = 'block';
-            }
-            // Do NOT touch isJpegMode or call applyFilters — those belong to the
-            // image layer and must not be disturbed when placing a symbol.
-            activeWrapper = symWrap;
-            updateSymbolButtonText(true);
-            syncStencilMask(symWrap);
-            updateControls(symWrap);
-            updateInspector();
-            updateActiveCtrl();
-            // Restore button and hide workspace spinner
-            if (wsSpinner) wsSpinner.style.display = 'none';
-            if (symBtn) {
-                symBtn.disabled = false;
-                symBtn.innerHTML = origBtnHTML;
-                updateSymbolButtonText(true);
-            }
-        };
-    } catch(e) {
-        console.error('Symbol load failed:', e);
-        // Restore button on failure too
         if (wsSpinner) wsSpinner.style.display = 'none';
-        if (symBtn) {
-            symBtn.disabled = false;
-            symBtn.innerHTML = origBtnHTML;
-        }
+        if (symBtn) { symBtn.disabled = false; symBtn.innerHTML = origBtnHTML; }
+        placeSymbolDirect(dataUrl);
+    } catch(e) {
+        if (wsSpinner) wsSpinner.style.display = 'none';
+        if (symBtn) { symBtn.disabled = false; symBtn.innerHTML = origBtnHTML; }
+        // Fallback: place directly (will taint canvas but at least shows in editor)
+        placeSymbolDirect(iconUrl);
     }
 }
 
@@ -5333,7 +5221,12 @@ function deleteLayer(type) {
         const sym = document.getElementById('target-symbol');
         const symWrapper = document.getElementById('symbol-wrapper');
         if (sym) sym.src = '';
-        if (symWrapper) symWrapper.style.display = 'none';
+        if (symWrapper) {
+            symWrapper.style.display = 'none';
+            symWrapper._symbolSnapshot = null;
+            symWrapper._symbolRatio    = null;
+            symWrapper._symbolSvgText  = null;
+        }
         updateSymbolButtonText(false);
         document.getElementById('image-tools').style.display = 'none';
     }
@@ -6102,7 +5995,7 @@ async function generateHighResCanvas() {
         { wrap: document.getElementById('text-wrapper-5'),content: document.getElementById('target-text-5'),type: 'text' }
     ];
 
-    // Render all layers onto offscreen with source-over (no url() filters — those taint the canvas)
+    // Render all layers onto offscreen
     for (const layer of layers) {
         if (!layer.wrap || layer.wrap.style.display === 'none' || !layer.content) continue;
 
@@ -6132,29 +6025,60 @@ async function generateHighResCanvas() {
             octx.rotate(Math.atan2(m.b, m.a));
         }
 
-        // Strip url(#...) SVG filter references before applying to canvas — they taint
-        // the canvas in cross-origin iframe contexts and block toDataURL().
-        // Standard CSS filters (brightness, contrast, etc.) are preserved and work fine.
-        const _rawFilter = layer.wrap.id === 'symbol-wrapper'
-            ? 'none'
-            : window.getComputedStyle(layer.content).filter;
-        octx.filter = _rawFilter.replace(/url\([^)]*\)/g, '').trim() || 'none';
+        octx.filter = 'none';
         octx.globalCompositeOperation = 'source-over';
 
         if (layer.type === 'image' && layer.content.src) {
             const flip = layerFlip[layer.wrap.id] || { h: 1, v: 1 };
             octx.scale(flip.h, flip.v);
 
-            if (layer.wrap.id === 'symbol-wrapper' && layer.content.naturalWidth > 0) {
-                const natW = layer.content.naturalWidth  || 24;
-                const natH = layer.content.naturalHeight || 24;
-                const ratio = natW / natH;
-                let drawW = width, drawH = height;
-                if (width / height > ratio) drawW = height * ratio;
-                else drawH = width / ratio;
-                octx.drawImage(layer.content, -drawW / 2, -drawH / 2, drawW, drawH);
+            if (layer.wrap.id === 'symbol-wrapper') {
+                // Snapshot is a clean high-res canvas built from a same-origin data URL
+                const snap = layer.wrap._symbolSnapshot;
+                if (snap && snap.width > 0) {
+                    const snapRatio = layer.wrap._symbolRatio || 1;
+                    let drawW = width, drawH = height;
+                    if (width / height > snapRatio) drawW = height * snapRatio;
+                    else drawH = width / snapRatio;
+                    octx.drawImage(snap, -drawW / 2, -drawH / 2, drawW, drawH);
+                }
             } else {
-                octx.drawImage(layer.content, -width / 2, -height / 2, width, height);
+                // Image layer: draw to temp canvas, apply feColorMatrix stencil manually.
+                // Cannot use url(#green-stencil) on a canvas context, so we replicate it
+                // with getImageData — safe because uploaded images are always data URLs.
+                const iw = Math.round(width), ih = Math.round(height);
+                if (iw > 0 && ih > 0) {
+                    const tmp = document.createElement('canvas');
+                    tmp.width = iw; tmp.height = ih;
+                    const tctx = tmp.getContext('2d');
+                    // Apply non-SVG CSS filters (brightness, contrast, invert)
+                    const rawFilter = window.getComputedStyle(layer.content).filter;
+                    const safeFilter = rawFilter.replace(/url\([^)]*\)/g, '').trim();
+                    if (safeFilter && safeFilter !== 'none') tctx.filter = safeFilter;
+                    tctx.drawImage(layer.content, 0, 0, iw, ih);
+                    tctx.filter = 'none';
+                    // Replicate feColorMatrix stencil: flood each opaque pixel with stencil colour.
+                    // For jpeg-stencil mode, also knock out bright pixels first.
+                    const imgData = tctx.getImageData(0, 0, iw, ih);
+                    const d = imgData.data;
+                    const sr = window._stencilR !== undefined ? window._stencilR * 255 : 13;
+                    const sg = window._stencilG !== undefined ? window._stencilG * 255 : 255;
+                    const sb = window._stencilB !== undefined ? window._stencilB * 255 : 19;
+                    if (isJpegMode) {
+                        const thresh = parseInt((document.getElementById('threshold-slider') || {}).value || 128);
+                        for (let p = 0; p < d.length; p += 4) {
+                            const brightness = d[p] * 0.299 + d[p+1] * 0.587 + d[p+2] * 0.114;
+                            if (brightness > thresh) { d[p+3] = 0; }
+                            else { d[p] = sr; d[p+1] = sg; d[p+2] = sb; }
+                        }
+                    } else {
+                        for (let p = 0; p < d.length; p += 4) {
+                            if (d[p+3] > 0) { d[p] = sr; d[p+1] = sg; d[p+2] = sb; }
+                        }
+                    }
+                    tctx.putImageData(imgData, 0, 0);
+                    octx.drawImage(tmp, -width / 2, -height / 2, width, height);
+                }
             }
         } else if (layer.type === 'text') {
             const flip      = layerFlip[layer.wrap.id] || { h: 1, v: 1 };
@@ -6405,6 +6329,19 @@ function confirmReset() {
         // Reset legend type selection
         selectedLegendType = null;
         document.querySelectorAll('.legend-type-card').forEach(c => c.classList.remove('selected'));
+        // Restore backlight controls and stencil colour in case white legend was active
+        const _colourBtn2    = document.getElementById('colour-btn');
+        const _backlightBtn2 = document.getElementById('backlight-toggle-btn');
+        if (_colourBtn2)    _colourBtn2.style.display    = '';
+        if (_backlightBtn2) _backlightBtn2.style.display = '';
+        // Restore backlight on state and default green stencil colour
+        _backlightOn = true;
+        const _iconOn2  = document.getElementById('backlight-icon-on');
+        const _iconOff2 = document.getElementById('backlight-icon-off');
+        if (_iconOn2)  _iconOn2.style.display  = '';
+        if (_iconOff2) _iconOff2.style.display = 'none';
+        _stencilColour = { r: 0.051, g: 1.0, b: 0.075 };
+        _applyStencilColour(_stencilColour);
         // Reset profile cards
         document.querySelectorAll('.profile-card').forEach(c => c.classList.remove('selected'));
         // Reset row label
@@ -6495,25 +6432,52 @@ async function generateStencilCanvas(size = 1000) {
             const m = new DOMMatrix(tr);
             octx.rotate(Math.atan2(m.b, m.a));
         }
-        const _rawFilter2 = layer.wrap.id === 'symbol-wrapper'
-            ? 'none'
-            : window.getComputedStyle(layer.content).filter;
-        octx.filter = _rawFilter2.replace(/url\([^)]*\)/g, '').trim() || 'none';
+        octx.filter = 'none';
         octx.globalCompositeOperation = 'source-over';
 
         if (layer.type === 'image' && layer.content.src) {
             const flip = layerFlip[layer.wrap.id] || { h: 1, v: 1 };
             octx.scale(flip.h, flip.v);
-            if (layer.wrap.id === 'symbol-wrapper' && layer.content.naturalWidth > 0) {
-                const natW = layer.content.naturalWidth  || 24;
-                const natH = layer.content.naturalHeight || 24;
-                const ratio = natW / natH;
-                let drawW = width, drawH = height;
-                if (width / height > ratio) drawW = height * ratio;
-                else drawH = width / ratio;
-                octx.drawImage(layer.content, -drawW / 2, -drawH / 2, drawW, drawH);
+            if (layer.wrap.id === 'symbol-wrapper') {
+                const snap2 = layer.wrap._symbolSnapshot;
+                if (snap2 && snap2.width > 0) {
+                    const snapRatio = layer.wrap._symbolRatio || 1;
+                    let drawW = width, drawH = height;
+                    if (width / height > snapRatio) drawW = height * snapRatio;
+                    else drawH = width / snapRatio;
+                    octx.drawImage(snap2, -drawW / 2, -drawH / 2, drawW, drawH);
+                }
             } else {
-                octx.drawImage(layer.content, -width / 2, -height / 2, width, height);
+                const iw2 = Math.round(width), ih2 = Math.round(height);
+                if (iw2 > 0 && ih2 > 0) {
+                    const tmp2 = document.createElement('canvas');
+                    tmp2.width = iw2; tmp2.height = ih2;
+                    const tctx2 = tmp2.getContext('2d');
+                    const rawFilter2 = window.getComputedStyle(layer.content).filter;
+                    const safeFilter2 = rawFilter2.replace(/url\([^)]*\)/g, '').trim();
+                    if (safeFilter2 && safeFilter2 !== 'none') tctx2.filter = safeFilter2;
+                    tctx2.drawImage(layer.content, 0, 0, iw2, ih2);
+                    tctx2.filter = 'none';
+                    const imgData2 = tctx2.getImageData(0, 0, iw2, ih2);
+                    const d2 = imgData2.data;
+                    const sr2 = window._stencilR !== undefined ? window._stencilR * 255 : 13;
+                    const sg2 = window._stencilG !== undefined ? window._stencilG * 255 : 255;
+                    const sb2 = window._stencilB !== undefined ? window._stencilB * 255 : 19;
+                    if (isJpegMode) {
+                        const thresh2 = parseInt((document.getElementById('threshold-slider') || {}).value || 128);
+                        for (let p = 0; p < d2.length; p += 4) {
+                            const brightness = d2[p] * 0.299 + d2[p+1] * 0.587 + d2[p+2] * 0.114;
+                            if (brightness > thresh2) { d2[p+3] = 0; }
+                            else { d2[p] = sr2; d2[p+1] = sg2; d2[p+2] = sb2; }
+                        }
+                    } else {
+                        for (let p = 0; p < d2.length; p += 4) {
+                            if (d2[p+3] > 0) { d2[p] = sr2; d2[p+1] = sg2; d2[p+2] = sb2; }
+                        }
+                    }
+                    tctx2.putImageData(imgData2, 0, 0);
+                    octx.drawImage(tmp2, -width / 2, -height / 2, width, height);
+                }
             }
         } else if (layer.type === 'text') {
             const flip      = layerFlip[layer.wrap.id] || { h: 1, v: 1 };
@@ -7296,7 +7260,23 @@ function _applyTextStyle(wrapper, property, value) {
         fontSize:'_savedFontSize'
     };
     if (propMap[property]) wrapper[propMap[property]] = value;
-    if (wrapper._textSnapshot) rasteriseTextLayer(wrapper, false);
+    if (wrapper._textSnapshot) {
+        if (property === 'fontFamily') {
+            // Re-rasterise then correct height to match new font's aspect ratio,
+            // keeping the current width so the layer doesn't jump to full workspace width
+            rasteriseTextLayer(wrapper, false).then(() => {
+                if (wrapper._textSnapshotAR && wrapper._textSnapshotAR > 0) {
+                    const currentW = wrapper.offsetWidth;
+                    const newH = Math.round(currentW / wrapper._textSnapshotAR);
+                    wrapper.style.height = newH + 'px';
+                    syncStencilMask(wrapper);
+                    updateControls(wrapper);
+                }
+            });
+        } else {
+            rasteriseTextLayer(wrapper, false);
+        }
+    }
 }
 function toggleStyle(type) {
   const wrap = document.getElementById('text-wrapper');
@@ -8095,8 +8075,10 @@ function _applyStencilColour(c) {
         .map(id => document.getElementById(id))
         .filter(wrap => wrap && wrap.style.display !== 'none' && wrap._textSnapshot);
 
-    if (wrapsToUpdate.length === 0) {
-        // No text layers — just update image filters immediately
+    const symWrap = document.getElementById('symbol-wrapper');
+    const hasSymbol = symWrap && symWrap.style.display !== 'none' && symWrap._symbolSnapshot;
+
+    if (wrapsToUpdate.length === 0 && !hasSymbol) {
         applyFilters();
         return;
     }
@@ -8105,6 +8087,12 @@ function _applyStencilColour(c) {
     // This prevents the jerky stagger of image updating before text
     const wsSpinner = document.getElementById('workspace-spinner');
     if (wsSpinner) wsSpinner.style.display = 'flex';
+
+    // Re-rasterise symbol with new stencil colour if present
+    const symImg2 = document.getElementById('target-symbol');
+    if (hasSymbol && symImg2 && symImg2.naturalWidth > 0) {
+        _rasteriseSymbolFromImg(symWrap, symImg2);
+    }
 
     Promise.all(wrapsToUpdate.map(wrap => rasteriseTextLayer(wrap, false)))
         .then(() => {
