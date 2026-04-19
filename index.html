@@ -6105,12 +6105,12 @@ async function generateHighResCanvas() {
     ];
 
     // Render all layers onto offscreen with source-over (no url() filters — those taint the canvas)
-    layers.forEach(layer => {
-        if (!layer.wrap || layer.wrap.style.display === 'none' || !layer.content) return;
+    for (const layer of layers) {
+        if (!layer.wrap || layer.wrap.style.display === 'none' || !layer.content) continue;
 
         const width   = layer.wrap.offsetWidth  * scale;
         const height  = layer.wrap.offsetHeight * scale;
-        if (width <= 0 || height <= 0) return;
+        if (width <= 0 || height <= 0) continue;
 
         let centerX, centerY;
         if (layer.type === 'text' && layer.content) {
@@ -6146,13 +6146,31 @@ async function generateHighResCanvas() {
             octx.scale(flip.h, flip.v);
 
             if (layer.wrap.id === 'symbol-wrapper' && layer.content.naturalWidth > 0) {
-                const natW = layer.content.naturalWidth  || 24;
-                const natH = layer.content.naturalHeight || 24;
-                const ratio = natW / natH;
-                let drawW = width, drawH = height;
-                if (width / height > ratio) drawW = height * ratio;
-                else drawH = width / ratio;
-                octx.drawImage(layer.content, -drawW / 2, -drawH / 2, drawW, drawH);
+                // Fetch SVG as blob to avoid cross-origin canvas taint when hosted in an iframe
+                const _drawSymbol = async (imgEl) => {
+                    let drawSrc = imgEl;
+                    try {
+                        const resp = await fetch(imgEl.src, { mode: 'cors' });
+                        if (resp.ok) {
+                            const blob = await resp.blob();
+                            const blobUrl = URL.createObjectURL(blob);
+                            drawSrc = await new Promise((res, rej) => {
+                                const bi = new Image();
+                                bi.onload = () => res(bi);
+                                bi.onerror = () => res(imgEl); // fall back to original
+                                bi.src = blobUrl;
+                            });
+                        }
+                    } catch(e) { /* fall back to original img element */ }
+                    const natW = drawSrc.naturalWidth  || 24;
+                    const natH = drawSrc.naturalHeight || 24;
+                    const ratio = natW / natH;
+                    let drawW = width, drawH = height;
+                    if (width / height > ratio) drawW = height * ratio;
+                    else drawH = width / ratio;
+                    octx.drawImage(drawSrc, -drawW / 2, -drawH / 2, drawW, drawH);
+                };
+                await _drawSymbol(layer.content);
             } else {
                 octx.drawImage(layer.content, -width / 2, -height / 2, width, height);
             }
@@ -6182,7 +6200,7 @@ async function generateHighResCanvas() {
         }
 
         octx.restore();
-    });
+    }
 
     // Mask offscreen to keycap shape
     octx.globalCompositeOperation = 'destination-in';
@@ -6470,11 +6488,11 @@ async function generateStencilCanvas(size = 1000) {
         { wrap: document.getElementById('text-wrapper-5'), content: document.getElementById('target-text-5'), type: 'text' }
     ];
 
-    layers.forEach(layer => {
-        if (!layer.wrap || layer.wrap.style.display === 'none' || !layer.content) return;
+    for (const layer of layers) {
+        if (!layer.wrap || layer.wrap.style.display === 'none' || !layer.content) continue;
         const width   = layer.wrap.offsetWidth  * scale;
         const height  = layer.wrap.offsetHeight * scale;
-        if (width <= 0 || height <= 0) return;
+        if (width <= 0 || height <= 0) continue;
         let centerX, centerY;
         if (layer.type === 'text' && layer.content) {
             const wrapLeft = parseFloat(layer.wrap.style.left) || 0;
@@ -6502,13 +6520,28 @@ async function generateStencilCanvas(size = 1000) {
             const flip = layerFlip[layer.wrap.id] || { h: 1, v: 1 };
             octx.scale(flip.h, flip.v);
             if (layer.wrap.id === 'symbol-wrapper' && layer.content.naturalWidth > 0) {
-                const natW = layer.content.naturalWidth || 24;
-                const natH = layer.content.naturalHeight || 24;
+                // Fetch SVG as blob to avoid cross-origin canvas taint in iframe
+                let drawSrc = layer.content;
+                try {
+                    const resp = await fetch(layer.content.src, { mode: 'cors' });
+                    if (resp.ok) {
+                        const blob = await resp.blob();
+                        const blobUrl = URL.createObjectURL(blob);
+                        drawSrc = await new Promise((res) => {
+                            const bi = new Image();
+                            bi.onload = () => res(bi);
+                            bi.onerror = () => res(layer.content);
+                            bi.src = blobUrl;
+                        });
+                    }
+                } catch(e) { /* fall back to original */ }
+                const natW = drawSrc.naturalWidth  || 24;
+                const natH = drawSrc.naturalHeight || 24;
                 const ratio = natW / natH;
                 let drawW = width, drawH = height;
                 if (width / height > ratio) drawW = height * ratio;
                 else drawH = width / ratio;
-                octx.drawImage(layer.content, -drawW / 2, -drawH / 2, drawW, drawH);
+                octx.drawImage(drawSrc, -drawW / 2, -drawH / 2, drawW, drawH);
             } else {
                 octx.drawImage(layer.content, -width / 2, -height / 2, width, height);
             }
@@ -6537,7 +6570,7 @@ async function generateStencilCanvas(size = 1000) {
             }
         }
         octx.restore();
-    });
+    }
 
     // Mask to keycap shape
     octx.globalCompositeOperation = 'destination-in';
