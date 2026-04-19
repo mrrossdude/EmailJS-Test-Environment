@@ -820,8 +820,8 @@ label {
   cursor: move;
   user-select: none;
   display: block;
-  /* Hard-clip so text never contributes to scroll/layout outside its wrapper */
-  overflow: hidden;
+  /* Allow decorative fonts to render outside bounding box */
+  overflow: visible;
   max-width: 100%;
 }
 
@@ -1248,7 +1248,15 @@ position: absolute;
 }
 
 .text-format-group .mini-pill-btn {
-  min-width: 20px;       
+  min-width: 20px;
+}
+
+.fmt-sq-btn {
+  width: 40px !important;
+  padding: 0 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
 }
 
 .mini-pill-btn.toggle-active {
@@ -1360,22 +1368,7 @@ position: absolute;
 }
 
 .inspector-overlay-bar {
-    position: absolute;
-    top: 37px;
-    left: 5px;
-    right: 5px;
-    z-index: 5000; 
-    background: #1a1a1a !important;
-    border: 1px solid #f1c40f;
-    border-radius: 8px;
-    padding: 0 15px;
-    height: 45px;
     display: none;
-    align-items: center;
-    justify-content: space-between;
-    opacity: 1 !important;
-    filter: none !important;
-    visibility: visible !important;
 }
 
 .wand-control-group {
@@ -1395,31 +1388,82 @@ position: absolute;
 .wand-slider-override {
     display: flex;
     align-items: center;
-    gap: 8px;
-    flex-grow: 1; 
+    gap: 10px;
+    flex-grow: 1;
 }
 
 .wand-slider-override span {
-    font-size: 10px;
-    color: #aaa;
+    font-size: 16px;
+    font-weight: 600;
+    color: #ddd;
+    white-space: nowrap;
+}
+
+/* Wand tolerance slider — blue fill, matches .pill-slider style */
+#wand-options-bar input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    background: transparent;
+    margin: 0;
+    flex: 1;
+    min-width: 140px;
+}
+#wand-options-bar input[type="range"]::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 4px;
+    border-radius: 2px;
+    background: linear-gradient(to right, #3498db var(--value, 20%), #777 var(--value, 20%));
+}
+#wand-options-bar input[type="range"]::-moz-range-track {
+    background-color: #777;
+    height: 4px;
+    border-radius: 2px;
+}
+#wand-options-bar input[type="range"]::-moz-range-progress {
+    background-color: #3498db;
+    height: 4px;
+    border-radius: 2px;
+}
+#wand-options-bar input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    height: 10px;
+    width: 9px;
+    background: #ffffff;
+    border-radius: 2px;
+    cursor: pointer;
+    margin-top: -3px;
+    box-shadow: 0 0 2px rgba(0,0,0,0.5);
+}
+#wand-options-bar input[type="range"]::-moz-range-thumb {
+    height: 10px;
+    width: 9px;
+    background: #ffffff;
+    border-radius: 2px;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 0 2px rgba(0,0,0,0.5);
 }
 
 #wand-options-bar .mini-pill-btn,
 #wand-options-bar .apply-btn {
-    padding: 4px 10px;
+    padding: 10px 22px;
     border-radius: 6px;
-    font-size: 11px;
+    font-size: 17px;
+    font-weight: 600;
     border: none;
     cursor: pointer;
     color: white;
+    height: 44px;
+    box-sizing: border-box;
 }
 
 #wand-options-bar .apply-btn {
-    background: #27ae60 !important; 
+    background: #27ae60 !important;
 }
 
 #wand-options-bar .mini-pill-btn:hover {
-  opacity: 0.8;
+    opacity: 0.85;
 }
 
 .apply-btn {
@@ -1565,57 +1609,47 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
 }
 
 #wand-options-bar {
-  background: rgba(30, 30, 30, 0.8);
-  backdrop-filter: blur(10px);      
-  border-radius: 50px;               
-  padding: 8px 20px;
-  display: none;                    
-  align-items: center;
-  gap: 15px;
-  position: absolute;
-  top: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 2000;                     
-}
-
-#wand-options-bar.inspector-overlay-bar {
-    display: none; 
+    display: none;
     position: absolute;
-    top: 10px;
+    bottom: 75px;
     left: 50%;
     transform: translateX(-50%);
-    background: rgba(30, 30, 30, 0.8);
+    z-index: 5500;
+    background: rgba(30, 30, 30, 0.9);
     backdrop-filter: blur(10px);
-    border-radius: 12px;
-    padding: 6px 12px;
-    width: 95%;
-    max-width: 500px;
-    z-index: 2000;
+    border: 3px solid #3498db;
+    border-radius: 8px;
+    padding: 12px 22px;
+    flex-direction: row;
     align-items: center;
-    justify-content: space-between; 
+    gap: 16px;
+    pointer-events: auto !important;
     box-sizing: border-box;
+    white-space: nowrap;
 }
 
 #wand-options-bar button {
-  background: transparent;
-  color: white;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 20px;
-  padding: 5px 15px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  font-size: 13px;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 22px;
+    cursor: pointer;
+    font-size: 17px;
+    font-weight: 600;
+    transition: opacity 0.2s ease;
+    height: 44px;
+    box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
 }
 
 #wand-options-bar button:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: #f1c40f;
+    opacity: 0.85;
 }
 
 #wand-options-bar .apply-btn {
-  background: #27ae60; 
-  border: none;
+    background: #27ae60;
 }
 
 
@@ -1718,6 +1752,13 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
     object-fit: contain;
     border-radius: 10px;
     display: block;
+}
+#confirm-thumb {
+    width: 220px !important;
+    height: auto !important;
+    max-height: none !important;
+    max-width: 220px !important;
+    object-fit: contain;
 }
 .step-section-text {
     height: 125px;
@@ -2103,23 +2144,26 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
     align-items: center;
     gap: 5px;
     cursor: pointer;
-    border: 2px solid #444;
+    border: 2px solid transparent;
     border-radius: 8px;
     padding: 5px;
     background: #1a1a1a;
     transition: border-color 0.15s, background 0.15s;
-    width: 78px;
+    width: 84px;
     box-sizing: border-box;
     position: relative;
 }
 .profile-card img {
-    width: 66px;
-    height: 66px;
+    width: 72px;
+    height: 72px;
     object-fit: cover;
     border-radius: 5px;
     display: block;
     background: #222;
     flex-shrink: 0;
+    box-shadow: 0 0 0 2px transparent;
+    transition: box-shadow 0.15s;
+    margin-bottom: 3px;
 }
 .profile-card span {
     font-size: 10px;
@@ -2130,12 +2174,11 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
     word-break: break-word;
     width: 100%;
 }
-.profile-card:hover {
-    border-color: #3498db;
+.profile-card:hover img {
+    box-shadow: 0 0 0 2px #3498db;
 }
-.profile-card.selected {
-    border-color: #3498db;
-    background: rgba(0,123,255,0.12);
+.profile-card.selected img {
+    box-shadow: 0 0 0 2px #3498db;
 }
 .profile-card.profile-unavailable {
     cursor: not-allowed;
@@ -2146,9 +2189,8 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
 .profile-card.profile-unavailable span {
     filter: grayscale(1) brightness(0.4);
 }
-.profile-card.profile-unavailable:hover {
-    border-color: #444;
-    background: #1a1a1a;
+.profile-card.profile-unavailable:hover img {
+    box-shadow: none;
 }
 .profile-card.profile-unavailable::after {
     content: "Not available as shinethrough";
@@ -2181,20 +2223,17 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
     flex-direction: column;
     align-items: center;
     gap: 8px;
-    cursor: pointer;
-    border: 2px solid #444;
-    border-radius: 12px;
-    padding: 10px;
-    background: #1a1a1a;
-    transition: border-color 0.15s, background 0.15s;
+    cursor: default;
     width: 150px;
 }
 .legend-type-thumb {
     width: 120px;
     border-radius: 8px;
     overflow: hidden;
-    border: 1px solid #333;
     background: #111;
+    box-shadow: 0 0 0 2px transparent;
+    transition: box-shadow 0.15s;
+    cursor: pointer;
 }
 .legend-type-thumb img {
     width: 100%;
@@ -2213,12 +2252,11 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
     color: #777;
     text-align: center;
 }
-.legend-type-card:hover {
-    border-color: #3498db;
+.legend-type-thumb:hover {
+    box-shadow: 0 0 0 2px #3498db;
 }
-.legend-type-card.selected {
-    border-color: #3498db;
-    background: rgba(0,123,255,0.12);
+.legend-type-card.selected .legend-type-thumb {
+    box-shadow: 0 0 0 2px #3498db;
 }
 .row-btn {
     background: #2a2a2a;
@@ -2363,15 +2401,15 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
         <h3>Choose Your Legend Type</h3>
         <p style="font-size:12px;color:#aaa;margin-bottom:16px;">What type of keycaps are you designing for?</p>
         <div style="display:flex;gap:14px;justify-content:center;">
-          <div class="legend-type-card" id="legend-shinethrough" onclick="selectLegendType('shinethrough')">
-            <div class="legend-type-thumb">
+          <div class="legend-type-card" id="legend-shinethrough">
+            <div class="legend-type-thumb" onclick="selectLegendType('shinethrough')">
               <img src="https://i.ibb.co/fz2vGr5y/Backlit-Legend.jpg" alt="Backlit" style="width:100%;height:auto;display:block;">
             </div>
             <span class="legend-type-label">Shinethrough / Backlit</span>
             <span class="legend-type-sub">RGB legends that glow</span>
           </div>
-          <div class="legend-type-card" id="legend-white" onclick="selectLegendType('white')">
-            <div class="legend-type-thumb">
+          <div class="legend-type-card" id="legend-white">
+            <div class="legend-type-thumb" onclick="selectLegendType('white')">
               <img src="https://i.ibb.co/xSS3wqK6/White-Legend.jpg" alt="White Legend" style="width:100%;height:auto;display:block;">
             </div>
             <span class="legend-type-label">Solid White</span>
@@ -2431,6 +2469,7 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
             </div>
             <div style="flex:1;text-align:left;">
               <h3 id="profile-detail-name" style="margin:0 0 6px 0;"></h3>
+              <img id="profile-side-img" src="" alt="" style="width:100%;border-radius:8px;display:block;margin-bottom:6px;object-fit:cover;">
               <div id="profile-detail-dims" style="background:#111;border-radius:8px;padding:10px;font-size:11px;color:#aaa;border:1px solid #333;"></div>
               <button onclick="clearProfileSelection()" style="margin-top:10px;background:none;border:1px solid #444;color:#aaa;font-size:11px;padding:5px 12px;border-radius:5px;cursor:pointer;display:block;margin-left:auto;">← Choose different profile</button>
             </div>
@@ -2477,7 +2516,7 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
           </div><!-- end kb-diagram -->
           </div><!-- end scale wrapper -->
           <!-- Row label pill — below keyboard -->
-          <div id="kb-row-label" style="display:inline-block;background:#222;border-radius:20px;padding:12px 12px;font-size:14px;font-weight:600;color:#666;margin-top:17px;letter-spacing:0.04em;min-width:160px;text-align:center;">Select a row…</div>
+          <div id="kb-row-label" style="display:inline-block;background:#222;border-radius:20px;padding:12px 12px;font-size:14px;font-weight:600;color:#fff;margin-top:17px;letter-spacing:0.04em;min-width:160px;text-align:center;">Select a row…</div>
         </div><!-- end row-selector-standard -->
 
         <div id="row-selector-xda" style="display:none;text-align:center;">
@@ -2490,7 +2529,30 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
         </div>
       </div>
 
-      <!-- Step 8: placeholder for future or extend if needed -->
+      <!-- Step 8: Confirmation -->
+      <div class="step-content" id="step-8" style="display:none;width:100%;text-align:center;padding-top:45px;">
+        <div style="display:flex;align-items:center;justify-content:center;">
+          <div style="position:relative;width:220px;height:220px;flex-shrink:0;">
+            <img id="confirm-thumb" src="" alt="" style="width:220px;height:220px;object-fit:contain;border-radius:10px;display:block;transition:opacity 0.2s ease;">
+            <div id="confirm-thumb-spinner" style="display:none;position:absolute;inset:0;align-items:center;justify-content:center;border-radius:10px;background:rgba(30,30,30,0.6);">
+              <div style="width:28px;height:28px;border:3px solid rgba(255,255,255,0.15);border-top-color:#3498db;border-radius:50%;animation:spin 0.7s linear infinite;"></div>
+            </div>
+          </div>
+        </div>
+        <div class="step-section-text" style="height:125px;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:8px;gap:8px;box-sizing:border-box;">
+          <div style="background:#111;border-radius:8px;padding:8px 16px;border:1px solid #333;text-align:left;width:220px;box-sizing:border-box;">
+            <div style="display:grid;grid-template-columns:auto 1fr;gap:5px 12px;font-size:11px;">
+              <span style="color:#666;text-transform:uppercase;font-size:9px;letter-spacing:0.5px;align-self:center;">Legends</span>
+              <span id="confirm-legend" style="color:#ccc;font-weight:600;">—</span>
+              <span style="color:#666;text-transform:uppercase;font-size:9px;letter-spacing:0.5px;align-self:center;">Profile</span>
+              <span id="confirm-profile" style="color:#ccc;font-weight:600;">—</span>
+              <span style="color:#666;text-transform:uppercase;font-size:9px;letter-spacing:0.5px;align-self:center;">Row</span>
+              <span id="confirm-row" style="color:#ccc;font-weight:600;">—</span>
+            </div>
+          </div>
+          <p style="font-size:11px;color:#fff;margin:0;padding-top:12px;line-height:1.5;">If you're happy with your selections, press <strong>Start</strong> to begin designing.</p>
+        </div>
+      </div>
 
     </div>
 
@@ -2505,7 +2567,7 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
   <div id="model-3d-lightbox" style="display:none;position:absolute;inset:0;background:#f0f0f0;z-index:99999;align-items:center;justify-content:center;border-radius:17px;overflow:hidden;flex-direction:column;">
     <canvas id="model-3d-canvas" style="width:100%;height:100%;display:block;touch-action:none;"></canvas>
     <div style="position:absolute;bottom:16px;left:50%;transform:translateX(-50%);color:#888;font-size:12px;pointer-events:none;white-space:nowrap;">Drag to rotate</div>
-    <button onclick="close3DViewer()" style="position:absolute;top:12px;right:12px;width:32px;height:32px;background:rgba(0,0,0,0.15);border:none;border-radius:50%;color:#333;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;">✕</button>
+    <button onclick="close3DViewer()" style="position:absolute;top:12px;right:12px;width:32px;height:32px;background:#000;border:none;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width:14px;height:14px;"><path stroke="white" stroke-width="2.8" stroke-linecap="round" d="M5 5l14 14M19 5L5 19"/></svg></button>
   </div>
 
   <!-- Profile image zoom lightbox — scoped inside overlay -->
@@ -2518,8 +2580,8 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
 
 <div id="colour-picker-lightbox" style="display:none; position:absolute; inset:0; background:rgba(0,0,0,0.75); z-index:3000; align-items:center; justify-content:center;">
   <div style="background:#1e1e1e; border:3px solid #3498db; border-radius:20px; padding:30px; display:flex; flex-direction:column; align-items:center; gap:21px; box-shadow:0 20px 50px rgba(0,0,0,0.5); width:330px;">
-    <span style="color:white; font-size:21px; font-weight:600;">Backlight Colour</span>
-    <div style="position:relative; width:240px; height:240px; flex-shrink:0;">
+    <span style="color:white; font-size:21px; font-weight:600;">Change Backlight Colour</span>
+    <div style="position:relative; width:240px; height:240px; flex-shrink:0; margin:8px 0;">
       <canvas id="colour-wheel" width="240" height="240" style="border-radius:50%; cursor:crosshair; display:block;"></canvas>
       <div id="colour-wheel-cursor" style="position:absolute; width:18px; height:18px; border:2px solid white; border-radius:50%; box-shadow:0 0 3px rgba(0,0,0,0.8); pointer-events:none; transform:translate(-50%,-50%); top:50%; left:50%;"></div>
     </div>
@@ -2549,7 +2611,7 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
 <!-- Reset confirm lightbox -->
 <div id="reset-confirm-lightbox" style="display:none; position:absolute; inset:0; background:rgba(0,0,0,0.8); z-index:3500; align-items:center; justify-content:center;">
   <div style="background:#1e1e1e; border:3px solid #d3000a; border-radius:20px; padding:48px; max-width:510px; width:90%; text-align:center; box-shadow:0 20px 50px rgba(0,0,0,0.6);">
-    <div style="font-size:48px; margin-bottom:18px;">⚠️</div>
+    <div style="margin-bottom:18px;"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width:48px;height:48px;"><path fill="#d3000a" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg></div>
     <h3 style="color:#fff; font-size:24px; margin-bottom:18px; font-weight:600;">Reset All?</h3>
     <p style="color:#aaa; font-size:19px; line-height:1.6; margin-bottom:36px;">This will delete your current design and take you back to the keycap profile and row selection options.</p>
     <div style="display:flex; gap:15px;">
@@ -2689,53 +2751,47 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
 
 <div id="text-tools" class="inspector-group" style="display: none;">
   <div class="text-format-group">
-    <button type="button" id="btn-bold" class="mini-pill-btn" onclick="toggleStyle('bold')"><b>B</b></button>
-    <button type="button" id="btn-italic" class="mini-pill-btn" onclick="toggleStyle('italic')"><i>I</i></button>
-    <button type="button" id="btn-underline" class="mini-pill-btn" onclick="toggleStyle('underline')"><u>U</u></button>
-
+    <button type="button" id="btn-bold" class="mini-pill-btn fmt-sq-btn" onclick="toggleStyle('bold')"><b>B</b></button>
+    <button type="button" id="btn-italic" class="mini-pill-btn fmt-sq-btn" onclick="toggleStyle('italic')"><i>I</i></button>
   </div>
   <button type="button" class="mini-pill-btn" onclick="toggleFontLibrary()">Fonts</button>
+  <button type="button" class="mini-pill-btn" onclick="enterTextEditMode(document.getElementById('text-wrapper'))">Edit</button>
 </div>
 
 <div id="text-tools-2" class="inspector-group" style="display: none;">
   <div class="text-format-group">
-    <button type="button" id="btn-bold-2" class="mini-pill-btn" onclick="toggleStyle2('bold')"><b>B</b></button>
-    <button type="button" id="btn-italic-2" class="mini-pill-btn" onclick="toggleStyle2('italic')"><i>I</i></button>
-    <button type="button" id="btn-underline-2" class="mini-pill-btn" onclick="toggleStyle2('underline')"><u>U</u></button>
-
+    <button type="button" id="btn-bold-2" class="mini-pill-btn fmt-sq-btn" onclick="toggleStyle2('bold')"><b>B</b></button>
+    <button type="button" id="btn-italic-2" class="mini-pill-btn fmt-sq-btn" onclick="toggleStyle2('italic')"><i>I</i></button>
   </div>
   <button type="button" class="mini-pill-btn" onclick="toggleFontLibrary2()">Fonts</button>
+  <button type="button" class="mini-pill-btn" onclick="enterTextEditMode(document.getElementById('text-wrapper-2'))">Edit</button>
 </div>
 
 <div id="text-tools-3" class="inspector-group" style="display: none;">
   <div class="text-format-group">
-    <button type="button" id="btn-bold-3" class="mini-pill-btn" onclick="toggleStyle3('bold')"><b>B</b></button>
-    <button type="button" id="btn-italic-3" class="mini-pill-btn" onclick="toggleStyle3('italic')"><i>I</i></button>
-    <button type="button" id="btn-underline-3" class="mini-pill-btn" onclick="toggleStyle3('underline')"><u>U</u></button>
-
+    <button type="button" id="btn-bold-3" class="mini-pill-btn fmt-sq-btn" onclick="toggleStyle3('bold')"><b>B</b></button>
+    <button type="button" id="btn-italic-3" class="mini-pill-btn fmt-sq-btn" onclick="toggleStyle3('italic')"><i>I</i></button>
   </div>
   <button type="button" class="mini-pill-btn" onclick="toggleFontLibrary3()">Fonts</button>
+  <button type="button" class="mini-pill-btn" onclick="enterTextEditMode(document.getElementById('text-wrapper-3'))">Edit</button>
 </div>
 
-
-
-      
 <div id="text-tools-4" class="inspector-group" style="display: none;">
   <div class="text-format-group">
-    <button type="button" id="btn-bold-4" class="mini-pill-btn" onclick="toggleStyle4('bold')"><b>B</b></button>
-    <button type="button" id="btn-italic-4" class="mini-pill-btn" onclick="toggleStyle4('italic')"><i>I</i></button>
-    <button type="button" id="btn-underline-4" class="mini-pill-btn" onclick="toggleStyle4('underline')"><u>U</u></button>
+    <button type="button" id="btn-bold-4" class="mini-pill-btn fmt-sq-btn" onclick="toggleStyle4('bold')"><b>B</b></button>
+    <button type="button" id="btn-italic-4" class="mini-pill-btn fmt-sq-btn" onclick="toggleStyle4('italic')"><i>I</i></button>
   </div>
   <button type="button" class="mini-pill-btn" onclick="toggleFontLibrary()">Fonts</button>
+  <button type="button" class="mini-pill-btn" onclick="enterTextEditMode(document.getElementById('text-wrapper-4'))">Edit</button>
 </div>
 
 <div id="text-tools-5" class="inspector-group" style="display: none;">
   <div class="text-format-group">
-    <button type="button" id="btn-bold-5" class="mini-pill-btn" onclick="toggleStyle5('bold')"><b>B</b></button>
-    <button type="button" id="btn-italic-5" class="mini-pill-btn" onclick="toggleStyle5('italic')"><i>I</i></button>
-    <button type="button" id="btn-underline-5" class="mini-pill-btn" onclick="toggleStyle5('underline')"><u>U</u></button>
+    <button type="button" id="btn-bold-5" class="mini-pill-btn fmt-sq-btn" onclick="toggleStyle5('bold')"><b>B</b></button>
+    <button type="button" id="btn-italic-5" class="mini-pill-btn fmt-sq-btn" onclick="toggleStyle5('italic')"><i>I</i></button>
   </div>
   <button type="button" class="mini-pill-btn" onclick="toggleFontLibrary()">Fonts</button>
+  <button type="button" class="mini-pill-btn" onclick="enterTextEditMode(document.getElementById('text-wrapper-5'))">Edit</button>
 </div>
 
       <div id="idle-tools" class="inspector-group">
@@ -2770,35 +2826,43 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
   </div>
 </div>
 
-<div id="wand-options-bar" class="inspector-overlay-bar" style="display: none;">
-
-    <div class="wand-control-group">
-          <div class="pill-slider wand-slider-override">
+<div id="wand-options-bar" style="display: none;">
+    <div class="wand-slider-override pill-slider">
         <span>Tolerance</span>
-        <input type="range" id="wand-tolerance" min="1" max="150" value="30" 
-       oninput="updateSliderFill(this); updateWandTolerance(this.value)">
-      </div>
-  
-
-      <button type="button" class="mini-pill-btn" style="background: #d3000a; margin-left: 10px;" onclick="resetWandChanges()">
-  ↺ Reset
-</button>
-
-<button type="button" class="mini-pill-btn" style="background: #555;" onclick="cancelWandMode()">
-    ✖ Cancel
-  </button>
-
-<button type="button" class="apply-btn" id="wand-apply-btn" onclick="toggleWandMode(true)">
-         ✔ Apply
-      </button>
-
+        <input type="range" id="wand-tolerance" min="1" max="150" value="30"
+            oninput="updateSliderFill(this); updateWandTolerance(this.value)">
     </div>
-  </div>
+    <button type="button" class="mini-pill-btn" style="background:#d3000a;" onclick="resetWandChanges()">↺ Reset</button>
+    <button type="button" class="mini-pill-btn" style="background:#555;" onclick="cancelWandMode()">✕ Cancel</button>
+    <button type="button" class="apply-btn" id="wand-apply-btn" onclick="toggleWandMode(true)">✔ Apply</button>
+</div>
 
 
-    <div id="crop-options-bar" style="display:none; position:absolute; bottom:75px; left:50%; transform:translateX(-50%); z-index:5500; pointer-events:auto !important; background:rgba(30,30,30,0.9); backdrop-filter:blur(10px); border-radius:8px; padding:8px 16px; flex-direction:row; gap:10px; align-items:center;">
-      <button id="crop-apply-btn" onclick="applyCrop()" style="background:#27ae60; color:white; border:none; padding:6px 18px; border-radius:6px; cursor:pointer; font-size:12px; font-weight:bold; pointer-events:auto;">✔ Apply</button>
-      <button id="crop-cancel-btn" onclick="cancelCrop()" style="background:#555; color:white; border:none; padding:6px 18px; border-radius:6px; cursor:pointer; font-size:12px; pointer-events:auto;">✕ Cancel</button>
+    <div id="crop-options-bar" style="display:none; position:absolute; bottom:75px; left:50%; transform:translateX(-50%); z-index:5500; pointer-events:auto !important; background:rgba(30,30,30,0.9); backdrop-filter:blur(10px); border:3px solid #3498db; border-radius:8px; padding:12px 22px; flex-direction:row; gap:16px; align-items:center; white-space:nowrap;">
+      <button id="crop-cancel-btn" onclick="cancelCrop()" style="background:#555; color:white; border:none; padding:10px 22px; border-radius:6px; cursor:pointer; font-size:17px; font-weight:600; height:44px; box-sizing:border-box; display:inline-flex; align-items:center; gap:6px; pointer-events:auto;">✕ Cancel</button>
+      <button id="crop-apply-btn" onclick="applyCrop()" style="background:#27ae60; color:white; border:none; padding:10px 22px; border-radius:6px; cursor:pointer; font-size:17px; font-weight:600; height:44px; box-sizing:border-box; display:inline-flex; align-items:center; gap:6px; pointer-events:auto;">✔ Apply</button>
+    </div>
+
+    <!-- Text editor overlay — shown when user double-clicks a text layer -->
+    <div id="text-edit-overlay" style="display:none; position:absolute; inset:0; z-index:5600; background:rgba(0,0,0,0.6); backdrop-filter:blur(3px); align-items:center; justify-content:center; pointer-events:auto;">
+      <div style="background:#1e1e1e; border:2px solid #3498db; border-radius:14px; padding:28px 32px; display:flex; flex-direction:column; gap:16px; min-width:340px; max-width:520px; box-shadow:0 16px 48px rgba(0,0,0,0.6);">
+        <div style="color:#aaa; font-size:12px; text-transform:uppercase; letter-spacing:1px; margin-bottom:-4px;">Edit Text</div>
+        <input id="text-edit-input"
+          type="text"
+          maxlength="25"
+          autocomplete="off"
+          spellcheck="false"
+          style="background:#111; border:1.5px solid #444; border-radius:8px; color:white; font-size:22px; padding:12px 16px; outline:none; width:100%; box-sizing:border-box; letter-spacing:0.5px;"
+          placeholder="Type your text…"
+        />
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:8px;">
+          <span id="text-edit-charcount" style="color:#555; font-size:12px;">0 / 25</span>
+          <div style="display:flex; gap:10px;">
+            <button type="button" onclick="cancelTextEdit()" style="background:#333; color:#aaa; border:none; border-radius:7px; padding:9px 20px; font-size:13px; cursor:pointer;">Cancel</button>
+            <button type="button" onclick="confirmTextEdit()" style="background:#27ae60; color:white; border:none; border-radius:7px; padding:9px 22px; font-size:13px; font-weight:bold; cursor:pointer;">✔ Apply</button>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div id="grid-overlay" class="grid-overlay"></div>
@@ -3047,19 +3111,11 @@ option[value="'Wallpoet', cursive"] { font-family: 'Wallpoet', cursive; }
   </svg>
 </div>
 
-      <div class="tool-circle" onclick="resetStencil()" data-tooltip="Reset All">
-  <svg viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg" style="width: 25px; height: 25px;">
-    <path fill-rule="evenodd" clip-rule="evenodd" fill="currentColor"
-      d="M4.85355 2.14645C5.04882 2.34171 5.04882 2.65829 4.85355 2.85355L3.70711 4H9C11.4853 4 13.5 6.01472 13.5 8.5C13.5 10.9853 11.4853 13 9 13H5C4.72386 13 4.5 12.7761 4.5 12.5C4.5 12.2239 4.72386 12 5 12H9C10.933 12 12.5 10.433 12.5 8.5C12.5 6.567 10.933 5 9 5H3.70711L4.85355 6.14645C5.04882 6.34171 5.04882 6.65829 4.85355 6.85355C4.65829 7.04882 4.34171 7.04882 4.14645 6.85355L2.14645 4.85355C1.95118 4.65829 1.95118 4.34171 2.14645 4.14645L4.14645 2.14645C4.34171 1.95118 4.65829 1.95118 4.85355 2.14645Z"
-    />
-  </svg>
-</div>
-
     </div>
   </div>
 
   <div class="footer-section right" style="gap: 8px;">
-    <button type="button" class="reset-btn tool-circle" onclick="openResetConfirm()" data-tooltip="Reset" style="margin:0;">
+    <button type="button" class="reset-btn tool-circle" onclick="openResetConfirm()" data-tooltip="Reset All" style="margin:0;">
       <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width:23px;height:23px;"><path fill="currentColor" d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5-5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>
     </button>
     <button type="button" class="preview-btn" onclick="showPreview()" data-tooltip="Preview Design" style="margin: 0; display:flex; align-items:center; gap:8px;">
@@ -3183,6 +3239,7 @@ const KEYCAP_DATA = {
         mask:  'https://i.ibb.co/XZbfJhm6/OEM-keycap-mask-test.png',
         thumb: 'https://i.ibb.co/tpfxqqzq/Keycap-Template-Profile-Selector-OEM.jpg',
         rows:  ['R4','R3','R2','R1'],
+        side:  'https://i.ibb.co/cct7bfj3/OEM-SIDE.jpg',
         dims:  { tW: '13.2 mm', tD: '14.3 mm', bW: '18.2 mm', rowData: [{row:'R4',rH:'11.8',fH:'11.3'},{row:'R3',rH:'9.3',fH:'9.8'},{row:'R2',rH:'8.6',fH:'8.9'},{row:'R1',rH:'8.5',fH:'10.5'}] },
     },
     CHERRY: {
@@ -3190,6 +3247,7 @@ const KEYCAP_DATA = {
         mask:  'https://i.ibb.co/zhhQS2n3/CHERRY-keycap-mask-test.png',
         thumb: 'https://i.ibb.co/WWFrm1tL/Keycap-Template-Profile-Selector-CHERRY.jpg',
         rows:  ['R4','R3','R2','R1'],
+        side:  'https://i.ibb.co/CKS9GRqr/CHERRY-SIDE.jpg',
         dims:  { tW: '12.0 mm', tD: '14.3 mm', bW: '18.1 mm', rowData: [{row:'R4',rH:'10.0',fH:'10.0'},{row:'R3',rH:'7.3',fH:'8.0'},{row:'R2',rH:'6.5',fH:'7.8'},{row:'R1',rH:'6.2',fH:'9.3'}] },
     },
     XDA: {
@@ -3197,6 +3255,7 @@ const KEYCAP_DATA = {
         mask:  'https://i.ibb.co/vvCBw54R/XDA-keycap-mask-test.png',
         thumb: 'https://i.ibb.co/jvDwsRM6/Keycap-Template-Profile-Selector-XDA.jpg',
         rows:  ['all'],
+        side:  'https://i.ibb.co/5WC97q7P/XDA-SIDE.jpg',
         dims:  { tW: '14.0 mm', tD: '14.0 mm', bW: '18.2 mm', rowData: [{row:'All Rows',h:'9.8'}] },
     },
     LP: {
@@ -3204,6 +3263,7 @@ const KEYCAP_DATA = {
         mask:  'https://i.ibb.co/0yqVLX2n/LOW-PROFILE-keycap-mask-test.png',
         thumb: 'https://i.ibb.co/F4P2982P/Keycap-Template-Profile-Selector-LP.jpg',
         rows:  ['all'],
+        side:  'https://i.ibb.co/DgbPtMpS/LOWPROFILE-SIDE.jpg',
         dims:  { tW: '13.5 mm', tD: '13.5 mm', bW: '17.0 mm', rowData: [{row:'All Rows',h:'3.5'}] },
     },
     MOA: {
@@ -3211,6 +3271,7 @@ const KEYCAP_DATA = {
         mask:  'https://i.ibb.co/ymgnpbGQ/MOA-keycap-mask-test.png',
         thumb: 'https://i.ibb.co/9mzS7N8C/Keycap-Template-Profile-Selector-MOA.jpg',
         rows:  ['all'],
+        side:  'https://i.ibb.co/zh50dHrz/MOA-SIDE.jpg',
         dims:  { tW: '16.0 mm', tD: '16.0 mm', bW: '18.0 mm', rowData: [{row:'All Rows',h:'9.0'}] },
     },
     BLOCK: {
@@ -3218,6 +3279,7 @@ const KEYCAP_DATA = {
         mask:  'https://i.ibb.co/HLNBzmqH/BLOCK-keycap-mask-test.png',
         thumb: 'https://i.ibb.co/d44s7Z0w/Keycap-Template-Profile-Selector-BLOCK.jpg',
         rows:  ['all'],
+        side:  'https://i.ibb.co/4n6MVV0Q/BLOCK-SIDE.jpg',
         dims:  { tW: '18.0 mm', tD: '18.0 mm', bW: '18.0 mm', rowData: [{row:'All Rows',h:'9.0'}] },
     },
     CHOC: {
@@ -3225,6 +3287,7 @@ const KEYCAP_DATA = {
         mask:  'https://i.ibb.co/1Vd7yj6/CHOC-keycap-mask-test.png',
         thumb: 'https://i.ibb.co/DPw2QnhG/Keycap-Template-Profile-Selector-CHOC.jpg',
         rows:  ['all'],
+        side:  'https://i.ibb.co/mCYN9Xt4/CHOC-SIDE.jpg',
         dims:  { tW: '13.5 mm', tD: '13.5 mm', bW: '17.5 mm', rowData: [{row:'All Rows',h:'5.0'}] },
     },
 };
@@ -3266,6 +3329,36 @@ function _renderDims(el, dims) {
     }
 }
 
+// Animated swap between profile grid and detail panel (reuses step keyframes)
+function _profilePanelTransition(showDetail) {
+    var grid   = document.getElementById('profile-grid-view');
+    var detail = document.getElementById('profile-detail-view');
+    if (!grid || !detail) return;
+
+    var exiting = showDetail ? grid : detail;
+    var entering = showDetail ? detail : grid;
+    var exitAnim  = showDetail ? 'stepExit 0.12s ease forwards' : 'stepExitReverse 0.12s ease forwards';
+    var enterAnim = showDetail ? 'stepEnter 0.15s ease forwards' : 'stepEnterReverse 0.15s ease forwards';
+
+    // Animate the current panel out
+    exiting.style.animation = exitAnim;
+    exiting.addEventListener('animationend', function handler() {
+        exiting.removeEventListener('animationend', handler);
+        exiting.style.display   = 'none';
+        exiting.style.animation = '';
+
+        // Animate the new panel in
+        entering.style.display   = 'block';
+        entering.style.animation = 'none';
+        void entering.offsetWidth; // reflow
+        entering.style.animation = enterAnim;
+        entering.addEventListener('animationend', function h2() {
+            entering.removeEventListener('animationend', h2);
+            entering.style.animation = '';
+        });
+    }, { once: true });
+}
+
 function selectProfile(profile) {
     if (selectedLegendType === 'shinethrough' && NOT_SHINETHROUGH.includes(profile)) return;
     selectedProfile = profile;
@@ -3277,9 +3370,9 @@ function selectProfile(profile) {
     if (data) {
         document.getElementById('profile-detail-img').src = data.thumb || '';
         document.getElementById('profile-detail-name').textContent = _profileDisplayName(profile);
+        document.getElementById('profile-side-img').src = data.side || '';
         _renderDims(document.getElementById('profile-detail-dims'), data.dims);
-        document.getElementById('profile-grid-view').style.display   = 'none';
-        document.getElementById('profile-detail-view').style.display = 'block';
+        _profilePanelTransition(true);
         const _btn3d = document.getElementById('view-3d-btn');
         if (_btn3d) _btn3d.style.display = (_MODEL_3D_URLS && _MODEL_3D_URLS[profile]) ? 'flex' : 'none';
     }
@@ -3308,7 +3401,7 @@ function _buildAllRowsDiagram() {
             k.classList.add('kb-row-active');
         });
         const lbl = document.getElementById('kb-allrows-label');
-        if (lbl) { lbl.textContent = 'All Rows *'; lbl.style.color = '#3498db'; }
+        if (lbl) { lbl.textContent = 'All Rows *'; lbl.style.color = '#fff'; }
         selectRow('all');
     });
 }
@@ -3333,8 +3426,7 @@ function closeProfileZoom() {
 function clearProfileSelection() {
     selectedProfile = null;
     document.querySelectorAll('.profile-card').forEach(c => c.classList.remove('selected'));
-    document.getElementById('profile-grid-view').style.display   = 'block';
-    document.getElementById('profile-detail-view').style.display = 'none';
+    _profilePanelTransition(false);
     _updateOnboardingFooter();
 }
 
@@ -3401,7 +3493,7 @@ function _kbHover(row) {
     const active = row || (selectedRow !== 'all' ? selectedRow : null);
     if (active && names[active]) {
         label.textContent = names[active];
-        label.style.color = '#3498db';
+        label.style.color = '#fff';
     } else {
         label.textContent = 'Select a row…';
         label.style.color = '#666';
@@ -3418,7 +3510,7 @@ function _updateOnboardingFooter() {
     prevBtn.classList.toggle('hidden', currentStep === 1);
 
     // Next label changes on last step (now step 7: row selector)
-    nextBtn.textContent = currentStep === 7 ? 'Start' : 'Next';
+    nextBtn.textContent = currentStep === 8 ? 'Start' : 'Next';
 
     // Skip tutorial hidden on selection steps (5, 6, 7)
     if (skipLink) skipLink.style.display = currentStep >= 5 ? 'none' : 'inline';
@@ -3428,11 +3520,12 @@ function _updateOnboardingFooter() {
     if (currentStep === 5 && !selectedLegendType) disabled = true;
     if (currentStep === 6 && !selectedProfile)    disabled = true;
     if (currentStep === 7 && !selectedRow)         disabled = true;
+    if (currentStep === 8)                           disabled = false;
     nextBtn.disabled = disabled;
 }
 
 function onboardingNext() {
-    if (currentStep === 7) { finishOnboarding(); return; }
+    if (currentStep === 8) { finishOnboarding(); return; }
     nextStep(currentStep + 1);
 }
 
@@ -3447,11 +3540,24 @@ function prevStep() {
         clearProfileSelection();
         return;
     }
-    // If going back from row step, clear row selection and reset diagrams
+    // Going back to legend type step — clear legend selection
+    if (currentStep === 6) {
+        selectedLegendType = null;
+        document.querySelectorAll('.legend-type-card').forEach(c => c.classList.remove('selected'));
+    }
+    // Going back to profile step — instantly reset to grid (no animation, step is already sliding away)
+    if (currentStep === 7) {
+        selectedProfile = null;
+        document.querySelectorAll('.profile-card').forEach(c => c.classList.remove('selected'));
+        const pgv = document.getElementById('profile-grid-view');
+        const pdv = document.getElementById('profile-detail-view');
+        if (pgv) { pgv.style.display = 'block'; pgv.style.animation = ''; }
+        if (pdv) { pdv.style.display = 'none';  pdv.style.animation = ''; }
+    }
+    // If going back from row step (7→6), clear row selection and reset diagrams
     if (currentStep === 7) {
         selectedRow = null;
         document.querySelectorAll('.kb-sel').forEach(k => k.classList.remove('kb-row-active'));
-        // Reset the label pill back to default
         _kbHover(null);
         const allRowsLbl = document.getElementById('kb-allrows-label');
         if (allRowsLbl) { allRowsLbl.textContent = 'Select a row\u2026'; allRowsLbl.style.color = '#666'; }
@@ -3462,16 +3568,74 @@ function prevStep() {
         }, 120);
         _updateOnboardingFooter();
     }
+    // Going back from confirm step (8→7): force reselection of row
+    if (currentStep === 8) {
+        selectedRow = null;
+        document.querySelectorAll('.kb-sel').forEach(k => {
+            k.classList.remove('kb-row-active');
+            k.classList.remove('kb-row-hover');
+        });
+        _kbHover(null);
+        const allRowsLbl = document.getElementById('kb-allrows-label');
+        if (allRowsLbl) { allRowsLbl.textContent = 'Select a row\u2026'; allRowsLbl.style.color = '#666'; }
+        const destDiag = document.getElementById('kb-diagram-allrows');
+        if (destDiag) {
+            destDiag.querySelectorAll('.kb-sel').forEach(k => k.classList.remove('kb-row-active', 'kb-row-hover'));
+        }
+        _updateOnboardingFooter();
+    }
     nextStep(currentStep - 1, true);
+}
+
+// Per-profile, per-row thumbnail overrides for the confirmation step.
+// Profiles with a single row (XDA, LP, MOA, BLOCK, CHOC) use their generic thumb.
+const _ROW_THUMBS = {
+    OEM: {
+        R4: 'https://i.ibb.co/5WzhfQP1/Keycap-Template-Profile-Selector-OEM.jpg',
+        R3: 'https://i.ibb.co/0p9WfyKd/Keycap-Template-Profile-Selector-OEMR3.jpg',
+        R2: 'https://i.ibb.co/qYsh3L6N/Keycap-Template-Profile-Selector-OEMR2.jpg',
+        R1: 'https://i.ibb.co/HfBCNt0R/Keycap-Template-Profile-Selector-OEMR1.jpg',
+    },
+    CHERRY: {
+        R4: 'https://i.ibb.co/6cdHPhxR/Keycap-Template-Profile-Selector-CHERRY.jpg',
+        R3: 'https://i.ibb.co/84898JjT/Keycap-Template-Profile-Selector-CHERRY-R3.jpg',
+        R2: 'https://i.ibb.co/Ps5qjjdm/Keycap-Template-Profile-Selector-CHERRY-R2.jpg',
+        R1: 'https://i.ibb.co/tpntJpSW/Keycap-Template-Profile-Selector-CHERRY-R1.jpg',
+    },
+};
+
+function _populateConfirmStep() {
+    var legendMap = { shinethrough: 'Shinethrough / Backlit', white: 'Solid White' };
+    document.getElementById('confirm-legend').textContent = legendMap[selectedLegendType] || '—';
+    document.getElementById('confirm-profile').textContent = _profileDisplayName(selectedProfile) || '—';
+    var rowMap = { R4: 'R4 — Top Row', R3: 'R3 — QWERTY Row', R2: 'R2 — ASDF Row', R1: 'R1 — Bottom Row', all: 'All Rows' };
+    document.getElementById('confirm-row').textContent = rowMap[selectedRow] || selectedRow || '—';
+    var data = KEYCAP_DATA[selectedProfile];
+    var thumb = document.getElementById('confirm-thumb');
+    var spinner = document.getElementById('confirm-thumb-spinner');
+    if (thumb && data) {
+        var rowOverrides = _ROW_THUMBS[selectedProfile];
+        var newSrc = (rowOverrides && rowOverrides[selectedRow]) || data.thumb || '';
+        // Show spinner, hide stale image immediately
+        thumb.style.opacity = '0';
+        if (spinner) spinner.style.display = 'flex';
+        thumb.onload = function() {
+            thumb.style.opacity = '1';
+            if (spinner) spinner.style.display = 'none';
+            thumb.onload = null;
+        };
+        thumb.onerror = function() {
+            thumb.style.opacity = '1';
+            if (spinner) spinner.style.display = 'none';
+            thumb.onerror = null;
+        };
+        thumb.src = newSrc;
+    }
 }
 
 function nextStep(nextStepNum, reverse) {
     // Going from legend type step (5) to profile step (6) — pre-apply unavailable states
     if (currentStep === 5 && nextStepNum === 6) {
-        // Preload all profile thumbnails so they're cached before the step animates in
-        Object.values(KEYCAP_DATA).forEach(d => {
-            if (d.thumb) { const i = new Image(); i.src = d.thumb; }
-        });
         // Reset profile grid to grid view (in case of back/forward navigation)
         const pgv = document.getElementById('profile-grid-view');
         const pdv = document.getElementById('profile-detail-view');
@@ -3489,7 +3653,7 @@ function nextStep(nextStepNum, reverse) {
         });
     }
     // Going from profile step (6) to row step (7) — set up row selector
-    if (currentStep === 6 && nextStepNum === 7 && selectedProfile) {
+    if (nextStepNum === 7 && selectedProfile) {
         // Wire up keyboard diagram hover — do once via event delegation
         setTimeout(() => {
             const diag = document.getElementById('kb-diagram');
@@ -3542,12 +3706,11 @@ function nextStep(nextStepNum, reverse) {
         // Update the "all rows" profile name in the disclaimer
         const profileNameEl = document.getElementById('all-rows-profile-name');
         if (profileNameEl) profileNameEl.textContent = _profileDisplayName(selectedProfile);
+        // Always reset row selection when entering step 7 (forward or back).
         selectedRow = null;
         document.querySelectorAll('.row-btn').forEach(b => b.classList.remove('selected'));
         if (isAllRows) {
-            // Build the all-rows keyboard diagram before the step animates in
             _buildAllRowsDiagram();
-            // Do NOT auto-select — user must click the diagram to proceed
         }
     }
     _nextStepCore(nextStepNum, reverse);
@@ -3571,6 +3734,7 @@ function _nextStepCore(nextStepNum, reverse) {
         nextEl.style.animation = enterAnim;
         document.getElementById(`dot-${nextStepNum}`).classList.add('active');
         currentStep = nextStepNum;
+        if (nextStepNum === 8) _populateConfirmStep();
         _updateOnboardingFooter();
     }, 100);
 }
@@ -3668,7 +3832,22 @@ window.addEventListener('DOMContentLoaded', () => {
     if (overlay) overlay.style.display = 'flex';
     _updateOnboardingFooter();
     _initCardScale();
+    _preloadProfileImages();
 });
+
+function _preloadProfileImages() {
+    const urls = new Set();
+    // thumbs, side views, and bg images from KEYCAP_DATA
+    Object.values(KEYCAP_DATA).forEach(d => {
+        if (d.thumb) urls.add(d.thumb);
+        if (d.side)  urls.add(d.side);
+    });
+    // per-row thumbs used on the confirm step
+    Object.values(_ROW_THUMBS).forEach(rowMap => {
+        Object.values(rowMap).forEach(url => urls.add(url));
+    });
+    urls.forEach(url => { const i = new Image(); i.src = url; });
+}
 
 function _initCardScale() {
     const container = document.querySelector('.container');
@@ -3788,12 +3967,7 @@ workspace.addEventListener('mousemove', startInactivityTimer);
 workspace.addEventListener('mousedown', (e) => {
     startInactivityTimer();
     // Exit text edit mode if clicking outside the editing ctrl-group
-    if (currentEditWrapper) {
-        const ctrl = document.getElementById('ctrl-' + currentEditWrapper.id);
-        if (ctrl && !ctrl.contains(e.target)) {
-            exitTextEditMode();
-        }
-    }
+    // Text editing now uses a modal overlay; no need to close on workspace click
     // If clicking on the bare workspace background (not on any layer or UI element),
     // deselect the active layer and hide controls immediately
     const clickedOnLayer = e.target.closest('.stencil-wrapper, .ctrl-group, .layer-manager-bar, .layer-inspector-bar, .footer-controls, #controls-overlay, #keycap-cutout, #font-library, #wand-options-bar, #crop-overlay, #crop-options-bar, #crop-container, .crop-handle');
@@ -3890,7 +4064,7 @@ function updateTextContent(val) {
   if (activeWrapper && activeWrapper.id === 'text-wrapper') {
     const textDisplay = document.getElementById('target-text');
     // If in edit mode, update contenteditable; otherwise set innerText
-    if (currentEditWrapper === activeWrapper) {
+    if (_textEditWrapper === activeWrapper) {
         if (textDisplay.innerText !== val) textDisplay.innerText = val;
     } else {
         textDisplay.innerText = val;
@@ -3901,7 +4075,7 @@ function updateTextContent(val) {
 function updateTextContent2(val) {
   if (activeWrapper && activeWrapper.id === 'text-wrapper-2') {
     const textDisplay = document.getElementById('target-text-2');
-    if (currentEditWrapper === activeWrapper) {
+    if (_textEditWrapper === activeWrapper) {
         if (textDisplay.innerText !== val) textDisplay.innerText = val;
     } else {
         textDisplay.innerText = val;
@@ -3912,7 +4086,7 @@ function updateTextContent2(val) {
 function updateTextContent3(val) {
   if (activeWrapper && activeWrapper.id === 'text-wrapper-3') {
     const textDisplay = document.getElementById('target-text-3');
-    if (currentEditWrapper === activeWrapper) {
+    if (_textEditWrapper === activeWrapper) {
         if (textDisplay.innerText !== val) textDisplay.innerText = val;
     } else {
         textDisplay.innerText = val;
@@ -3922,28 +4096,25 @@ function updateTextContent3(val) {
 
 function updateTextFont(val) {
   if (activeWrapper && activeWrapper.id === 'text-wrapper') {
-    const textDisplay = document.getElementById('target-text');
     const selector = document.getElementById('pill-font-selector');
-    textDisplay.style.fontFamily = val;
-    selector.style.fontFamily = val;
+    if (selector) selector.style.fontFamily = val;
+    _applyTextStyle(activeWrapper, 'fontFamily', val);
   }
 }
 
 function updateTextFont2(val) {
   if (activeWrapper && activeWrapper.id === 'text-wrapper-2') {
-    const textDisplay = document.getElementById('target-text-2');
     const selector = document.getElementById('pill-font-selector-2');
-    textDisplay.style.fontFamily = val;
-    selector.style.fontFamily = val;
+    if (selector) selector.style.fontFamily = val;
+    _applyTextStyle(activeWrapper, 'fontFamily', val);
   }
 }
 
 function updateTextFont3(val) {
   if (activeWrapper && activeWrapper.id === 'text-wrapper-3') {
-    const textDisplay = document.getElementById('target-text-3');
     const selector = document.getElementById('pill-font-selector-3');
-    textDisplay.style.fontFamily = val;
-    selector.style.fontFamily = val;
+    if (selector) selector.style.fontFamily = val;
+    _applyTextStyle(activeWrapper, 'fontFamily', val);
   }
 }
 
@@ -3974,154 +4145,114 @@ function positionTextLayer(wrapper, verticalFraction) {
 function addNewTextLayer() {
   const textWrap = document.getElementById('text-wrapper');
   const textDisplay = document.getElementById('target-text');
-  textDisplay.innerText = "double-click to edit";
-  textDisplay.style.fontFamily = "'Orbitron', sans-serif";
+  textDisplay.style.fontFamily = 'sans-serif';
   textDisplay.style.fontSize = '40px';
   textDisplay.style.whiteSpace = 'nowrap';
+  textDisplay.style.fontWeight = '';
+  textDisplay.style.fontStyle  = '';
+  textDisplay.style.textDecoration = '';
   layerFlip['text-wrapper'] = { h: 1, v: 1 };
   textDisplay.style.transform = '';
-  textWrap.style.display = 'block';
-  textWrap.style.width = 'max-content';
-  textWrap.style.height = 'auto';
-  textWrap.style.transform = 'translate(0px, 0px) rotate(0deg) scale(1)';
+  textWrap.style.transform = 'rotate(0deg)';
+  textWrap.style.width  = '1px';
+  textWrap.style.height = '1px';
+  textWrap.style.display = 'none'; // keep hidden until confirm
   textCount = 1;
   updateAddTextButtonText(true);
   activeWrapper = textWrap;
-  const doMeasure = () => {
-    const w = Math.max(textDisplay.scrollWidth, textDisplay.offsetWidth) || 300;
-    const h = Math.max(textDisplay.scrollHeight, textDisplay.offsetHeight) || 60;
-    textWrap.style.width  = w + 'px';
-    textWrap.style.height = h + 'px';
-    positionTextLayer(textWrap, 0.20);
-    syncStencilMask(textWrap);
-    updateControls(textWrap);
-    updateInspector();
-  };
-  // Wait for Orbitron font to be ready before measuring
-  if (document.fonts && document.fonts.ready) {
-    document.fonts.ready.then(doMeasure);
-  } else {
-    setTimeout(doMeasure, 100);
-  }
+  updateInspector();
+  enterTextEditMode(textWrap);
 }
 
 function addNewTextLayer2() {
   const textWrap = document.getElementById('text-wrapper-2');
   const textDisplay = document.getElementById('target-text-2');
-  textDisplay.innerText = "double-click to edit";
-  textDisplay.style.fontFamily = "'Orbitron', sans-serif";
+  textDisplay.style.fontFamily = 'sans-serif';
   textDisplay.style.fontSize = '40px';
+  textDisplay.style.fontWeight = '';
+  textDisplay.style.fontStyle  = '';
+  textDisplay.style.textDecoration = '';
   layerFlip['text-wrapper-2'] = { h: 1, v: 1 };
   textDisplay.style.transform = '';
-  textWrap.style.display = 'block';
-  textWrap.style.transform = 'translate(0px, 0px) rotate(0deg) scale(1)';
-  // Set wrapper size after render so it matches actual text dimensions
-  textWrap.style.width = 'auto';
-  textWrap.style.height = 'auto';
+  textWrap.style.transform = 'rotate(0deg)';
+  textWrap.style.width  = '1px';
+  textWrap.style.height = '1px';
+  textWrap.style.display = 'none';
   textCount2 = 1;
   updateAddTextButtonText2(true);
   activeWrapper = textWrap;
-  setTimeout(() => {
-    // Sync wrapper to actual rendered text size, then centre
-    const w = textDisplay.scrollWidth  || 200;
-    const h = textDisplay.scrollHeight || 25;
-    textWrap.style.width  = w + 'px';
-    textWrap.style.height = h + 'px';
-    positionTextLayer(textWrap, 0.35);
-    syncStencilMask(textWrap);
-    updateControls(textWrap);
-    updateInspector();
-  }, 0);
+  activeWrapper = textWrap;
+  updateInspector();
+  enterTextEditMode(textWrap);
 }
 
 
 function addNewTextLayer3() {
   const textWrap = document.getElementById('text-wrapper-3');
   const textDisplay = document.getElementById('target-text-3');
-  textDisplay.innerText = "double-click to edit";
-  textDisplay.style.fontFamily = "'Orbitron', sans-serif";
+  textDisplay.style.fontFamily = 'sans-serif';
   textDisplay.style.fontSize = '40px';
+  textDisplay.style.fontWeight = '';
+  textDisplay.style.fontStyle  = '';
+  textDisplay.style.textDecoration = '';
   layerFlip['text-wrapper-3'] = { h: 1, v: 1 };
   textDisplay.style.transform = '';
-  textWrap.style.display = 'block';
-  textWrap.style.transform = 'translate(0px, 0px) rotate(0deg) scale(1)';
-  // Set wrapper size after render so it matches actual text dimensions
-  textWrap.style.width = 'auto';
-  textWrap.style.height = 'auto';
+  textWrap.style.transform = 'rotate(0deg)';
+  textWrap.style.width  = '1px';
+  textWrap.style.height = '1px';
+  textWrap.style.display = 'none';
   textCount3 = 1;
   updateAddTextButtonText3(true);
   activeWrapper = textWrap;
-  setTimeout(() => {
-    // Sync wrapper to actual rendered text size, then centre
-    const w = textDisplay.scrollWidth  || 200;
-    const h = textDisplay.scrollHeight || 25;
-    textWrap.style.width  = w + 'px';
-    textWrap.style.height = h + 'px';
-    positionTextLayer(textWrap, 0.5);
-    syncStencilMask(textWrap);
-    updateControls(textWrap);
-    updateInspector();
-  }, 0);
+  activeWrapper = textWrap;
+  updateInspector();
+  enterTextEditMode(textWrap);
 }
 
 
 function addNewTextLayer4() {
   const textWrap = document.getElementById('text-wrapper-4');
   const textDisplay = document.getElementById('target-text-4');
-  textDisplay.innerText = "double-click to edit";
-  textDisplay.style.fontFamily = "'Orbitron', sans-serif";
+  textDisplay.style.fontFamily = 'sans-serif';
   textDisplay.style.fontSize = '40px';
+  textDisplay.style.fontWeight = '';
+  textDisplay.style.fontStyle  = '';
+  textDisplay.style.textDecoration = '';
   layerFlip['text-wrapper-4'] = { h: 1, v: 1 };
   textDisplay.style.transform = '';
-  textWrap.style.display = 'block';
-  textWrap.style.transform = 'translate(0px, 0px) rotate(0deg) scale(1)';
-  // Set wrapper size after render so it matches actual text dimensions
-  textWrap.style.width = 'auto';
-  textWrap.style.height = 'auto';
+  textWrap.style.transform = 'rotate(0deg)';
+  textWrap.style.width  = '1px';
+  textWrap.style.height = '1px';
+  textWrap.style.display = 'none';
 
   updateAddTextButtonText4(true);
   activeWrapper = textWrap;
-  setTimeout(() => {
-    // Sync wrapper to actual rendered text size, then centre
-    const w = textDisplay.scrollWidth  || 200;
-    const h = textDisplay.scrollHeight || 25;
-    textWrap.style.width  = w + 'px';
-    textWrap.style.height = h + 'px';
-    positionTextLayer(textWrap, 0.65);
-    syncStencilMask(textWrap);
-    updateControls(textWrap);
-    updateInspector();
-  }, 0);
+  activeWrapper = textWrap;
+  updateInspector();
+  enterTextEditMode(textWrap);
 }
 
 
 function addNewTextLayer5() {
   const textWrap = document.getElementById('text-wrapper-5');
   const textDisplay = document.getElementById('target-text-5');
-  textDisplay.innerText = "double-click to edit";
-  textDisplay.style.fontFamily = "'Orbitron', sans-serif";
+  textDisplay.style.fontFamily = 'sans-serif';
   textDisplay.style.fontSize = '40px';
+  textDisplay.style.fontWeight = '';
+  textDisplay.style.fontStyle  = '';
+  textDisplay.style.textDecoration = '';
   layerFlip['text-wrapper-5'] = { h: 1, v: 1 };
   textDisplay.style.transform = '';
-  textWrap.style.display = 'block';
-  textWrap.style.transform = 'translate(0px, 0px) rotate(0deg) scale(1)';
-  // Set wrapper size after render so it matches actual text dimensions
-  textWrap.style.width = 'auto';
-  textWrap.style.height = 'auto';
+  textWrap.style.transform = 'rotate(0deg)';
+  textWrap.style.width  = '1px';
+  textWrap.style.height = '1px';
+  textWrap.style.display = 'none';
 
   updateAddTextButtonText5(true);
   activeWrapper = textWrap;
-  setTimeout(() => {
-    // Sync wrapper to actual rendered text size, then centre
-    const w = textDisplay.scrollWidth  || 200;
-    const h = textDisplay.scrollHeight || 25;
-    textWrap.style.width  = w + 'px';
-    textWrap.style.height = h + 'px';
-    positionTextLayer(textWrap, 0.80);
-    syncStencilMask(textWrap);
-    updateControls(textWrap);
-    updateInspector();
-  }, 0);
+  activeWrapper = textWrap;
+  updateInspector();
+  enterTextEditMode(textWrap);
 }
 
 
@@ -5211,42 +5342,103 @@ function deleteLayer(type) {
     else if (type === 'text') {
         const textDisplay = document.getElementById('target-text');
         const textWrapper = document.getElementById('text-wrapper');
-        if (textDisplay) textDisplay.innerHTML = '';
-        if (textWrapper) textWrapper.style.display = 'none';
+        if (textDisplay) { textDisplay.innerHTML = ''; textDisplay.style.display = ''; textDisplay.style.fontSize = ''; textDisplay.style.fontFamily = ''; textDisplay.style.fontWeight = ''; textDisplay.style.fontStyle = ''; textDisplay.style.textDecoration = ''; }
+        if (textWrapper) {
+            const ri = textWrapper.querySelector('.text-raster-img');
+            if (ri) ri.remove();
+            textWrapper._textSnapshot = null;
+            textWrapper._savedText = '';
+            textWrapper._savedFontSize = '';
+            textWrapper._savedFontFamily = '';
+            textWrapper._savedFontWeight = '';
+            textWrapper._savedFontStyle = '';
+            textWrapper._savedTextDeco = '';
+            textWrapper.style.display = 'none';
+            textWrapper.style.opacity = '';
+        }
         updateAddTextButtonText(false);
         document.getElementById('text-tools').style.display = 'none';
+        ['btn-bold','btn-italic'].forEach(id => { const b = document.getElementById(id); if (b) b.classList.remove('toggle-active'); });
     }
     else if (type === 'text-2') {
         const textDisplay2 = document.getElementById('target-text-2');
         const textWrapper2 = document.getElementById('text-wrapper-2');
-        if (textDisplay2) textDisplay2.innerHTML = '';
-        if (textWrapper2) textWrapper2.style.display = 'none';
+        if (textDisplay2) { textDisplay2.innerHTML = ''; textDisplay2.style.cssText = ''; }
+        if (textWrapper2) {
+            const _ri2 = textWrapper2.querySelector('.text-raster-img');
+            if (_ri2) _ri2.remove();
+            textWrapper2._textSnapshot = null;
+            textWrapper2._savedText = '';
+            textWrapper2._savedFontFamily = '';
+            textWrapper2._savedFontWeight = '';
+            textWrapper2._savedFontStyle  = '';
+            textWrapper2._textSnapshotAR  = null;
+            textWrapper2.style.display = 'none';
+            textWrapper2.style.opacity = '';
+        }
         updateAddTextButtonText2(false);
         document.getElementById('text-tools-2').style.display = 'none';
+        ['btn-bold-2','btn-italic-2'].forEach(id => { const b = document.getElementById(id); if (b) b.classList.remove('toggle-active'); });
     }
     else if (type === 'text-3') {
         const textDisplay3 = document.getElementById('target-text-3');
         const textWrapper3 = document.getElementById('text-wrapper-3');
-        if (textDisplay3) textDisplay3.innerHTML = '';
-        if (textWrapper3) textWrapper3.style.display = 'none';
+        if (textDisplay3) { textDisplay3.innerHTML = ''; textDisplay3.style.cssText = ''; }
+        if (textWrapper3) {
+            const _ri3 = textWrapper3.querySelector('.text-raster-img');
+            if (_ri3) _ri3.remove();
+            textWrapper3._textSnapshot = null;
+            textWrapper3._savedText = '';
+            textWrapper3._savedFontFamily = '';
+            textWrapper3._savedFontWeight = '';
+            textWrapper3._savedFontStyle  = '';
+            textWrapper3._textSnapshotAR  = null;
+            textWrapper3.style.display = 'none';
+            textWrapper3.style.opacity = '';
+        }
         updateAddTextButtonText3(false);
         document.getElementById('text-tools-3').style.display = 'none';
+        ['btn-bold-3','btn-italic-3'].forEach(id => { const b = document.getElementById(id); if (b) b.classList.remove('toggle-active'); });
     }
     else if (type === 'text-4') {
         const textDisplay4 = document.getElementById('target-text-4');
         const textWrapper4 = document.getElementById('text-wrapper-4');
-        if (textDisplay4) textDisplay4.innerHTML = '';
-        if (textWrapper4) textWrapper4.style.display = 'none';
+        if (textDisplay4) { textDisplay4.innerHTML = ''; textDisplay4.style.cssText = ''; }
+        if (textWrapper4) {
+            const _ri4 = textWrapper4.querySelector('.text-raster-img');
+            if (_ri4) _ri4.remove();
+            textWrapper4._textSnapshot = null;
+            textWrapper4._savedText = '';
+            textWrapper4._savedFontFamily = '';
+            textWrapper4._savedFontWeight = '';
+            textWrapper4._savedFontStyle  = '';
+            textWrapper4._textSnapshotAR  = null;
+            textWrapper4.style.display = 'none';
+            textWrapper4.style.opacity = '';
+        }
         updateAddTextButtonText4(false);
         document.getElementById('text-tools-4').style.display = 'none';
+        ['btn-bold-4','btn-italic-4'].forEach(id => { const b = document.getElementById(id); if (b) b.classList.remove('toggle-active'); });
     }
     else if (type === 'text-5') {
         const textDisplay5 = document.getElementById('target-text-5');
         const textWrapper5 = document.getElementById('text-wrapper-5');
-        if (textDisplay5) textDisplay5.innerHTML = '';
-        if (textWrapper5) textWrapper5.style.display = 'none';
+        if (textDisplay5) { textDisplay5.innerHTML = ''; textDisplay5.style.cssText = ''; }
+        if (textWrapper5) {
+            const _ri5 = textWrapper5.querySelector('.text-raster-img');
+            if (_ri5) _ri5.remove();
+            textWrapper5._textSnapshot = null;
+            textWrapper5._savedText = '';
+            textWrapper5._savedFontFamily = '';
+            textWrapper5._savedFontWeight = '';
+            textWrapper5._savedFontStyle  = '';
+            textWrapper5._textSnapshotAR  = null;
+            textWrapper5.style.display = 'none';
+            textWrapper5.style.opacity = '';
+        }
         updateAddTextButtonText5(false);
         document.getElementById('text-tools-5').style.display = 'none';
+        ['btn-bold-5','btn-italic-5'].forEach(id => { const b = document.getElementById(id); if (b) b.classList.remove('toggle-active'); });
     }
 
     if (activeWrapper && ctrlMap[type] === 'ctrl-' + activeWrapper.id) {
@@ -5366,24 +5558,14 @@ function fitToWorkspace() {
   const maxAvailable = workspace.offsetWidth * 0.42;
 
   if (target.id.includes('text-wrapper')) {
-    // For text: scale font size so the text width fits maxAvailable
-    const textEl = target.querySelector('[id^="target-text"]');
-    if (!textEl) return;
-    const currentFontSize = parseFloat(window.getComputedStyle(textEl).fontSize);
-    // Temporarily unclip to get true text width
-    const prevOverflow = textEl.style.overflow;
-    textEl.style.overflow = 'visible';
-    textEl.style.maxWidth = 'none';
-    const currentTextWidth = textEl.scrollWidth || target.offsetWidth;
-    textEl.style.overflow = prevOverflow;
-    textEl.style.maxWidth = '';
-    if (currentTextWidth <= 0) return;
-    const newFontSize = Math.max(8, Math.min(currentFontSize * (maxAvailable / currentTextWidth), 200));
-    textEl.style.fontSize = newFontSize + 'px';
-    const suffix = target.id === 'text-wrapper' ? '' : target.id === 'text-wrapper-2' ? '-2' : target.id === 'text-wrapper-3' ? '-3' : target.id === 'text-wrapper-4' ? '-4' : '-5';
-    const slider = document.getElementById('font-size-slider' + suffix);
-    if (slider) { slider.value = Math.round(newFontSize); updateSliderFill(slider); }
-    setTimeout(() => { resizeWrapperToText(target); centerStencil(); }, 0);
+    // Text layers are rasterised — scale wrapper preserving ink aspect ratio.
+    const ratio = target._textSnapshotAR || (target.offsetWidth / (target.offsetHeight || 1)) || 3;
+    let newW, newH;
+    if (ratio >= 1) { newW = maxAvailable; newH = newW / ratio; }
+    else            { newH = maxAvailable; newW = newH * ratio; }
+    target.style.width  = newW + 'px';
+    target.style.height = newH + 'px';
+    centerStencil();
     return;
   }
 
@@ -5630,8 +5812,14 @@ function toggleFlip(axis) {
     const targetImg = activeWrapper.querySelector('img');
     if (targetImg) targetImg.style.transform = `scale(${flip.h}, ${flip.v})`;
   } else {
-    const targetText = activeWrapper.querySelector('[id^="target-text"]');
-    if (targetText) targetText.style.transform = `scale(${flip.h}, ${flip.v})`;
+    // For rasterised text layers, flip the raster img (text div is hidden)
+    const rasterImg = activeWrapper.querySelector('.text-raster-img');
+    if (rasterImg) {
+        rasterImg.style.transform = `scale(${flip.h}, ${flip.v})`;
+    } else {
+        const targetText = activeWrapper.querySelector('[id^="target-text"]');
+        if (targetText) targetText.style.transform = `scale(${flip.h}, ${flip.v})`;
+    }
   }
   updateControls(activeWrapper);
 }
@@ -5749,10 +5937,16 @@ function clearWorkspace() {
 
     // 2. Clear Text 1
     const targetText = document.getElementById('target-text');
-    if (targetText) targetText.innerHTML = ''; 
+    if (targetText) { targetText.innerHTML = ''; targetText.style.cssText = ''; }
     const textWrapper = document.getElementById('text-wrapper');
     if (textWrapper) {
-        textWrapper.style.display = 'none';
+        const _ri = textWrapper.querySelector('.text-raster-img');
+        if (_ri) _ri.remove();
+        textWrapper._textSnapshot = null; textWrapper._savedText = '';
+        textWrapper._savedFontSize = ''; textWrapper._savedFontFamily = '';
+        textWrapper._savedFontWeight = ''; textWrapper._savedFontStyle = '';
+        textWrapper._savedTextDeco = '';
+        textWrapper.style.display = 'none'; textWrapper.style.opacity = '';
         textWrapper.style.top = '0px'; textWrapper.style.left = '0px';
         textWrapper.style.transform = 'rotate(0deg)';
         textWrapper.style.width = 'auto'; textWrapper.style.height = 'auto';
@@ -5918,8 +6112,18 @@ async function generateHighResCanvas() {
         const height  = layer.wrap.offsetHeight * scale;
         if (width <= 0 || height <= 0) return;
 
-        const centerX = (layer.wrap.offsetLeft + layer.wrap.offsetWidth  / 2) * scale;
-        const centerY = (layer.wrap.offsetTop  + layer.wrap.offsetHeight / 2) * scale;
+        let centerX, centerY;
+        if (layer.type === 'text' && layer.content) {
+            const wrapLeft = parseFloat(layer.wrap.style.left) || 0;
+            const wrapTop  = parseFloat(layer.wrap.style.top)  || 0;
+            const wrapW    = layer.wrap.offsetWidth;
+            const wrapH    = layer.wrap.offsetHeight;
+            centerX = (wrapLeft + wrapW / 2) * scale;
+            centerY = (wrapTop  + wrapH / 2) * scale;
+        } else {
+            centerX = (layer.wrap.offsetLeft + layer.wrap.offsetWidth  / 2) * scale;
+            centerY = (layer.wrap.offsetTop  + layer.wrap.offsetHeight / 2) * scale;
+        }
 
         octx.save();
         octx.translate(centerX, centerY);
@@ -5953,15 +6157,28 @@ async function generateHighResCanvas() {
                 octx.drawImage(layer.content, -width / 2, -height / 2, width, height);
             }
         } else if (layer.type === 'text') {
-            const fontStyle = window.getComputedStyle(layer.content);
-            const fontSize  = parseInt(fontStyle.fontSize) * scale;
-            octx.font        = `${fontStyle.fontStyle || ''} ${fontStyle.fontWeight || ''} ${fontSize}px ${fontStyle.fontFamily}`.trim();
-            octx.fillStyle   = fontStyle.color || 'white';
-            octx.textAlign   = 'center';
-            octx.textBaseline = 'middle';
-            const flip = layerFlip[layer.wrap.id] || { h: 1, v: 1 };
-            octx.scale(flip.h, flip.v);
-            octx.fillText(layer.content.innerText.replace(/\n$/, ''), 0, 0);
+            const flip      = layerFlip[layer.wrap.id] || { h: 1, v: 1 };
+            const snapCvs   = layer.wrap._textSnapshot;
+            if (snapCvs) {
+                // Colour is already baked into the snapshot canvas — clear any SVG filter.
+                octx.filter = 'none';
+                // Use CURRENT wrapper size (not snapshot size) — user may have resized.
+                const snapW = layer.wrap.offsetWidth  * scale;
+                const snapH = layer.wrap.offsetHeight * scale;
+                octx.scale(flip.h, flip.v);
+                octx.drawImage(snapCvs, -snapW / 2, -snapH / 2, snapW, snapH);
+            } else {
+                // Fallback for layers not yet confirmed (still showing live text div)
+                const fontStyle = window.getComputedStyle(layer.content);
+                const fontSize  = parseFloat(fontStyle.fontSize) * scale;
+                const textStr   = layer.content.innerText.replace(/\n$/, '');
+                octx.font        = `${fontStyle.fontStyle || ''} ${fontStyle.fontWeight || ''} ${fontSize}px ${fontStyle.fontFamily}`.trim();
+                octx.fillStyle   = fontStyle.color || 'white';
+                octx.textAlign   = 'center';
+                octx.textBaseline = 'middle';
+                octx.scale(flip.h, flip.v);
+                octx.fillText(textStr, 0, 0);
+            }
         }
 
         octx.restore();
@@ -6060,7 +6277,10 @@ async function showPreview() {
     const textIds     = ['target-text','target-text-2','target-text-3','target-text-4','target-text-5'];
     const hasImage    = imgLayer && imgLayer.src && !imgLayer.src.endsWith('index.html') && imgLayer.naturalWidth > 0;
     const hasSymbol   = symbolLayer && symbolLayer.src && !symbolLayer.src.endsWith('index.html') && symbolLayer.naturalWidth > 0;
-    const hasText     = textIds.some(id => { const el = document.getElementById(id); return el && el.innerText.trim() !== ''; });
+    const hasText     = ['text-wrapper','text-wrapper-2','text-wrapper-3','text-wrapper-4','text-wrapper-5'].some(wid => {
+        const wrap = document.getElementById(wid);
+        return wrap && wrap.style.display !== 'none' && wrap._savedText && wrap._savedText.trim() !== '';
+    });
     if (!hasImage && !hasSymbol && !hasText) {
         notify('Add at least one image, symbol or text layer before previewing.', 'error');
         return;
@@ -6185,6 +6405,15 @@ function confirmReset() {
         // Reset legend type selection
         selectedLegendType = null;
         document.querySelectorAll('.legend-type-card').forEach(c => c.classList.remove('selected'));
+        // Reset profile cards
+        document.querySelectorAll('.profile-card').forEach(c => c.classList.remove('selected'));
+        // Reset row label
+        const kbLabel = document.getElementById('kb-row-label');
+        if (kbLabel) { kbLabel.textContent = 'Select a row\u2026'; kbLabel.style.color = '#666'; }
+        const allRowsLbl = document.getElementById('kb-allrows-label');
+        if (allRowsLbl) { allRowsLbl.textContent = 'Select a row\u2026'; allRowsLbl.style.color = '#666'; }
+        // Reset row highlights
+        document.querySelectorAll('.kb-sel').forEach(k => k.classList.remove('kb-row-active'));
         // Reset profile detail view back to grid
         const pgv = document.getElementById('profile-grid-view');
         const pdv = document.getElementById('profile-detail-view');
@@ -6246,8 +6475,18 @@ async function generateStencilCanvas(size = 1000) {
         const width   = layer.wrap.offsetWidth  * scale;
         const height  = layer.wrap.offsetHeight * scale;
         if (width <= 0 || height <= 0) return;
-        const centerX = (layer.wrap.offsetLeft + layer.wrap.offsetWidth  / 2) * scale;
-        const centerY = (layer.wrap.offsetTop  + layer.wrap.offsetHeight / 2) * scale;
+        let centerX, centerY;
+        if (layer.type === 'text' && layer.content) {
+            const wrapLeft = parseFloat(layer.wrap.style.left) || 0;
+            const wrapTop  = parseFloat(layer.wrap.style.top)  || 0;
+            const wrapW    = layer.wrap.offsetWidth;
+            const wrapH    = layer.wrap.offsetHeight;
+            centerX = (wrapLeft + wrapW / 2) * scale;
+            centerY = (wrapTop  + wrapH / 2) * scale;
+        } else {
+            centerX = (layer.wrap.offsetLeft + layer.wrap.offsetWidth  / 2) * scale;
+            centerY = (layer.wrap.offsetTop  + layer.wrap.offsetHeight / 2) * scale;
+        }
 
         octx.save();
         octx.translate(centerX, centerY);
@@ -6274,15 +6513,28 @@ async function generateStencilCanvas(size = 1000) {
                 octx.drawImage(layer.content, -width / 2, -height / 2, width, height);
             }
         } else if (layer.type === 'text') {
-            const fontStyle = window.getComputedStyle(layer.content);
-            const fontSize  = parseInt(fontStyle.fontSize) * scale;
-            octx.font        = `${fontStyle.fontStyle || ''} ${fontStyle.fontWeight || ''} ${fontSize}px ${fontStyle.fontFamily}`.trim();
-            octx.fillStyle   = fontStyle.color || 'white';
-            octx.textAlign   = 'center';
-            octx.textBaseline = 'middle';
-            const flip = layerFlip[layer.wrap.id] || { h: 1, v: 1 };
-            octx.scale(flip.h, flip.v);
-            octx.fillText(layer.content.innerText.replace(/\n$/, ''), 0, 0);
+            const flip      = layerFlip[layer.wrap.id] || { h: 1, v: 1 };
+            const snapCvs   = layer.wrap._textSnapshot;
+            if (snapCvs) {
+                // Colour is already baked into the snapshot canvas — clear any SVG filter.
+                octx.filter = 'none';
+                // Use CURRENT wrapper size (not snapshot size) — user may have resized.
+                const snapW = layer.wrap.offsetWidth  * scale;
+                const snapH = layer.wrap.offsetHeight * scale;
+                octx.scale(flip.h, flip.v);
+                octx.drawImage(snapCvs, -snapW / 2, -snapH / 2, snapW, snapH);
+            } else {
+                // Fallback for layers not yet confirmed (still showing live text div)
+                const fontStyle = window.getComputedStyle(layer.content);
+                const fontSize  = parseFloat(fontStyle.fontSize) * scale;
+                const textStr   = layer.content.innerText.replace(/\n$/, '');
+                octx.font        = `${fontStyle.fontStyle || ''} ${fontStyle.fontWeight || ''} ${fontSize}px ${fontStyle.fontFamily}`.trim();
+                octx.fillStyle   = fontStyle.color || 'white';
+                octx.textAlign   = 'center';
+                octx.textBaseline = 'middle';
+                octx.scale(flip.h, flip.v);
+                octx.fillText(textStr, 0, 0);
+            }
         }
         octx.restore();
     });
@@ -6560,12 +6812,10 @@ document.querySelectorAll('.handle').forEach((handle) => {
     startTop = activeWrapper.offsetTop;
 
     if (activeWrapper.id.includes('text-wrapper')) {
-        const textEl = activeWrapper.querySelector('[id^="target-text"]');
-        if (textEl) {
-            startFontSize = parseFloat(window.getComputedStyle(textEl).fontSize) || 54;
-            startTextWidth  = textEl.scrollWidth  || textEl.offsetWidth  || startWidth;
-            startTextHeight = textEl.scrollHeight || textEl.offsetHeight || startHeight;
-        }
+        // For rasterised text layers, use saved snapshot dimensions for resize start
+        startFontSize   = parseFloat(activeWrapper._savedFontSize) || 54;
+        startTextWidth  = activeWrapper._textSnapshotW || startWidth;
+        startTextHeight = activeWrapper._textSnapshotH || startHeight;
     }
 
     e.stopPropagation();
@@ -6649,10 +6899,18 @@ document.addEventListener('mousemove', (e) => {
 
   if (isDragging) {
     const ws4 = document.getElementById('workspace');
-    const maxL = ws4.offsetWidth  - activeWrapper.offsetWidth;
-    const maxT = ws4.offsetHeight - activeWrapper.offsetHeight;
-    const newL = Math.max(0, Math.min(startLeft + (e.clientX - startX), maxL));
-    const newT = Math.max(0, Math.min(startTop  + (e.clientY - startY), maxT));
+    // Enforce 80% width cap on text wrappers during drag
+    if (activeWrapper && activeWrapper.id.includes('text-wrapper')) {
+      const maxTextW = ws4.offsetWidth * 0.8;
+      if (activeWrapper.offsetWidth > maxTextW) {
+        activeWrapper.style.width = maxTextW + 'px';
+      }
+    }
+    const handleOffset = 12; // handles extend ~12px outside wrapper
+    const maxL = ws4.offsetWidth  - activeWrapper.offsetWidth  - handleOffset;
+    const maxT = ws4.offsetHeight - activeWrapper.offsetHeight - handleOffset;
+    const newL = Math.max(handleOffset, Math.min(startLeft + (e.clientX - startX), maxL));
+    const newT = Math.max(handleOffset, Math.min(startTop  + (e.clientY - startY), maxT));
     activeWrapper.style.left = newL + 'px';
     activeWrapper.style.top  = newT + 'px';
     syncStencilMask(activeWrapper);
@@ -6665,40 +6923,23 @@ document.addEventListener('mousemove', (e) => {
     let newWidth, newHeight;
 
     if (activeWrapper.id.includes('text-wrapper')) {
-      // Scale font size from horizontal drag distance.
-      // Right-side handles (se, ne): dragging right = bigger.
-      // Left-side handles (sw, nw): dragging left = bigger.
-      const dragDist = (type === 'se' || type === 'ne') ? dx : -dx;
-      // Scale sensitivity relative to font size: each px drag = 0.5% of start font size.
-      // This keeps visual scaling speed constant regardless of current text size.
-      const sensitivity = startFontSize * 0.005;
-      const newFontSize = Math.max(8, startFontSize + dragDist * sensitivity);
-      const scale = newFontSize / startFontSize;
-      const textEl = activeWrapper.querySelector('[id^="target-text"]');
+      // Text layers are now rasterised images — resize the wrapper proportionally
+      // maintaining the original aspect ratio of the snapshot, just like image layers.
+      const wsEl3    = document.getElementById('workspace');
+      const snapW    = activeWrapper._textSnapshotW || startWidth;
+      const snapH    = activeWrapper._textSnapshotH || startHeight;
+      const snapRatio = snapW / (snapH || 1);
 
-      if (textEl) {
-        textEl.style.fontSize = newFontSize + 'px';
-        const suffix = activeWrapper.id === 'text-wrapper' ? '' :
-                       activeWrapper.id === 'text-wrapper-2' ? '-2' : '-3';
-        const slider = document.getElementById('font-size-slider' + suffix);
-        if (slider) { slider.value = Math.round(newFontSize); updateSliderFill(slider); }
-      }
+      newWidth  = (type === 'se' || type === 'ne') ? startWidth + dx : startWidth - dx;
+      newWidth  = Math.max(20, Math.min(newWidth, wsEl3.offsetWidth * 0.9));
+      newHeight = Math.max(10, newWidth / snapRatio);
 
-      // Estimated rendered size after font scale
-      newWidth  = Math.max(20, startTextWidth  * scale);
-      newHeight = Math.max(10, startTextHeight * scale);
-
-      // Clamp to workspace bounds
-      const wsEl3 = document.getElementById('workspace');
-      newWidth  = Math.max(20, Math.min(newWidth,  wsEl3.offsetWidth));
-      newHeight = Math.max(10, Math.min(newHeight, wsEl3.offsetHeight));
-
-      // Anchor corner: opposite corner stays fixed
+      // Anchor opposite corner
       if (type === 'sw' || type === 'nw') {
-        activeWrapper.style.left = Math.max(0, startLeft + startTextWidth  - newWidth)  + 'px';
+        activeWrapper.style.left = Math.max(0, startLeft + startWidth  - newWidth)  + 'px';
       }
       if (type === 'ne' || type === 'nw') {
-        activeWrapper.style.top  = Math.max(0, startTop  + startTextHeight - newHeight) + 'px';
+        activeWrapper.style.top  = Math.max(0, startTop  + startHeight - newHeight) + 'px';
       }
 
       activeWrapper.style.width  = newWidth  + 'px';
@@ -6706,8 +6947,6 @@ document.addEventListener('mousemove', (e) => {
 
       syncStencilMask(activeWrapper);
       updateControls(activeWrapper);
-      // Early return — skip the generic position adjustment below
-      // (we've already handled it above for text)
       return;
 
     } else {
@@ -7032,35 +7271,41 @@ function buildFontGrid() {
     tile.innerHTML = `<span>${font.replace(/'/g, "")}</span>`;
 
     tile.onclick = () => {
-  if (activeWrapper && lockedLayers[activeWrapper.id]) return;
-  const targetText = activeWrapper.querySelector('[id^="target-text"]');
-  if (targetText) {
-    targetText.style.fontFamily = font;
-  }
+  if (!activeWrapper || lockedLayers[activeWrapper.id]) return;
+  _applyTextStyle(activeWrapper, 'fontFamily', font);
   toggleFontLibrary();
 };
     grid.appendChild(tile);
   });
 }
 
-function toggleStyle(type) {
-  const target = document.getElementById('target-text');
-  if (!target) return;
 
+// Helper: apply a style property to the active text layer's hidden textEl,
+// update _saved*, and re-rasterise so the editor img reflects the change.
+function _applyTextStyle(wrapper, property, value) {
+    if (!wrapper) return;
+    const textEl = wrapper.querySelector('[id^="target-text"]');
+    if (!textEl) return;
+    textEl.style[property] = value;
+    const propMap = {
+        fontFamily:'_savedFontFamily', fontWeight:'_savedFontWeight',
+        fontStyle:'_savedFontStyle',
+        fontSize:'_savedFontSize'
+    };
+    if (propMap[property]) wrapper[propMap[property]] = value;
+    if (wrapper._textSnapshot) rasteriseTextLayer(wrapper, false);
+}
+function toggleStyle(type) {
+  const wrap = document.getElementById('text-wrapper');
+  if (!wrap) return;
   if (type === 'bold') {
-    const isBold = target.style.fontWeight === 'bold';
-    target.style.fontWeight = isBold ? 'normal' : 'bold';
-    document.getElementById('btn-bold').classList.toggle('toggle-active', !isBold);
-  } 
-  else if (type === 'italic') {
-    const isItalic = target.style.fontStyle === 'italic';
-    target.style.fontStyle = isItalic ? 'normal' : 'italic';
-    document.getElementById('btn-italic').classList.toggle('toggle-active', !isItalic);
-  } 
-  else if (type === 'underline') {
-    const isUnderline = target.style.textDecoration === 'underline';
-    target.style.textDecoration = isUnderline ? 'none' : 'underline';
-    document.getElementById('btn-underline').classList.toggle('toggle-active', !isUnderline);
+    const v = wrap._savedFontWeight === 'bold' ? 'normal' : 'bold';
+    _applyTextStyle(wrap, 'fontWeight', v);
+    document.getElementById('btn-bold').classList.toggle('toggle-active', v === 'bold');
+  } else if (type === 'italic') {
+    const v = wrap._savedFontStyle === 'italic' ? 'normal' : 'italic';
+    _applyTextStyle(wrap, 'fontStyle', v);
+    document.getElementById('btn-italic').classList.toggle('toggle-active', v === 'italic');
   }
 }
 
@@ -7111,45 +7356,19 @@ function notify(message, type = 'error') {
 }
 
 function toggleStyle2(type) {
-  const target = document.getElementById('target-text-2');
-  if (!target) return;
-
-  if (type === 'bold') {
-    const isBold = target.style.fontWeight === 'bold';
-    target.style.fontWeight = isBold ? 'normal' : 'bold';
-    document.getElementById('btn-bold-2').classList.toggle('toggle-active', !isBold);
-  } 
-  else if (type === 'italic') {
-    const isItalic = target.style.fontStyle === 'italic';
-    target.style.fontStyle = isItalic ? 'normal' : 'italic';
-    document.getElementById('btn-italic-2').classList.toggle('toggle-active', !isItalic);
-  } 
-  else if (type === 'underline') {
-    const isUnderline = target.style.textDecoration === 'underline';
-    target.style.textDecoration = isUnderline ? 'none' : 'underline';
-    document.getElementById('btn-underline-2').classList.toggle('toggle-active', !isUnderline);
-  }
+  const wrap = document.getElementById('text-wrapper-2');
+  if (!wrap) return;
+  if (type === 'bold') { const v = wrap._savedFontWeight === 'bold' ? 'normal' : 'bold'; _applyTextStyle(wrap, 'fontWeight', v); document.getElementById('btn-bold-2').classList.toggle('toggle-active', v === 'bold'); }
+  else if (type === 'italic') { const v = wrap._savedFontStyle === 'italic' ? 'normal' : 'italic'; _applyTextStyle(wrap, 'fontStyle', v); document.getElementById('btn-italic-2').classList.toggle('toggle-active', v === 'italic'); }
+ 
 }
 
 function toggleStyle3(type) {
-  const target = document.getElementById('target-text-3');
-  if (!target) return;
-
-  if (type === 'bold') {
-    const isBold = target.style.fontWeight === 'bold';
-    target.style.fontWeight = isBold ? 'normal' : 'bold';
-    document.getElementById('btn-bold-3').classList.toggle('toggle-active', !isBold);
-  } 
-  else if (type === 'italic') {
-    const isItalic = target.style.fontStyle === 'italic';
-    target.style.fontStyle = isItalic ? 'normal' : 'italic';
-    document.getElementById('btn-italic-3').classList.toggle('toggle-active', !isItalic);
-  } 
-  else if (type === 'underline') {
-    const isUnderline = target.style.textDecoration === 'underline';
-    target.style.textDecoration = isUnderline ? 'none' : 'underline';
-    document.getElementById('btn-underline-3').classList.toggle('toggle-active', !isUnderline);
-  }
+  const wrap = document.getElementById('text-wrapper-3');
+  if (!wrap) return;
+  if (type === 'bold') { const v = wrap._savedFontWeight === 'bold' ? 'normal' : 'bold'; _applyTextStyle(wrap, 'fontWeight', v); document.getElementById('btn-bold-3').classList.toggle('toggle-active', v === 'bold'); }
+  else if (type === 'italic') { const v = wrap._savedFontStyle === 'italic' ? 'normal' : 'italic'; _applyTextStyle(wrap, 'fontStyle', v); document.getElementById('btn-italic-3').classList.toggle('toggle-active', v === 'italic'); }
+ 
 }
 
 
@@ -7171,19 +7390,19 @@ function toggleAlign(align, wrapperId) {
 }
 
 function toggleStyle4(type) {
-  const target = document.getElementById('target-text-4');
-  if (!target) return;
-  if (type === 'bold') { const b = target.style.fontWeight === 'bold'; target.style.fontWeight = b ? 'normal' : 'bold'; document.getElementById('btn-bold-4').classList.toggle('toggle-active', !b); }
-  else if (type === 'italic') { const i = target.style.fontStyle === 'italic'; target.style.fontStyle = i ? 'normal' : 'italic'; document.getElementById('btn-italic-4').classList.toggle('toggle-active', !i); }
-  else if (type === 'underline') { const u = target.style.textDecoration === 'underline'; target.style.textDecoration = u ? 'none' : 'underline'; document.getElementById('btn-underline-4').classList.toggle('toggle-active', !u); }
+  const wrap = document.getElementById('text-wrapper-4');
+  if (!wrap) return;
+  if (type === 'bold') { const v = wrap._savedFontWeight === 'bold' ? 'normal' : 'bold'; _applyTextStyle(wrap, 'fontWeight', v); document.getElementById('btn-bold-4').classList.toggle('toggle-active', v === 'bold'); }
+  else if (type === 'italic') { const v = wrap._savedFontStyle === 'italic' ? 'normal' : 'italic'; _applyTextStyle(wrap, 'fontStyle', v); document.getElementById('btn-italic-4').classList.toggle('toggle-active', v === 'italic'); }
+ 
 }
 
 function toggleStyle5(type) {
-  const target = document.getElementById('target-text-5');
-  if (!target) return;
-  if (type === 'bold') { const b = target.style.fontWeight === 'bold'; target.style.fontWeight = b ? 'normal' : 'bold'; document.getElementById('btn-bold-5').classList.toggle('toggle-active', !b); }
-  else if (type === 'italic') { const i = target.style.fontStyle === 'italic'; target.style.fontStyle = i ? 'normal' : 'italic'; document.getElementById('btn-italic-5').classList.toggle('toggle-active', !i); }
-  else if (type === 'underline') { const u = target.style.textDecoration === 'underline'; target.style.textDecoration = u ? 'none' : 'underline'; document.getElementById('btn-underline-5').classList.toggle('toggle-active', !u); }
+  const wrap = document.getElementById('text-wrapper-5');
+  if (!wrap) return;
+  if (type === 'bold') { const v = wrap._savedFontWeight === 'bold' ? 'normal' : 'bold'; _applyTextStyle(wrap, 'fontWeight', v); document.getElementById('btn-bold-5').classList.toggle('toggle-active', v === 'bold'); }
+  else if (type === 'italic') { const v = wrap._savedFontStyle === 'italic' ? 'normal' : 'italic'; _applyTextStyle(wrap, 'fontStyle', v); document.getElementById('btn-italic-5').classList.toggle('toggle-active', v === 'italic'); }
+ 
 }
 function toggleFontLibrary2() { toggleFontLibrary(); }
 function toggleFontLibrary3() { toggleFontLibrary(); }
@@ -7240,87 +7459,267 @@ function updateActiveCtrl() {
     updateActiveLayerBtn();
 }
 // ── Inline text edit mode ─────────────────────────────────────────────────
-let currentEditWrapper = null;
+// _textEditWrapper replaced by _textEditWrapper
+
+let _textEditWrapper = null; // wrapper being edited in the overlay
 
 function enterTextEditMode(wrapper) {
-    if (currentEditWrapper) exitTextEditMode();
+    if (_textEditWrapper) confirmTextEdit(); // close any open edit first
 
-    currentEditWrapper = wrapper;
-    const textEl = wrapper.querySelector('[id^="target-text"]');
+    _textEditWrapper = wrapper;
+    activeWrapper = wrapper;
+
+    const overlay = document.getElementById('text-edit-overlay');
+    const input   = document.getElementById('text-edit-input');
+    if (!overlay || !input) return;
+
+    // Hide raster img while overlay is open — no stale image behind the modal
+    const rasterImg = wrapper.querySelector('.text-raster-img');
+    if (rasterImg) rasterImg.style.visibility = 'hidden';
+    // Also hide the ctrl-group handles so nothing distracting shows
     const ctrl = document.getElementById('ctrl-' + wrapper.id);
-    if (!textEl || !ctrl) return;
+    if (ctrl) ctrl.style.visibility = 'hidden';
 
-    // Clear placeholder text immediately on double-click.
-    // Keep the wrapper's current height so the cursor stays visible.
+    // Pre-fill input with saved text; empty for brand-new layers
+    const saved = wrapper._savedText || '';
     const placeholder = 'double-click to edit';
-    if (textEl.innerText.trim() === placeholder) {
-        const currentH = wrapper.offsetHeight;
-        textEl.innerText = '';
-        // Don't call resizeWrapperToText here — that would collapse to 0.
-        // Instead just keep current size; it will resize as user types.
-        wrapper.style.height = currentH + 'px';
-    }
+    input.value = (saved && saved !== placeholder) ? saved : '';
+    _updateTextEditCharCount();
 
-    textEl.contentEditable = 'true';
-    wrapper.classList.add('text-editing');
-    ctrl.classList.add('text-editing-ctrl');
+    // Show overlay
+    overlay.style.display = 'flex';
 
-    const confirmBtn = document.createElement('button');
-    confirmBtn.className = 'text-confirm-btn';
-    confirmBtn.id = 'text-confirm-btn';
-    confirmBtn.innerHTML = '✓';
-    confirmBtn.onclick = (e) => { e.stopPropagation(); exitTextEditMode(); };
-    ctrl.appendChild(confirmBtn);
+    // Focus and select all
+    setTimeout(() => { input.focus(); input.select(); }, 50);
 
-    textEl.focus();
-    // Place cursor at end (or select all if text exists)
-    const range = document.createRange();
-    range.selectNodeContents(textEl);
-    range.collapse(false);
-    const sel = window.getSelection();
-    sel.removeAllRanges();
-    sel.addRange(range);
-
-    textEl.addEventListener('input', onTextEditInput);
-    textEl.addEventListener('keydown', onTextEditKeydown);
+    // Enter key confirms, Escape cancels
+    input._keyHandler = (e) => {
+        if (e.key === 'Enter')  { e.preventDefault(); confirmTextEdit(); }
+        if (e.key === 'Escape') { e.preventDefault(); cancelTextEdit(); }
+    };
+    input._inputHandler = () => _updateTextEditCharCount();
+    input.addEventListener('keydown', input._keyHandler);
+    input.addEventListener('input',   input._inputHandler);
 }
 
-function exitTextEditMode() {
-    if (!currentEditWrapper) return;
-    const wrapper = currentEditWrapper;
-    const textEl = wrapper.querySelector('[id^="target-text"]');
-    const ctrl = document.getElementById('ctrl-' + wrapper.id);
+function _updateTextEditCharCount() {
+    const input = document.getElementById('text-edit-input');
+    const cc    = document.getElementById('text-edit-charcount');
+    if (!input || !cc) return;
+    const len = input.value.length;
+    cc.textContent = `${len} / 25`;
+    cc.style.color = len >= 25 ? '#e74c3c' : '#555';
+}
 
-    if (textEl) {
-        textEl.contentEditable = 'false';
-        textEl.removeEventListener('input', onTextEditInput);
-        textEl.removeEventListener('keydown', onTextEditKeydown);
-        syncTextToInspector(wrapper, textEl.innerText);
+function cancelTextEdit() {
+    const overlay = document.getElementById('text-edit-overlay');
+    const input   = document.getElementById('text-edit-input');
+    if (input) {
+        if (input._keyHandler)   input.removeEventListener('keydown', input._keyHandler);
+        if (input._inputHandler) input.removeEventListener('input',   input._inputHandler);
     }
+    if (overlay) overlay.style.display = 'none';
 
-    if (ctrl) {
-        ctrl.classList.remove('text-editing-ctrl');
-        const btn = ctrl.querySelector('.text-confirm-btn');
-        if (btn) btn.remove();
+    const wrapper = _textEditWrapper;
+    _textEditWrapper = null;
+
+    // Restore raster img and ctrl visibility
+    if (wrapper) {
+        const ri = wrapper.querySelector('.text-raster-img');
+        if (ri) ri.style.visibility = '';
+        const ctrl = document.getElementById('ctrl-' + wrapper.id);
+        if (ctrl) ctrl.style.visibility = '';
     }
-
-    wrapper.classList.remove('text-editing');
-    currentEditWrapper = null;
-    textEl && textEl.blur();
-
-    // If text is empty after editing, delete the layer entirely
-    if (textEl && textEl.innerText.trim() === '') {
+    if (wrapper && !wrapper._textSnapshot) {
         const typeMap = {
-            'text-wrapper': 'text', 'text-wrapper-2': 'text-2',
-            'text-wrapper-3': 'text-3', 'text-wrapper-4': 'text-4',
-            'text-wrapper-5': 'text-5'
+            'text-wrapper':'text','text-wrapper-2':'text-2','text-wrapper-3':'text-3',
+            'text-wrapper-4':'text-4','text-wrapper-5':'text-5'
         };
-        const delType = typeMap[wrapper.id];
-        if (delType) { deleteLayer(delType); return; }
+        const t = typeMap[wrapper.id];
+        if (t) deleteLayer(t);
+    }
+}
+
+function confirmTextEdit() {
+    const overlay = document.getElementById('text-edit-overlay');
+    const input   = document.getElementById('text-edit-input');
+    const wrapper = _textEditWrapper;
+    if (!wrapper || !input) return;
+
+    // Clean up listeners
+    if (input._keyHandler)   input.removeEventListener('keydown', input._keyHandler);
+    if (input._inputHandler) input.removeEventListener('input',   input._inputHandler);
+    if (overlay) overlay.style.display = 'none';
+    _textEditWrapper = null;
+
+    const newText = input.value.trim();
+
+    // Empty text = delete layer
+    if (!newText) {
+        const typeMap = {
+            'text-wrapper':'text','text-wrapper-2':'text-2','text-wrapper-3':'text-3',
+            'text-wrapper-4':'text-4','text-wrapper-5':'text-5'
+        };
+        const t = typeMap[wrapper.id];
+        if (t) deleteLayer(t);
+        return;
     }
 
-    setTimeout(() => resizeWrapperToText(wrapper), 0);
+    // Show spinner while we measure/rasterise
+    const wsSpinner = document.getElementById('workspace-spinner');
+    if (wsSpinner) wsSpinner.style.display = 'flex';
+
+    // Keep wrapper invisible until raster is ready; make sure it's in the DOM
+    wrapper.style.opacity = '0';
+    wrapper.style.display = 'block';
+
+    // Save text and styles — rasteriseTextLayer reads these directly.
+    // Read font from the text element which has the current inspector/picker value.
+    const _textEl = wrapper.querySelector('[id^="target-text"]');
+    wrapper._savedText       = newText;
+    // Use inspector font if set, else keep existing saved font, else default to Orbitron
+    const _rawFont = (_textEl && _textEl.style.fontFamily) || wrapper._savedFontFamily || '';
+    wrapper._savedFontFamily = _rawFont || 'sans-serif';
+    wrapper._savedFontWeight = (_textEl && _textEl.style.fontWeight) || wrapper._savedFontWeight || '';
+    wrapper._savedFontStyle  = (_textEl && _textEl.style.fontStyle)  || wrapper._savedFontStyle  || '';
+    wrapper._savedTextDeco   = (_textEl && _textEl.style.textDecoration) || wrapper._savedTextDeco || '';
+
+    syncTextToInspector(wrapper, newText);
+
+    // rasteriseTextLayer loads the font then renders. Chain post-render steps after.
+    rasteriseTextLayer(wrapper, true).then(() => {
+        activeWrapper = wrapper;
+        fitToWorkspace();
+        wrapper.style.opacity = '';
+        const ctrl = document.getElementById('ctrl-' + wrapper.id);
+        if (ctrl) ctrl.style.visibility = '';
+        syncStencilMask(wrapper);
+        updateControls(wrapper);
+        updateInspector();
+        if (wsSpinner) wsSpinner.style.display = 'none';
+    });
 }
+
+// Legacy stub — keep so old call sites don't break
+function exitTextEditMode() {
+    if (_textEditWrapper) confirmTextEdit();
+}
+
+// rasteriseTextLayer(wrapper, resizeWrapper)
+// Always renders a fresh high-res canvas from _savedText and _saved* styles.
+// resizeWrapper=true  — also pixel-trims and resizes the wrapper (on confirm).
+// resizeWrapper=false — just updates the img, keeps wrapper size exactly as-is.
+function rasteriseTextLayer(wrapper, resizeWrapper) {
+    const text = wrapper._savedText;
+    if (!text || !text.trim()) return Promise.resolve();
+
+    // Render immediately — default font (sans-serif) is always available.
+    // When user picks a Google Font via the picker, it will already be loaded
+    // since the picker only shows fonts after they've been applied to the DOM.
+    return Promise.resolve().then(() => _doRasterise(wrapper, resizeWrapper));
+}
+
+function _doRasterise(wrapper, resizeWrapper) {
+    const text = wrapper._savedText;
+    if (!text || !text.trim()) return;
+
+    const stencilColour = (window._stencilR !== undefined)
+        ? `rgb(${Math.round(window._stencilR*255)},${Math.round(window._stencilG*255)},${Math.round(window._stencilB*255)})`
+        : '#0dff13';
+
+    const fontStyle  = wrapper._savedFontStyle  || '';
+    const fontWeight = wrapper._savedFontWeight  || '';
+    const fontFamily = wrapper._savedFontFamily  || 'sans-serif';
+
+    // Always render at a large fixed size for quality — the img element scales to fit
+    const REF_H  = 1200;
+    // Extra horizontal room: 10% each side for italic overhang
+    const H_PAD  = Math.round(REF_H * 0.10);
+    const REF_W  = REF_H * 6 + H_PAD * 2;
+    const refFont = Math.round(REF_H * 0.7);
+
+    const refCvs = document.createElement('canvas');
+    refCvs.width  = REF_W;
+    refCvs.height = REF_H;
+    const refCtx  = refCvs.getContext('2d');
+    const fontStr = `${fontStyle} ${fontWeight} ${refFont}px ${fontFamily}`.trim();
+    refCtx.font         = fontStr;
+    refCtx.fillStyle    = stencilColour;
+    refCtx.textAlign    = 'center';
+    refCtx.textBaseline = 'middle';
+    refCtx.fillText(text, REF_W / 2, REF_H / 2);
+
+
+    // Pixel-trim to exact ink bounds + small padding
+    const pad  = Math.round(refFont * 0.05);
+    const data = refCtx.getImageData(0, 0, REF_W, REF_H).data;
+    let minX = REF_W, maxX = 0, minY = REF_H, maxY = 0;
+    for (let y = 0; y < REF_H; y++) {
+        for (let x = 0; x < REF_W; x++) {
+            if (data[(y * REF_W + x) * 4 + 3] > 8) {
+                if (x < minX) minX = x; if (x > maxX) maxX = x;
+                if (y < minY) minY = y; if (y > maxY) maxY = y;
+            }
+        }
+    }
+
+    let snapCvs = refCvs;
+    let inkW = REF_W, inkH = REF_H;
+
+    if (maxX >= minX && maxY >= minY) {
+        minX = Math.max(0, minX - pad); minY = Math.max(0, minY - pad);
+        maxX = Math.min(REF_W - 1, maxX + pad);
+        maxY = Math.min(REF_H - 1, maxY + pad);
+        inkW = maxX - minX + 1;
+        inkH = maxY - minY + 1;
+        snapCvs = document.createElement('canvas');
+        snapCvs.width = inkW; snapCvs.height = inkH;
+        snapCvs.getContext('2d').drawImage(refCvs, minX, minY, inkW, inkH, 0, 0, inkW, inkH);
+    }
+
+    // Store snapshot (high-res, pixel-trimmed)
+    wrapper._textSnapshot   = snapCvs;
+    wrapper._textSnapshotW  = inkW;
+    wrapper._textSnapshotH  = inkH;
+    wrapper._textSnapshotAR = inkW / inkH;
+
+    if (resizeWrapper) {
+        // Resize wrapper to match the ink aspect ratio; fitToWorkspace scales it after
+        const ws   = document.getElementById('workspace');
+        const wsW  = ws ? ws.offsetWidth  : 1100;
+        const wsH  = ws ? ws.offsetHeight : 1100;
+        // Use 90% workspace width as initial display size
+        const dispW = wsW * 0.9;
+        const dispH = dispW / (inkW / inkH);
+        const oldCx = parseFloat(wrapper.style.left || '0') + (wrapper.offsetWidth  || dispW)  / 2;
+        const oldCy = parseFloat(wrapper.style.top  || '0') + (wrapper.offsetHeight || dispH) / 2;
+        wrapper.style.width  = dispW + 'px';
+        wrapper.style.height = dispH + 'px';
+        wrapper.style.left   = Math.max(0, oldCx - dispW / 2) + 'px';
+        wrapper.style.top    = Math.max(0, oldCy - dispH / 2) + 'px';
+    }
+    // resizeWrapper=false: wrapper dimensions unchanged — img fills via object-fit:fill
+
+    // Hide text div, show raster img
+    const textEl = wrapper.querySelector('[id^="target-text"]');
+    if (textEl) textEl.style.display = 'none';
+
+    let img = wrapper.querySelector('.text-raster-img');
+    if (!img) {
+        img = document.createElement('img');
+        img.className = 'text-raster-img';
+        img.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;' +
+                            'object-fit:fill;pointer-events:none;mix-blend-mode:screen;';
+        wrapper.appendChild(img);
+    }
+    img.src = snapCvs.toDataURL('image/png');
+    img.style.display    = '';
+    img.style.visibility = ''; // clear any 'hidden' set by enterTextEditMode
+
+    updateControls(wrapper);
+}
+
+// exitTextEditMode replaced by confirmTextEdit/cancelTextEdit above
 
 function resizeWrapperToText(wrapper) {
     const textEl = wrapper.querySelector('[id^="target-text"]');
@@ -7328,6 +7727,7 @@ function resizeWrapperToText(wrapper) {
     const ws = document.getElementById('workspace');
     const wsW = ws.offsetWidth;
     const wsH = ws.offsetHeight;
+    const maxW = wsW * 0.9; // cap wrapper to 90% of canvas width
     const margin = 8; // px gap from workspace edge before shrinking starts
 
     // Temporarily unclip so scrollWidth gives true content width
@@ -7349,18 +7749,20 @@ function resizeWrapperToText(wrapper) {
         textEl.style.fontSize = currentSize + 'px';
     }
 
-    const newW = Math.max(textEl.scrollWidth,  20);
-    const newH = Math.max(textEl.scrollHeight, 10);
+    const fontSize = parseFloat(window.getComputedStyle(textEl).fontSize) || 16;
+    const newW = Math.min(Math.max(textEl.scrollWidth, 20), maxW);
+    const newH = Math.max(Math.min(textEl.scrollHeight, wsH), 10);
     textEl.style.overflow = prevOverflow;
     textEl.style.maxWidth = prevMaxWidth;
 
     const oldW = wrapper.offsetWidth  || newW;
     const oldH = wrapper.offsetHeight || newH;
-    // Clamp wrapper position so it can't extend outside workspace
+    const hOff = 12; // handles extend ~12px outside wrapper
+    // Clamp wrapper position so handles can't extend outside workspace
     let newLeft = wrapper.offsetLeft + (oldW - newW) / 2;
     let newTop  = wrapper.offsetTop  + (oldH - newH) / 2;
-    newLeft = Math.max(0, Math.min(newLeft, wsW - newW));
-    newTop  = Math.max(0, Math.min(newTop,  wsH - newH));
+    newLeft = Math.max(hOff, Math.min(newLeft, wsW - newW - hOff));
+    newTop  = Math.max(hOff, Math.min(newTop,  wsH - newH - hOff));
     wrapper.style.left   = newLeft + 'px';
     wrapper.style.top    = newTop  + 'px';
     wrapper.style.width  = newW + 'px';
@@ -7368,33 +7770,21 @@ function resizeWrapperToText(wrapper) {
     updateControls(wrapper);
 }
 
-function onTextEditInput(e) {
-    if (!currentEditWrapper) return;
-    const textEl = e.target;
-    if (textEl.innerText.replace(/\n$/, '').length > 20) {
-        const sel = window.getSelection();
-        textEl.innerText = textEl.innerText.replace(/\n$/, '').slice(0, 20);
-        const r = document.createRange();
-        r.selectNodeContents(textEl);
-        r.collapse(false);
-        sel.removeAllRanges();
-        sel.addRange(r);
-    }
-    syncTextToInspector(currentEditWrapper, textEl.innerText.replace(/\n$/, ''));
-    setTimeout(() => resizeWrapperToText(currentEditWrapper), 0);
+function _getDynamicCharLimit(wrapper) {
+    if (!wrapper) return 20;
+    const textEl = wrapper.querySelector('[id^="target-text"]');
+    if (!textEl) return 20;
+    const fontSize = parseFloat(window.getComputedStyle(textEl).fontSize) || 16;
+    const ws = document.getElementById('workspace');
+    const maxTextW = (ws ? ws.offsetWidth : 500) * 0.8;
+    // Bigger font = fewer chars. Base: at fontSize 16 in full width ~20 chars fit.
+    // Scale inversely with font size.
+    const limit = Math.floor((maxTextW / fontSize) / 0.62);
+    return Math.max(1, Math.min(limit, 40));
 }
-function onTextEditKeydown(e) {
-    if (e.key === 'Escape') { exitTextEditMode(); e.preventDefault(); }
-    // Shift+Enter = line break (default), plain Enter = confirm
-    if (e.key === 'Enter' && !e.shiftKey) { exitTextEditMode(); e.preventDefault(); }
-    // Enforce 50 char limit — allow control keys through
-    const allowedKeys = ['Backspace','Delete','ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Home','End','Tab','Escape','Enter'];
-    if (!allowedKeys.includes(e.key) && !e.ctrlKey && !e.metaKey) {
-        if (e.target.innerText.replace(/\n$/, '').length >= 20) {
-            e.preventDefault();
-        }
-    }
-}
+
+function onTextEditInput(e) { /* handled by overlay */ }
+function onTextEditKeydown(e) { /* handled by overlay */ }
 
 function syncTextToInspector(wrapper, text) {
     // Update the inspector text input to match what was typed inline
@@ -7689,17 +8079,35 @@ function _applyStencilColour(c) {
     if (m)  m.setAttribute('values',  `0 0 0 0 ${r} 0 0 0 0 ${g} 0 0 0 0 ${b} 0 0 0 1 0`);
     if (mj) mj.setAttribute('values', `0 0 0 0 ${r} 0 0 0 0 ${g} 0 0 0 0 ${b} -1 -1 -1 1 0`);
 
-    // Update text layer CSS colour to match
     const hex = _rgbToHex(Math.round(r*255), Math.round(g*255), Math.round(b*255));
     ['target-text','target-text-2','target-text-3','target-text-4','target-text-5'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.style.color = hex;
     });
 
-    // Store for canvas render
     window._stencilR = r; window._stencilG = g; window._stencilB = b;
 
-    applyFilters();
+    // Collect text layers that need re-rasterising
+    const wrapsToUpdate = ['text-wrapper','text-wrapper-2','text-wrapper-3','text-wrapper-4','text-wrapper-5']
+        .map(id => document.getElementById(id))
+        .filter(wrap => wrap && wrap.style.display !== 'none' && wrap._textSnapshot);
+
+    if (wrapsToUpdate.length === 0) {
+        // No text layers — just update image filters immediately
+        applyFilters();
+        return;
+    }
+
+    // Show spinner while rasterising, then apply image filters once all done
+    // This prevents the jerky stagger of image updating before text
+    const wsSpinner = document.getElementById('workspace-spinner');
+    if (wsSpinner) wsSpinner.style.display = 'flex';
+
+    Promise.all(wrapsToUpdate.map(wrap => rasteriseTextLayer(wrap, false)))
+        .then(() => {
+            applyFilters();
+            if (wsSpinner) wsSpinner.style.display = 'none';
+        });
 }
 
 function _rgbToHex(r, g, b) {
@@ -7733,19 +8141,22 @@ function _drawColourWheel() {
     const canvas = document.getElementById('colour-wheel');
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
-    const cx = canvas.width / 2, cy = canvas.height / 2, r = cx;    for (let angle = 0; angle < 360; angle++) {
+    const cx = canvas.width / 2, cy = canvas.height / 2, r = cx;
+
+    // Draw hue around the edge using conical approach
+    for (let angle = 0; angle < 360; angle++) {
         const startAngle = (angle - 1) * Math.PI / 180;
         const endAngle   = (angle + 1) * Math.PI / 180;
-        for (let s = 0; s <= r; s++) {
-            const rad = s / r;
-            ctx.beginPath();
-            ctx.moveTo(cx, cy);
-            ctx.arc(cx, cy, s + 1, startAngle, endAngle);
-            ctx.closePath();
-            const [rr, gg, bb] = _hsvToRgb(angle / 360, rad, 1);
-            ctx.fillStyle = `rgb(${rr},${gg},${bb})`;
-            ctx.fill();
-        }
+        const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, r);
+        const [rr, gg, bb] = _hsvToRgb(angle / 360, 1, 1);
+        grad.addColorStop(0, 'white');
+        grad.addColorStop(1, `rgb(${rr},${gg},${bb})`);
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.arc(cx, cy, r, startAngle, endAngle);
+        ctx.closePath();
+        ctx.fillStyle = grad;
+        ctx.fill();
     }
     canvas.addEventListener('mousedown', _onWheelMouseDown);
 }
@@ -7819,7 +8230,13 @@ function _rgbToHsv(r, g, b) {
 
 // ── 3D Model Viewer ─────────────────────────────────────────────────────────
 const _MODEL_3D_URLS = {
-    OEM: 'https://mrrossdude.github.io/EmailJS-Test-Environment/OEMR4.obj',
+    OEM:    'https://raw.githubusercontent.com/mrrossdude/EmailJS-Test-Environment/main/OEMR4.obj',
+    BLOCK:  'https://raw.githubusercontent.com/mrrossdude/EmailJS-Test-Environment/main/BLOCK3D.obj',
+    CHERRY: 'https://raw.githubusercontent.com/mrrossdude/EmailJS-Test-Environment/main/CHERRYR43D.obj',
+    CHOC:   'https://raw.githubusercontent.com/mrrossdude/EmailJS-Test-Environment/main/KailhChoc3D.obj',
+    LP:     'https://raw.githubusercontent.com/mrrossdude/EmailJS-Test-Environment/main/LowProfile3D.obj',
+    MOA:    'https://raw.githubusercontent.com/mrrossdude/EmailJS-Test-Environment/main/MOA3D.obj',
+    XDA:    'https://raw.githubusercontent.com/mrrossdude/EmailJS-Test-Environment/main/XDA3D.obj',
 };
 let _3dRenderer = null, _3dScene = null, _3dCamera = null, _3dAnimId = null;
 
@@ -7951,13 +8368,7 @@ function _load3DObj(url) {
             obj.position.sub(centre);
             obj.rotation.y = Math.PI;
             obj.traverse(function(child) {
-                if (child.isMesh && child.material) {
-                    var c = child.material.color;
-                    // If material is near-white, tint it to warm off-white
-                    if (c && c.r > 0.8 && c.g > 0.8 && c.b > 0.8) {
-                        c.setStyle('#b1b0ab');
-                    }
-                }
+                // Materials driven entirely by MTL file — no overrides
             });
             _3dScene._group.add(obj);
         }, null, function(e) { console.error('[3D] OBJ load error:', e); });
