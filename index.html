@@ -6730,15 +6730,32 @@ async function openOrderLightbox() {
 
 function copyOrderCode() {
     if (!_currentOrderCode) return;
-    navigator.clipboard.writeText(_currentOrderCode).then(() => {
-        const btn = document.getElementById('copy-order-btn');
-        if (btn) { btn.style.minWidth = btn.offsetWidth + 'px'; btn.textContent = 'Copied!'; btn.style.background = '#78c9ff';}
+    const btn = document.getElementById('copy-order-btn');
+
+    const onSuccess = () => {
+        if (btn) { btn.style.minWidth = btn.offsetWidth + 'px'; btn.textContent = 'Copied!'; btn.style.background = '#78c9ff'; }
         setTimeout(() => {
             if (btn) { btn.textContent = 'Copy Code'; btn.style.background = '#3498db'; btn.style.minWidth = ''; }
         }, 2000);
-    });
-}
+    };
 
+    const fallback = () => {
+        const ta = document.createElement('textarea');
+        ta.value = _currentOrderCode;
+        ta.style.cssText = 'position:fixed;top:-9999px;left:-9999px;opacity:0;';
+        document.body.appendChild(ta);
+        ta.focus(); ta.select();
+        try { document.execCommand('copy'); onSuccess(); }
+        catch(e) { console.warn('Copy fallback also failed:', e); }
+        document.body.removeChild(ta);
+    };
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(_currentOrderCode).then(onSuccess).catch(fallback);
+    } else {
+        fallback();
+    }
+}
 
 function closeOrderLightbox() {
     document.getElementById('order-lightbox').style.display = 'none';
